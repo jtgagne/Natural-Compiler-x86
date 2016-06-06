@@ -3,7 +3,8 @@ package Lexer;
 import java.util.Hashtable;
 
 /**
- * Created by gagnej3 on 6/5/16.
+ * Class used for defining the reserved names of variable types
+ * Created by Justin Gagne on 6/5/16.
  */
 public class Type extends Word {
     public int width = 0;          // width is used for storage allocation

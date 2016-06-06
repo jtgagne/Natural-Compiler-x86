@@ -1,7 +1,7 @@
 package Lexer;
 
 /**
- * Created by gagnej3 on 6/5/16.
+ * Created by Justin Gagne on 6/5/16.
  */
 public class Real extends Token {
     public final float value;

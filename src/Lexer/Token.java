@@ -1,7 +1,8 @@
 package Lexer;
 
 /**
- * Created by gagnej3 on 6/5/16.
+ *
+ * Created by Justin Gagne on 6/5/16.
  */
 public class Token {
     public final int tag1;

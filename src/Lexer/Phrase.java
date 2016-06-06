@@ -8,7 +8,7 @@ import java.util.Hashtable;
  * TODO: Phrases are formed by identifying an "INITIALIZER" aka a term to start a phrase like: "greater than or equal to"
  * TODO: Where "to" is the terminal term to the phrase.
  * Class to be used to reserve the various phrases used to equality checking
- * Created by gagnej3 on 6/5/16.
+ * Created by Justin Gagne on 6/5/16.
  */
 public class Phrase extends Token{
 

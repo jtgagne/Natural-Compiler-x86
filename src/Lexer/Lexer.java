@@ -2,7 +2,7 @@ package Lexer;
 
 /**
  * Provides command line application for testing reserved words for the lexer of Natural
- * Created by gagnej3 on 6/5/16.
+ * Created by Justin Gagne on 6/5/16.
  */
 
 import java.util.ArrayList;
@@ -18,21 +18,13 @@ public class Lexer {
     public static int line = 1;         // Line of code
     char peek = ' ';                    // Peek at next character
 
-    public static Hashtable words = new Hashtable();    // reserved,identifiers, multi-symbol operators
-    public static Hashtable phrases = new Hashtable();
-    public ArrayList<Word> _phrase;                     //Multiple words entered that should be grouped
-    public static boolean isValidPhrase = false;        //Track if a _phrase has been input appropriately
+    public static Hashtable words = new Hashtable();    // Reserved,identifiers, multi-symbol operators
+    public static Hashtable phrases = new Hashtable();  // Hash Table for keeping track of phrases / word groupings
+    public ArrayList<Word> _phrase;                     // Multiple words entered that should be grouped
+    public static boolean isValidPhrase = false;        // Track if a _phrase has been input appropriately
 
 
     // ******************************************************
-    // Add a word to hash table
-    // ******************************************************
-    private void reserve(Word w) {
-        words.put(w.lexeme, w);
-    }
-
-    // ******************************************************
-
     //Add reserve words to HashTable
     // ******************************************************
     public Lexer() {
@@ -131,7 +123,7 @@ public class Lexer {
 
             String s = b.toString();
 
-            Word w = (Word) words.get(s);
+            Word w = (Word) words.get(s); //check the word against the hash table
 
             try{
                 //If tag 2 is not NULL, the word is part of a phrase
@@ -164,9 +156,17 @@ public class Lexer {
         return tok;
     }
 
+
+    /**
+     * Keep track of words that are keywords of compound phrases. Once a terminal word is reached, the group
+     * of words should be concatenated into a single word and output to the console. If the phrase entered is
+     * not in correct form, this should be printed to the console as well.
+     * @param word
+     * @return
+     */
     public Word concatPhrases(Word word){
 
-        //Once a terminal is reached, check the phrases hashtable for correctness.
+        //Once a terminal is reached, check the phrases hash table for correctness.
         if(word.tag2 == Tag.TERMINAL){
             _phrase.add(word);
             String checkPhrase = "";
@@ -205,7 +205,6 @@ public class Lexer {
         else if( word.tag2 == Tag.PHRASE){
             _phrase.add(word);
         }
-
 
         return null;
     }
