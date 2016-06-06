@@ -1,6 +1,7 @@
 package Lexer;
 
 /**
+ * Provides command line application for testing reserved words for the lexer of Natural
  * Created by gagnej3 on 6/5/16.
  */
 
@@ -132,15 +133,20 @@ public class Lexer {
 
             Word w = (Word) words.get(s);
 
-            //If tag 2 is not NULL, the word is part of a phrase
-            if(w.tag2 != Tag.NULL){
-                w = concatPhrases(w); //Try to make a phrase from the previous words
+            try{
+                //If tag 2 is not NULL, the word is part of a phrase
+                if(w.tag2 != Tag.NULL){
+                    w = concatPhrases(w); //Try to make a phrase from the previous words
 
-                //A phrase is being made, don't print until complete
-                if(w == null){
-                    return w;
+                    //A phrase is being made, don't print until complete
+                    if(w == null){
+                        return w;
+                    }
                 }
+            } catch (Exception e){
+                System.out.printf("");
             }
+
 
             if( w != null )
                 return w;
@@ -160,24 +166,8 @@ public class Lexer {
 
     public Word concatPhrases(Word word){
 
-        //If the word is an initializer that doesn't follow another initializer
-        if(word.tag2 == Tag.INITIALIZER && !isValidPhrase){
-            _phrase.add(word);
-            isValidPhrase = true; //User started _phrase with a valid keyword
-        }
-
-        //If the first value of a _phrase is not an initializer, return an error
-        else if(!isValidPhrase){
-            return new Word("Incorrect Phrase Format", Tag.ERROR);
-        }
-
-        //Can have "PHRASE" values given the _phrase was initialized properly
-        else if( word.tag2 == Tag.PHRASE){
-            _phrase.add(word);
-        }
-
         //Once a terminal is reached, check the phrases hashtable for correctness.
-        else if(word.tag2 == Tag.TERMINAL || peek == '\n'){
+        if(word.tag2 == Tag.TERMINAL){
             _phrase.add(word);
             String checkPhrase = "";
 
@@ -200,6 +190,23 @@ public class Lexer {
             }
         }
 
+        //If the word is an initializer that doesn't follow another initializer
+        else if(word.tag2 == Tag.INITIALIZER && !isValidPhrase){
+            _phrase.add(word);
+            isValidPhrase = true; //User started _phrase with a valid keyword
+        }
+
+        //If the first value of a _phrase is not an initializer, return an error
+        else if(!isValidPhrase){
+            return new Word("Incorrect Phrase Format", Tag.ERROR);
+        }
+
+        //Can have "PHRASE" values given the _phrase was initialized properly
+        else if( word.tag2 == Tag.PHRASE){
+            _phrase.add(word);
+        }
+
+
         return null;
     }
 
@@ -209,8 +216,10 @@ public class Lexer {
     public static void main(String[] args) throws IOException {
         Lexer lex = new Lexer();
         while (true){
-            System.out.println(lex.scan());
+            Token token = lex.scan();
+            if(token != null){
+                System.out.printf("%s\n", token);
+            }
         }
-
     }
 }

@@ -3,6 +3,7 @@ package Lexer;
 import java.util.Hashtable;
 
 /**
+ * Declares all the reserved words to be used in 'Natural'. Provides a static method to add words to the Lexer hashtable
  * Created by gagnej3 on 6/5/16.
  */
 public class Word extends Token {
@@ -21,7 +22,7 @@ public class Word extends Token {
     @Override
     public String toString() {
         if(this.tag2 == Tag.NULL){
-            return "WORD: Lexeme is " + lexeme + " and tag is " + tag1;
+            return "WORD: Lexeme is \'" + lexeme + "\' and tag is " + tag1;
         } else{
             return "WORD: Lexeme is " + lexeme + "   Tag1 is " + tag1 + "   Tag2 is " + tag2;
         }
@@ -47,12 +48,12 @@ public class Word extends Token {
     //Words to be used by the Phrases:
     public static final Word
         andWord 	= new Word( "and", Tag.AND),
-        orWord 	    = new Word( "or",  Tag.OR, Tag.PHRASE),                 //This can be part of a _phrase such as "less than or equal to"
-        equal 	    = new Word( "equal", Tag.EQ, Tag.PHRASE),
-        to 	        = new Word( "to", Tag.NULL, Tag.TERMINAL),                        //This can only occur at the end of a _phrase
-        not         = new Word( "not", Tag.NOT, Tag.INITIALIZER),
-        less        = new Word( "less", Tag.LESS, Tag.INITIALIZER),         //Initializer means that it must be the the start of a new _phrase to be valid
-        than        = new Word( "than", Tag.NULL, Tag.PHRASE),
+        orWord 	    = new Word( "or",  Tag.OR),                                 //This can be part of a _phrase such as "less than or equal to"
+        equal 	    = new Word( "equal", Tag.EQ, Tag.INITIALIZER),
+        to 	        = new Word( "to", Tag.NULL, Tag.TERMINAL),                  //This can only occur at the end of a _phrase
+        not         = new Word( "not", Tag.NOT, Tag.TERMINAL),
+        less        = new Word( "less", Tag.LESS, Tag.INITIALIZER),             //Initializer means that it must be the the start of a new _phrase to be valid
+        than        = new Word( "than", Tag.NULL, Tag.TERMINAL),
         greater     = new Word( "greater", Tag.GREATER, Tag.INITIALIZER),
         is          = new Word( "is", Tag.ASSIGNMENT),
         increase    = new Word( "increase", Tag.INCREASE, Tag.INITIALIZER),
@@ -71,6 +72,7 @@ public class Word extends Token {
         words.put("while", new Word("while", Tag.WHILE));
         words.put("do", new Word("do", Tag.DO));
         words.put("break", new Word("break", Tag.BREAK));
+        words.put("for", new Word("for", Tag.FOR));
 
 
         //Add all the words defined in this class
