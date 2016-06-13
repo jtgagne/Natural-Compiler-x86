@@ -1,10 +1,12 @@
-package Lexer;
+package lexer;
 
 /**
  * Provides command line application for testing reserved words for the lexer of Natural
  * Created by Justin Gagne on 6/5/16.
  *
  */
+
+import symbols.Type;
 
 import java.util.ArrayList;
 import java.util.Hashtable;

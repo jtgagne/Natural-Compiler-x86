@@ -1,4 +1,5 @@
-package Lexer;
+package symbols;
+import lexer.*;
 
 import java.util.Hashtable;
 
@@ -19,12 +20,12 @@ public class Type extends Word {
     // Constants
     // **********************************************************
     public static final Type
-        Int     = new Type( "int",   Tag.BASIC, 4 ),
-        Long    = new Type( "long", Tag.BASIC, 8),
-        Float   = new Type( "float", Tag.BASIC, 8 ),
-        Double  = new Type( "double", Tag.BASIC, 16),
-        Char    = new Type( "char",  Tag.BASIC, 1 ),
-        Bool    = new Type( "boolean",  Tag.BASIC, 1 );
+            Int     = new Type( "int",   Tag.BASIC, 4 ),
+            Long    = new Type( "long", Tag.BASIC, 8),
+            Float   = new Type( "float", Tag.BASIC, 8 ),
+            Double  = new Type( "double", Tag.BASIC, 16),
+            Char    = new Type( "char",  Tag.BASIC, 1 ),
+            Bool    = new Type( "boolean",  Tag.BASIC, 1 );
 
 
     /**
@@ -71,3 +72,4 @@ public class Type extends Word {
         return "TYPE: Lexeme is " + lexeme + " tag is " + tag1 + " Width is " + width;
     }
 }
+

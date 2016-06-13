@@ -1,4 +1,4 @@
-package Lexer;
+package lexer;
 
 /**
  * Created by Justin Gagne on 6/5/16.

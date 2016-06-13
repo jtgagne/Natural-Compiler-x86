@@ -1,4 +1,4 @@
-package Lexer;
+package lexer;
 
 /**
  * Define constants for Tokens (for readability)

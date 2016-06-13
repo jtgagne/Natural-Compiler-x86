@@ -1,9 +1,9 @@
-package Lexer;
+package lexer;
 
 import java.util.Hashtable;
 
 /**
- * Declares all the reserved words to be used in 'Natural'. Provides a static method to add words to the Lexer hashtable
+ * Declares all the reserved words to be used in 'Natural'. Provides a static method to add words to the lexer hashtable
  * Created by Justin Gagne on 6/5/16.
  */
 public class Word extends Token {
