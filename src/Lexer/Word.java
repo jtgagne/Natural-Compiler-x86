@@ -35,7 +35,6 @@ public class Word extends Token {
         ne 	    = new Word( "!=", Tag.NE ),
         le  	= new Word( "<=", Tag.LE  ),
         ge  	= new Word( ">=", Tag.GE ),
-        minus   = new Word( "minus", Tag.MINUS ),
         True    = new Word( "true",  Tag.TRUE  ),
         False   = new Word( "false", Tag.FALSE );
 
@@ -44,9 +43,9 @@ public class Word extends Token {
     public static final Word
         andWord 	= new Word( "and", Tag.AND),
         orWord 	    = new Word( "or",  Tag.OR),                                 //This can be part of a _phrase such as "less than or equal to"
-        equal 	    = new Word( "equal", Tag.EQ, Tag.INITIALIZER),
+        equal 	    = new Word( "equal", Tag.NULL, Tag.INITIALIZER),
         equals      = new Word( "equals", Tag.EQ),                              //if(a equals b)
-        to 	        = new Word( "to", Tag.NULL, Tag.TERMINAL),                  //This can only occur at the end of a _phrase
+        to 	        = new Word( "to", Tag.TO, Tag.TERMINAL),                    //This can only occur at the end of a _phrase
         not         = new Word( "not", Tag.NOT, Tag.TERMINAL),
         less        = new Word( "less", Tag.LESS, Tag.INITIALIZER),             //Initializer means that it must be the the start of a new _phrase to be valid
         than        = new Word( "than", Tag.NULL, Tag.TERMINAL),
@@ -54,13 +53,14 @@ public class Word extends Token {
         is          = new Word( "is", Tag.ASSIGNMENT),
         increase    = new Word( "increase", Tag.INCREASE, Tag.INITIALIZER),
         decrease    = new Word( "decrease", Tag.DECREASE, Tag.INITIALIZER),
-        by          = new Word( "by", Tag.PHRASE, Tag.TERMINAL);
+        by          = new Word( "by", Tag.NULL, Tag.TERMINAL);
 
     /**
      * Store the reserved words in a hash table
-     * @param words the Hash table to be used by the lexeme
+     * @param words : the Hash table to be used by the lexer
      */
     public static void reserveWords(Hashtable words){
+
         //Reserved words for control statements
         words.put("if", new Word("if", Tag.IF));
         words.put("else", new Word("else", Tag.ELSE));
@@ -76,7 +76,6 @@ public class Word extends Token {
         words.put(ne.lexeme, ne);
         words.put(le.lexeme, le);
         words.put(ge.lexeme, ge);
-        words.put(minus.lexeme, minus);
         words.put(True.lexeme, True);
         words.put(False.lexeme, False);
         words.put(andWord.lexeme, andWord);

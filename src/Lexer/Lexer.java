@@ -3,6 +3,7 @@ package Lexer;
 /**
  * Provides command line application for testing reserved words for the lexer of Natural
  * Created by Justin Gagne on 6/5/16.
+ *
  */
 
 import java.util.ArrayList;
@@ -15,13 +16,14 @@ import java.io.*;
 // Read in next lexeme and return it's associated token
 // ******************************************************
 public class Lexer {
-    public static int line = 1;         // Line of code
-    char peek = ' ';                    // Peek at next character
+    public static int line = 1;                         // Line of code
+    char peek = ' ';                                    // Peek at next character
 
     public static Hashtable words = new Hashtable();    // Reserved,identifiers, multi-symbol operators
     public static Hashtable phrases = new Hashtable();  // Hash Table for keeping track of phrases / word groupings
     public ArrayList<Word> _phrase;                     // Multiple words entered that should be grouped
     public static boolean isValidPhrase = false;        // Track if a _phrase has been input appropriately
+    public static boolean isComment = false;            // Track if input should be ignored or not
 
 
     // ******************************************************
@@ -31,7 +33,6 @@ public class Lexer {
         Word.reserveWords(words);       //Reserve control statements, logical statements etc.
         Type.reserveTypes(words);       //Reserve data types.
         Phrase.reservePhrases(phrases); //Reserve the phrases.
-
         _phrase = new ArrayList<>();    //Initialize the input array to keep track of potential phrases
     }
 
@@ -82,6 +83,8 @@ public class Lexer {
                 if( readch('=') ) return Word.le;   else return new Token('<');
             case '>':
                 if( readch('=') ) return Word.ge;   else return new Token('>');
+            case '#':
+                isComment = true;                                                   //Switch the state of the boolean
         }
 
         // ******************************************************
@@ -123,18 +126,17 @@ public class Lexer {
 
             String s = b.toString();
 
-            Word w = (Word) words.get(s); //check the word against the hash table
+            Word w = (Word) words.get(s);                   //check the word against the hash table
 
             try{
-                //If tag 2 is not NULL, the word is part of a phrase
-                if(w.tag2 != Tag.NULL){
-                    w = concatPhrases(w); //Try to make a phrase from the previous words
 
-                    //A phrase is being made, don't print until complete
-                    if(w == null){
+                if(w.tag2 != Tag.NULL){                     //If tag 2 is not NULL, the word is part of a phrase
+                    w = concatPhrases(w);                   //Try to make a phrase from the previous words
+                    if(w == null){                          //A phrase is being made, don't print until complete
                         return w;
                     }
                 }
+
             } catch (Exception e){
                 System.out.printf("");
             }
@@ -159,10 +161,10 @@ public class Lexer {
 
     /**
      * Keep track of words that are keywords of compound phrases. Once a terminal word is reached, the group
-     * of words should be concatenated into a single word and output to the console. If the phrase entered is
+     * of words should be concatenated into a single Word object and output to the console. If the phrase entered is
      * not in correct form, this should be printed to the console as well.
-     * @param word
-     * @return
+     * @param word a Word object to be added to the phrase
+     * @return null if a TERMINAL tag has not yet been reached, a Word object with the phrase otherwise
      */
     public Word concatPhrases(Word word){
 
@@ -182,6 +184,7 @@ public class Lexer {
             _phrase.clear();        //Reset the phrase input
 
             try{
+
                 Phrase phrase = (Phrase) phrases.get(checkPhrase);
                 return new Word(phrase.getLexeme(), phrase.getTag());
 

@@ -1,6 +1,7 @@
 package Lexer;
 
 /**
+ *
  * Created by Justin Gagne on 6/5/16.
  */
 public class Real extends Token {

@@ -1,12 +1,7 @@
 package Lexer;
-
-import java.util.ArrayList;
 import java.util.Hashtable;
 
 /**
- * TODO: so far most terms work. However we need a better way of classifying stuff.
- * TODO: Phrases are formed by identifying an "INITIALIZER" aka a term to start a phrase like: "greater than or equal to"
- * TODO: Where "to" is the terminal term to the phrase.
  * Class to be used to reserve the various phrases used to equality checking
  * Created by Justin Gagne on 6/5/16.
  */
@@ -23,7 +18,8 @@ public class Phrase extends Token{
             lt = new Phrase("less than", Tag.LESS),
             increase = new Phrase("increase by", Tag.INCREASE),
             decrease = new Phrase("decrease by", Tag.DECREASE),
-            not = new Phrase( "not", Tag.NOT)
+            not = new Phrase( "not", Tag.NOT),
+            to = new Phrase( ("to"), Tag.TO)
             ;
 
     public final String lexeme;
@@ -48,6 +44,7 @@ public class Phrase extends Token{
         phrases.put(increase.lexeme, increase);
         phrases.put(decrease.lexeme, decrease);
         phrases.put(not.lexeme, not);
+        phrases.put(to.lexeme, to);
     }
 
     public String getLexeme(){
