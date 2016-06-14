@@ -22,9 +22,9 @@ public class Word extends Token {
     @Override
     public String toString() {
         if(this.tag2 == Tag.NULL){
-            return "WORD: Lexeme is \'" + lexeme + "\' and tag is " + tag1;
+            return "WORD: Lexeme is \'" + lexeme + "\' and tag is " + tag;
         } else{
-            return "WORD: Lexeme is " + lexeme + "   Tag1 is " + tag1 + "   Tag2 is " + tag2;
+            return "WORD: Lexeme is " + lexeme + "   Tag1 is " + tag + "   Tag2 is " + tag2;
         }
     }
 
@@ -35,7 +35,10 @@ public class Word extends Token {
         ne 	    = new Word( "!=", Tag.NE ),
         le  	= new Word( "<=", Tag.LE  ),
         ge  	= new Word( ">=", Tag.GE ),
+        assign  = new Word( ":=", Tag.ASSIGNMENT),
         True    = new Word( "true",  Tag.TRUE  ),
+        temp    = new Word( "t",     Tag.TEMP  ),
+        minus  = new Word( "minus", Tag.MINUS ),
         False   = new Word( "false", Tag.FALSE );
 
 
@@ -53,7 +56,8 @@ public class Word extends Token {
         is          = new Word( "is", Tag.ASSIGNMENT),
         increase    = new Word( "increase", Tag.INCREASE, Tag.INITIALIZER),
         decrease    = new Word( "decrease", Tag.DECREASE, Tag.INITIALIZER),
-        by          = new Word( "by", Tag.NULL, Tag.TERMINAL);
+        by          = new Word( "by", Tag.NULL, Tag.TERMINAL),
+        error       = new Word( "ERROR", Tag.ERROR);
 
     /**
      * Store the reserved words in a hash table

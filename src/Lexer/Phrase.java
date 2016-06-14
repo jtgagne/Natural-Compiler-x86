@@ -52,6 +52,6 @@ public class Phrase extends Token{
     }
 
     public int getTag(){
-        return tag1;
+        return tag;
     }
 }

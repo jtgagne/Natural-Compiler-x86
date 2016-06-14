@@ -13,6 +13,6 @@ public class Num extends Token {
     }
     @Override
     public String toString() {
-        return "NUM: value is " + value + " and tag is " + tag1;
+        return "NUM: value is " + value + " and tag is " + tag;
     }
 }

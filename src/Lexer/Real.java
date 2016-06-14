@@ -15,6 +15,6 @@ public class Real extends Token {
 
     @Override
     public String toString() {
-        return "REAL: value is " + value + " and tag is " + tag1;
+        return "REAL: value is " + value + " and tag is " + tag;
     }
 }

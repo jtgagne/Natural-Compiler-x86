@@ -1,5 +1,5 @@
 package lexer;
-
+//TODO: MATCH FIRST
 /**
  * Provides command line application for testing reserved words for the lexer of Natural
  * Created by Justin Gagne on 6/5/16.
@@ -63,8 +63,10 @@ public class Lexer {
         // Eat whitespace
         // ******************************************************
         for( ; ; readch() ) {
-            if( peek == '\n' )
+            if( peek == '\n' ){
                 line = line + 1;
+                isComment = false;
+            }
             else if ( peek != ' ' && peek != '\t' )
                 break;
         }
@@ -85,6 +87,8 @@ public class Lexer {
                 if( readch('=') ) return Word.le;   else return new Token('<');
             case '>':
                 if( readch('=') ) return Word.ge;   else return new Token('>');
+            case ':':
+                if( readch('=') ) return Word.assign;   else return Word.error;
             case '#':
                 isComment = true;                                                   //Switch the state of the boolean
         }
