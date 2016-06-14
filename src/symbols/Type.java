@@ -69,7 +69,7 @@ public class Type extends Word {
 
     @Override
     public String toString() {
-        return "TYPE: Lexeme is " + lexeme + " tag is " + tag1 + " Width is " + width;
+        return "TYPE: Lexeme is " + lexeme + " tag is " + tag + " Width is " + width;
     }
 }
 
