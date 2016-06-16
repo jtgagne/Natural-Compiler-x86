@@ -21,6 +21,7 @@ public class BooleanTest implements EndOfFile{
         booleanExpression.evaluateExpression();
         booleanExpression.evaluateExpression();
 
+
         lex.closeReader();
 
     }
