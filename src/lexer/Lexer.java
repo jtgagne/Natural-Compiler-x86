@@ -1,7 +1,7 @@
 package lexer;
 //TODO: MATCH FIRST
 /**
- * Provides command line application for testing reserved words for the lexer of Natural
+ * Provides command lineCount application for testing reserved words for the lexer of Natural
  * Created by Justin Gagne on 6/5/16.
  *
  */
@@ -11,14 +11,13 @@ import symbols.Type;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.io.*;
-import java.util.Scanner;
 
 
 // ******************************************************
 // Read in next lexeme and return it's associated token
 // ******************************************************
 public class Lexer {
-    public static int line = 1;                         // Line of code
+    public static int lineCount = 1;                         // Line of code
     char peek = ' ';                                    // Peek at next character
 
     public static Hashtable words = new Hashtable();    // Reserved,identifiers, multi-symbol operators
@@ -60,17 +59,19 @@ public class Lexer {
     }
 
     // ******************************************************
+    // Read from a file to be evaluated by the lexer. Read by lineCount
+    // and then by char
     // ******************************************************
     void readch() throws IOException {
 
-        //peek = (char)System.in.read();
-
-        //If the line has not been read yet read it from the file. If the location is at the length of the string, all values have been read
+        //If the lineCount has not been read yet read it from the file. If the location is at the length of the string, all values have been read
         if(_line == null || _location == _line.length()){
             _line = _reader.readLine();
+            lineCount++;
             _location = 0;
         }
 
+        //If the lineCount is null after reading the file, there are no more or there is no lines to read.
         if(_line == null){
             System.exit(0);
         }
@@ -83,6 +84,7 @@ public class Lexer {
     }
 
     // ******************************************************
+    //
     // ******************************************************
     boolean readch(char c) throws IOException {
         readch();
@@ -106,7 +108,8 @@ public class Lexer {
         // ******************************************************
         for( ; ; readch() ) {
             if( peek == '\n' ){
-                line = line + 1;
+                lineCount = lineCount + 1;
+                _location = 0;
                 isComment = false;
                 return new Token('\n');
             }

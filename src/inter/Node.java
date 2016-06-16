@@ -7,12 +7,12 @@ public class Node {
    int lexline = 0;
 
    Node() {
-      lexline = Lexer.line;
+      lexline = Lexer.lineCount;
    }
 
    void error(String s) 
    { 
-       throw new Error("near line "+lexline+": "+s); 
+       throw new Error("near lineCount "+lexline+": "+s);
    }
 
    static int labels = 0;

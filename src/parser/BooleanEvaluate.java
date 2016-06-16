@@ -19,7 +19,6 @@ import java.util.regex.Pattern;
  */
 public class BooleanEvaluate {
 
-
     //Look for anything that is in between 40 and 41, these are the int values of '(' and ')' respectively
     private static final Pattern parentheses =
             Pattern.compile("40 (?s)(.*) 41");
@@ -74,6 +73,13 @@ public class BooleanEvaluate {
         while(be.find()){
             output = be.replaceFirst(solveBooleanExpression(be.group(1)));
             be = boolExpr.matcher(output);
+        }
+
+        try{
+            int o = Integer.parseInt(output);
+        }catch (Exception e){
+            String error = "Incorrect boolean expression format near lineCount: " + Lexer.lineCount;
+            throw new Error(error);
         }
 
         return output;
@@ -180,7 +186,7 @@ public class BooleanEvaluate {
                 return num1 != num2;
         }
 
-        throw new Error("Error comparing values near line: " + Lexer.line);
+        throw new Error("Error comparing values near lineCount: " + Lexer.lineCount);
     }
 
     private static boolean getBooleanValue(int value){
@@ -190,7 +196,7 @@ public class BooleanEvaluate {
             case Tag.TRUE:
                 return true;
             default:
-                throw new Error("No corresponding boolean value near line: " + Lexer.line);
+                throw new Error("No corresponding boolean value near lineCount: " + Lexer.lineCount);
         }
     }
 

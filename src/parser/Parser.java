@@ -51,7 +51,7 @@ public class Parser {
      * @param s the string with more details about the error
      */
    void error(String s) {
-       throw new Error("near line "+Lexer.line+": "+s);
+       throw new Error("near lineCount "+Lexer.lineCount +": "+s);
    }
 
    /**

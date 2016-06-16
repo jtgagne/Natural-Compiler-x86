@@ -25,19 +25,19 @@ import java.util.ArrayList;
  */
 public class BooleanExpression {
 
-    private static final String ERROR_DEFAULT = "Invalid boolean expression near line: ";
-    private static final String ERROR_EMPTY_EXPR = "Empty boolean expression near line: ";
-    private static final String ERROR_INCOMPATIBLE_TYPE = "Incompatible type comparison near line: ";
-    private static final String ERROR_BOOLEAN_JOIN = "Invalid boolean expression ending with an operator near line: ";
-    private static final String ERROR_MISSING_COMPARISON = "Missing comparison operator near line: ";
-    private static final String ERROR_MISSING_PAREN = "Missing parenthesis near line: ";
+    private static final String ERROR_DEFAULT = "Invalid boolean expression near lineCount: ";
+    private static final String ERROR_EMPTY_EXPR = "Empty boolean expression near lineCount: ";
+    private static final String ERROR_INCOMPATIBLE_TYPE = "Incompatible type comparison near lineCount: ";
+    private static final String ERROR_BOOLEAN_JOIN = "Invalid boolean expression ending with an operator near lineCount: ";
+    private static final String ERROR_MISSING_COMPARISON = "Missing comparison operator near lineCount: ";
+    private static final String ERROR_MISSING_PAREN = "Missing parenthesis near lineCount: ";
     private static ArrayList<Token> _expr;         //An array list containing a list of tokens supposed to be a boolean expression
     private static Lexer _lexer;
     private static Token _look;
     private static String _expression;
 
     /**
-     * Required public constructor
+     * Required public constructor.
      */
     BooleanExpression(){
 
@@ -45,7 +45,7 @@ public class BooleanExpression {
 
 
     /**
-     * Evaluate boolean expressions when they are expected by the parser
+     * Evaluate boolean expressions when they are expected by the parser.
      * @throws IOException
      */
     public static void evaluateExpression() throws IOException {
@@ -77,9 +77,9 @@ public class BooleanExpression {
         _lexer = Lexer.getInstance();
         _expr = new ArrayList<>();
 
+        boolean isLastParen = false;
         int open = 0;                   //Count of open parentheses
         int close = 0;                  //Count of closing parentheses
-
         move();                         //Get the first token from the lexer
 
         if(check('(')){
@@ -99,20 +99,31 @@ public class BooleanExpression {
                 if(close > open){                   // closing paren count is always going to be <= open paren count
                     error(ERROR_MISSING_PAREN);
                 }
+                if(close == open){
+                    isLastParen = true;
+                }
             }
 
-            else if(check('\n'))
+            else if(check('\n')){
                 continue;
+            }
 
             _expr.add(_look);                       //Add the token to the cumulative list
 
-            move();                                 //Set _look to the next token
+            //Don't update if the boolean is complete, this will continue scanning and interfere with the next line
+            if(!isLastParen){
+                move();                                 //Set _look to the next token
+            }
 
         }while(close != open);
 
         return concatExpr();
     }
 
+    /**
+     *
+     * @return
+     */
     private static String concatExpr(){
         StringBuilder sb = new StringBuilder();         //Build a string from the acquired tokens
         for(int i = 0 ; i < _expr.size(); i++){
@@ -191,10 +202,13 @@ public class BooleanExpression {
      * @param error the string containing the error message
      */
     private static void error(String error){
-        throw new Error(error + Lexer.line);
+        throw new Error(error + Lexer.lineCount);
     }
 
-
+    /**
+     *
+     * @return
+     */
     public static boolean isValidExpression(){
         return false;
     }
