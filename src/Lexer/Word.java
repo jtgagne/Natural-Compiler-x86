@@ -46,18 +46,19 @@ public class Word extends Token {
     public static final Word
         andWord 	= new Word( "and", Tag.AND),
         orWord 	    = new Word( "or",  Tag.OR),                                 //This can be part of a _phrase such as "less than or equal to"
-        equal 	    = new Word( "equal", Tag.NULL, Tag.INITIALIZER),
+        equal 	    = new Word( "equal", Tag.EQ, Tag.INITIALIZER),
         equals      = new Word( "equals", Tag.EQ),                              //if(a equals b)
         to 	        = new Word( "to", Tag.TO, Tag.TERMINAL),                    //This can only occur at the end of a _phrase
         not         = new Word( "not", Tag.NOT, Tag.TERMINAL),
         less        = new Word( "less", Tag.LESS, Tag.INITIALIZER),             //Initializer means that it must be the the start of a new _phrase to be valid
-        than        = new Word( "than", Tag.NULL, Tag.TERMINAL),
+        than        = new Word( "than", Tag.THAN, Tag.TERMINAL),
         greater     = new Word( "greater", Tag.GREATER, Tag.INITIALIZER),
         is          = new Word( "is", Tag.ASSIGNMENT),
         increase    = new Word( "increase", Tag.INCREASE, Tag.INITIALIZER),
         decrease    = new Word( "decrease", Tag.DECREASE, Tag.INITIALIZER),
         by          = new Word( "by", Tag.NULL, Tag.TERMINAL),
-        error       = new Word( "ERROR", Tag.ERROR);
+        error       = new Word( "ERROR", Tag.ERROR),
+        eof         = new Word( "eof", Tag.EOF);
 
     /**
      * Store the reserved words in a hash table
@@ -95,6 +96,8 @@ public class Word extends Token {
         words.put(increase.lexeme, increase);
         words.put(decrease.lexeme, decrease);
         words.put(by.lexeme, by);
+        words.put(eof.lexeme, eof);
 
     }
+
 }

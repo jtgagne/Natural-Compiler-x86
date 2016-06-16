@@ -11,7 +11,7 @@ import symbols.Type;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.io.*;
-
+import java.util.Scanner;
 
 
 // ******************************************************
@@ -24,31 +24,69 @@ public class Lexer {
     public static Hashtable words = new Hashtable();    // Reserved,identifiers, multi-symbol operators
     public static Hashtable phrases = new Hashtable();  // Hash Table for keeping track of phrases / word groupings
     public ArrayList<Word> _phrase;                     // Multiple words entered that should be grouped
-    public static boolean isValidPhrase = false;        // Track if a _phrase has been input appropriately
-    public static boolean isComment = false;            // Track if input should be ignored or not
+    private static boolean isMakingPhrase = false;        // Track if a _phrase has been input appropriately
+    private static boolean isComment = false;            // Track if input should be ignored or not
+    private System _reader;
+    private static Lexer _lexer;
+    private static String _line;
+    private static int _location = 0;
 
+    public static Lexer getInstance(){
+        if(_lexer == null){
+            _lexer = new Lexer();
+        }
+        return _lexer;
+    }
 
     // ******************************************************
     //Add reserve words to HashTable
     // ******************************************************
-    public Lexer() {
+    private Lexer() {
         Word.reserveWords(words);       //Reserve control statements, logical statements etc.
         Type.reserveTypes(words);       //Reserve data types.
         Phrase.reservePhrases(phrases); //Reserve the phrases.
         _phrase = new ArrayList<>();    //Initialize the input array to keep track of potential phrases
     }
 
+    public void openReader(String file) throws IOException{
+        //Reader reader = new InputStreamReader(new FileInputStream(new File(file)));
+        //_reader = new BufferedReader(reader);
+
+        System.setIn(new FileInputStream(new File(file)));
+    }
+
+    public void closeReader() throws IOException{
+        System.in.close();
+    }
+
     // ******************************************************
     // ******************************************************
     void readch() throws IOException {
+
         peek = (char)System.in.read();
+
+        /*//If the line has not been read yet read it from the file. If the location is at the length of the string, all values have been read
+        if(_line == null || _location == _line.length()){
+            _line = _reader.readLine();
+            _location = 0;
+        }
+
+        //Get the next character
+        if(_location < _line.length()){
+            peek = _line.charAt(_location);
+            _location++;
+        }*/
     }
 
     // ******************************************************
     // ******************************************************
     boolean readch(char c) throws IOException {
         readch();
-        if( peek != c ) return false;
+
+        if( peek != c ) {
+            return false;
+        }
+
         peek = ' ';
         return true;
     }
@@ -66,6 +104,7 @@ public class Lexer {
             if( peek == '\n' ){
                 line = line + 1;
                 isComment = false;
+                return new Token('\n');
             }
             else if ( peek != ' ' && peek != '\t' )
                 break;
@@ -84,9 +123,9 @@ public class Lexer {
             case '!':
                 if( readch('=') ) return Word.ne;   else return new Token('!');
             case '<':
-                if( readch('=') ) return Word.le;   else return new Token('<');
+                if( readch('=') ) return Word.le;   else return new Token(Tag.LESS);
             case '>':
-                if( readch('=') ) return Word.ge;   else return new Token('>');
+                if( readch('=') ) return Word.ge;   else return new Token(Tag.GREATER);
             case ':':
                 if( readch('=') ) return Word.assign;   else return Word.error;
             case '#':
@@ -164,6 +203,10 @@ public class Lexer {
         return tok;
     }
 
+    public static boolean isMakingPhrase(){
+        return isMakingPhrase;
+    }
+
 
     /**
      * Keep track of words that are keywords of compound phrases. Once a terminal word is reached, the group
@@ -172,7 +215,7 @@ public class Lexer {
      * @param word a Word object to be added to the phrase
      * @return null if a TERMINAL tag has not yet been reached, a Word object with the phrase otherwise
      */
-    public Word concatPhrases(Word word){
+    public Word concatPhrases(Word word) throws IOException{
 
         //Once a terminal is reached, check the phrases hash table for correctness.
         if(word.tag2 == Tag.TERMINAL){
@@ -186,8 +229,9 @@ public class Lexer {
 
             checkPhrase = checkPhrase.trim();
 
-            isValidPhrase = false;  //reset the valid phrase variable.
             _phrase.clear();        //Reset the phrase input
+
+            isMakingPhrase = false;
 
             try{
 
@@ -200,26 +244,22 @@ public class Lexer {
         }
 
         //If the word is an initializer that doesn't follow another initializer
-        else if(word.tag2 == Tag.INITIALIZER && !isValidPhrase){
+        else if(word.tag2 == Tag.INITIALIZER ){
             _phrase.add(word);
-            isValidPhrase = true; //User started _phrase with a valid keyword
+            isMakingPhrase = true; //User started _phrase with a valid keyword
         }
 
         //If the first value of a _phrase is not an initializer, return an error
-        else if(!isValidPhrase){
+        else if(!isMakingPhrase){
             return new Word("Incorrect Phrase Format", Tag.ERROR);
         }
 
-        //Can have "PHRASE" values given the _phrase was initialized properly
-        else if( word.tag2 == Tag.PHRASE){
-            _phrase.add(word);
-        }
 
         return null;
     }
 
     // ******************************************************
-    // MAIN : Test our lexer before the parser is written.
+    // MAIN : BooleanTest our lexer before the parser is written.
     // ******************************************************
     public static void main(String[] args) throws IOException {
         Lexer lex = new Lexer();
