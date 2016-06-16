@@ -13,27 +13,28 @@ import java.util.ArrayList;
  * Compiler Design -- Summer 2016
  * Wentworth Institute of Technology
  *
- * Class to handle reading in the tokens of a boolean expression from the lexer in Natural
- * A boolean expression can follow the following format:
+ * Class to handle reading in the tokens of a boolean _expression from the lexer in Natural
+ * A boolean _expression can follow the following format:
  *
- *      [boolean expression] ([and | or] [boolean expression])*
+ *      [boolean _expression] ([and | or] [boolean _expression])*
  *
- *      boolean expression --> boolean expression | (true | false) | comparison
+ *      boolean _expression --> boolean _expression | (true | false) | comparison
  *              comparison --> (number | identifier) comparison operator
  *
  * Created by gagnej3 on 6/14/16.
  */
 public class BooleanExpression {
 
-    private static final String ERROR_DEFAULT = "Invalid boolean expression near line: ";
-    private static final String ERROR_EMPTY_EXPR = "Empty boolean expression near line: ";
+    private static final String ERROR_DEFAULT = "Invalid boolean _expression near line: ";
+    private static final String ERROR_EMPTY_EXPR = "Empty boolean _expression near line: ";
     private static final String ERROR_INCOMPATIBLE_TYPE = "Incompatible type comparison near line: ";
-    private static final String ERROR_BOOLEAN_JOIN = "Invalid boolean expression ending with an operator near line: ";
+    private static final String ERROR_BOOLEAN_JOIN = "Invalid boolean _expression ending with an operator near line: ";
     private static final String ERROR_MISSING_COMPARISON = "Missing comparison operator near line: ";
     private static final String ERROR_MISSING_PAREN = "Missing parenthesis near line: ";
-    private static ArrayList<Token> _expr;         //An array list containing a list of tokens supposed to be a boolean expression
+    private static ArrayList<Token> _expr;         //An array list containing a list of tokens supposed to be a boolean _expression
     private static Lexer _lexer;
     private static Token _look;
+    private static String _expression;
 
     /**
      * Required public constructor
@@ -48,8 +49,71 @@ public class BooleanExpression {
      * @throws IOException
      */
     public static void evaluateExpression() throws IOException {
-        readExpression(); //set _expr
+        _expression = readExpression(); //set _expr
 
+        String output;
+
+        try{
+            output = BooleanEvaluate.evaluateBooleanExpression(_expression);
+        } catch (Exception e){
+            throw new Error(ERROR_DEFAULT);
+        }
+
+        int out = Integer.parseInt(output);
+
+        if(out == Tag.TRUE || out == Tag.FALSE){    //If the value was reduced to a single boolean tag, the _expression was successful.
+            System.out.printf("Input: %s\t Output Tag: %d\n", _expression, out);
+        } else{
+            error(ERROR_DEFAULT);
+        }
+    }
+
+
+    /**
+     * Populates an array list of tokens obtained from the current instance of the Lexer. These tokens are to be
+     * evaluated for proper format.
+     */
+    private static String readExpression() throws IOException{
+        _lexer = Lexer.getInstance();
+        _expr = new ArrayList<>();
+
+        int open = 0;                   //Count of open parentheses
+        int close = 0;                  //Count of closing parentheses
+
+        move();                         //Get the first token from the lexer
+
+        if(check('(')){
+            _expr.add(_look);
+        }
+
+        match('(');                     //Expressions should be contained within parentheses (calls move if successful throws error otherwise)
+        open++;
+
+        do{
+            if(check('(')) {
+                open++;
+            }
+
+            else if (check(')')){                   //update the state of the _expression given a group of parentheses has closed
+                close++;
+                if(close > open){                   // closing paren count is always going to be <= open paren count
+                    error(ERROR_MISSING_PAREN);
+                }
+            }
+
+            else if(check('\n'))
+                continue;
+
+            _expr.add(_look);                       //Add the token to the cumulative list
+
+            move();                                 //Set _look to the next token
+
+        }while(close != open);
+
+        return concatExpr();
+    }
+
+    private static String concatExpr(){
         StringBuilder sb = new StringBuilder();         //Build a string from the acquired tokens
         for(int i = 0 ; i < _expr.size(); i++){
 
@@ -73,68 +137,7 @@ public class BooleanExpression {
 
         String input = sb.toString();
 
-        String output;
-
-        try{
-            output = BooleanEvaluate.evaluateBooleanExpression(input);
-        } catch (Exception e){
-            throw new Error(ERROR_DEFAULT);
-        }
-
-        int out = Integer.parseInt(output);
-
-        if(out == Tag.TRUE || out == Tag.FALSE){    //If the value was reduced to a single boolean tag, the expression was successful.
-            System.out.printf("Input: %s\t Output Tag: %d\n", input, out);
-        } else{
-            error(ERROR_DEFAULT);
-        }
-    }
-
-
-    /**
-     * Populates an array list of tokens obtained from the current instance of the Lexer. These tokens are to be
-     * evaluated for proper format.
-     */
-    private static void readExpression() throws IOException{
-        _lexer = Lexer.getInstance();
-        _expr = new ArrayList<>();
-
-        int open = 0;                   //Count of open parentheses
-        int close = 0;                  //Count of closing parentheses
-
-        move();                         //Get the first token from the lexer
-
-        if(check('(')){
-            _expr.add(_look);
-        }
-
-        match('(');                     //Expressions should be contained within parentheses (calls move if successful throws error otherwise)
-        open++;
-
-        do{
-            if(check('(')) {
-                open++;
-            }
-
-            else if (check(')')){                   //update the state of the expression given a group of parentheses has closed
-                close++;
-                if(close > open){                   // closing paren count is always going to be <= open paren count
-                    error(ERROR_MISSING_PAREN);
-                }
-            }
-
-            else if(check('\n'))
-                continue;
-
-            _expr.add(_look);                       //Add the token to the cumulative list
-
-            move();                                 //Set _look to the next token
-
-        }while(_look.tag!='\n');
-
-        if(_look.tag == '\n'){
-            move();
-        }
+        return input;
     }
 
     /**
@@ -144,12 +147,8 @@ public class BooleanExpression {
      */
     private static void move() throws IOException{
         _look = _lexer.scan();
-
-        System.out.printf("Look: %s\n", _look.toString());
-
         while(_lexer.isMakingPhrase()){
             _look = _lexer.scan();
-            System.out.printf("Look: %s\n", _look.toString());
         }
     }
 
