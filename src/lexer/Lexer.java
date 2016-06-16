@@ -26,7 +26,7 @@ public class Lexer {
     public ArrayList<Word> _phrase;                     // Multiple words entered that should be grouped
     private static boolean isMakingPhrase = false;        // Track if a _phrase has been input appropriately
     private static boolean isComment = false;            // Track if input should be ignored or not
-    private System _reader;
+    private static BufferedReader _reader;
     private static Lexer _lexer;
     private static String _line;
     private static int _location = 0;
@@ -49,10 +49,10 @@ public class Lexer {
     }
 
     public void openReader(String file) throws IOException{
-        //Reader reader = new InputStreamReader(new FileInputStream(new File(file)));
-        //_reader = new BufferedReader(reader);
+        Reader reader = new InputStreamReader(new FileInputStream(new File(file)));
+        _reader = new BufferedReader(reader);
 
-        System.setIn(new FileInputStream(new File(file)));
+        //System.setIn(new FileInputStream(new File(file)));
     }
 
     public void closeReader() throws IOException{
@@ -63,19 +63,23 @@ public class Lexer {
     // ******************************************************
     void readch() throws IOException {
 
-        peek = (char)System.in.read();
+        //peek = (char)System.in.read();
 
-        /*//If the line has not been read yet read it from the file. If the location is at the length of the string, all values have been read
+        //If the line has not been read yet read it from the file. If the location is at the length of the string, all values have been read
         if(_line == null || _location == _line.length()){
             _line = _reader.readLine();
             _location = 0;
+        }
+
+        if(_line == null){
+            System.exit(0);
         }
 
         //Get the next character
         if(_location < _line.length()){
             peek = _line.charAt(_location);
             _location++;
-        }*/
+        }
     }
 
     // ******************************************************
