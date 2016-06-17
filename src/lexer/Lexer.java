@@ -128,7 +128,7 @@ public class Lexer {
             case '=':
                 if( readch('=') ) return Word.eq;   else return new Token('=');
             case '!':
-                if( readch('=') ) return Word.ne;   else return new Token('!');
+                if( readch('=') ) return Word.ne;   else return new Token(Tag.NOT);
             case '<':
                 if( readch('=') ) return Word.le;   else return new Token(Tag.LESS);
             case '>':

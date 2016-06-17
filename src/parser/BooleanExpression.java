@@ -25,6 +25,7 @@ import java.util.ArrayList;
  */
 public class BooleanExpression {
 
+    private static int exprCount = 1;
     private static final String ERROR_DEFAULT = "Invalid boolean expression near lineCount: ";
     private static final String ERROR_EMPTY_EXPR = "Empty boolean expression near lineCount: ";
     private static final String ERROR_INCOMPATIBLE_TYPE = "Incompatible type comparison near lineCount: ";
@@ -35,6 +36,7 @@ public class BooleanExpression {
     private static Lexer _lexer;
     private static Token _look;
     private static String _expression;
+    private static int _groups;
 
     /**
      * Required public constructor.
@@ -49,12 +51,16 @@ public class BooleanExpression {
      * @throws IOException
      */
     public static void evaluateExpression() throws IOException {
+        _groups = 0;
         _expression = readExpression(); //set _expr
+
+        _expression = setUniqueGroups(_expression);
 
         String output;
 
         try{
             output = BooleanEvaluate.evaluateBooleanExpression(_expression);
+            BooleanEvaluate.resetGroups();
         } catch (Exception e){
             throw new Error(ERROR_DEFAULT);
         }
@@ -62,12 +68,12 @@ public class BooleanExpression {
         int out = Integer.parseInt(output);
 
         if(out == Tag.TRUE || out == Tag.FALSE){    //If the value was reduced to a single boolean tag, the _expression was successful.
-            System.out.printf("Input: %s\t Output Tag: %d\n", _expression, out);
+            System.out.printf("%d. Input: %s\t Output Tag: %d\n", exprCount, _expression, out);
+            exprCount++;
         } else{
             error(ERROR_DEFAULT);
         }
     }
-
 
     /**
      * Populates an array list of tokens obtained from the current instance of the Lexer. These tokens are to be
@@ -117,15 +123,67 @@ public class BooleanExpression {
 
         }while(close != open);
 
+        _groups = open;                                 //Keep track of the number of parentheses
         return concatExpr();
     }
 
+
     /**
-     *
-     * @return
+     * Accounts for extremely nested paren groups. A little unnecessary but hey why not. Each group of
+     * matching parentheses are given corresponding tags. This greatly improves the the accuracy of the expression
+     * evaluation since RegEx matches towards the center of the string (start --> middle <--end).
+     * @param input the string to be grouped
+     * @return the updated string
+     */
+    private static String setUniqueGroups(String input){
+        String[] split = input.split("\\s");
+        int tag = Tag.PAR1;                      //Start at first paren group value.
+
+        //By default the first and last values must be parentheses
+        split[0] = Integer.toString(tag);
+        split[split.length - 1] = Integer.toString(tag);
+        String temp = split.toString();
+
+        tag++;                                  //The tag of the unique parentheses group
+        int open = 1;                           //The count of open parentheses
+        int close = 1;                          //The count of closing parentheses
+        int currentGroup = 1;                   //The count of groups that have been formed
+        int difference = open - close;          //The difference in opening and closing parentheses
+
+        //Iterate through the array
+        for (int i = 1; i < split.length - 1; i++){
+            int currentTag = Integer.parseInt(split[i]);            //Get the tag of the current value
+
+            if(currentTag == (int)'('){                             //Change the value of the opening paren
+                split[i] = Integer.toString(tag);
+                tag++;
+                open++;
+                difference = open - close;
+            }
+            else if(currentTag == (int)')'){                        //Change the value of the closing paren
+                split[i] = Integer.toString(tag - difference );
+                close++;
+                currentGroup++;
+                difference = open - close;
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();      //Build a new string
+        for(String string: split){
+            sb.append(string);
+            sb.append(" ");
+        }
+
+        return sb.toString().trim();
+    }
+
+    /**
+     * TODO: this can probably be combined with setUniqueGroups eventually, too lazy at the moment
+     * @return the string to be evaluated
      */
     private static String concatExpr(){
         StringBuilder sb = new StringBuilder();         //Build a string from the acquired tokens
+
         for(int i = 0 ; i < _expr.size(); i++){
 
             Token token = _expr.get(i);
@@ -170,15 +228,14 @@ public class BooleanExpression {
      * @return true if the token is what is required
      */
     private static boolean check(int tag){
-        if(_look.tag == tag){
+        if(_look.tag == tag)
             return true;
-        }
         return false;
     }
 
     /**
      * match method to get the next input of the lexer
-     * @param c
+     * @param c a char to match
      * @throws IOException
      */
     private static void match(char c) throws IOException{
@@ -205,11 +262,4 @@ public class BooleanExpression {
         throw new Error(error + Lexer.lineCount);
     }
 
-    /**
-     *
-     * @return
-     */
-    public static boolean isValidExpression(){
-        return false;
-    }
 }

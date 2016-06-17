@@ -19,9 +19,13 @@ import java.util.regex.Pattern;
  */
 public class BooleanEvaluate {
 
+    private static final String ERROR_NEGATION = "Incorrect boolean negation near line: ";
+
+    private static int parenGroup = Tag.PAR1;   //Dynamically change the grouping identifiers
+
     //Look for anything that is in between 40 and 41, these are the int values of '(' and ')' respectively
-    private static final Pattern parentheses =
-            Pattern.compile("40 (?s)(.*) 41");
+    private static Pattern parentheses =
+            Pattern.compile(parenGroup+"(?s)(.*)"+ parenGroup);
 
     //Pattern to look for a boolean expression ie: false and true
     private static final Pattern boolExpr =
@@ -35,54 +39,82 @@ public class BooleanEvaluate {
     private static final Pattern comparativeExpr =
             Pattern.compile("(("+Tag.NUM+")\\s(("+Tag.EQ+")|("+Tag.GE+")|("+Tag.GREATER+")|("+Tag.LE+")|("+Tag.LESS+")|("+Tag.NE+"))\\s("+Tag.NUM+"))");
 
+    private static final Pattern negation =
+            Pattern.compile("(("+Tag.NOT+")\\s(("+Tag.FALSE+")|("+(Tag.TRUE)+")))");
 
+    /**
+     * Recursive method to evaluate boolean expressions. Accounts for the order of operations dictated by parentheses grouping.
+     * Reduces the expression down to its single boolean meaning and returns the Tag value in the form of a string upon completion.
+     * @param input the string to be evaluated
+     * @return a simplified string containing Lexer Tag values
+     * @throws Exception upon incorrect boolean expression format
+     */
     public static String evaluateBooleanExpression(String input) throws Exception{
 
+        //int groups = parenCount;
         String output = input;
 
-        //Instantiate the initial matchers
+        //Recompile for the new input string that is coming in
+        parentheses = Pattern.compile(parenGroup+"(?s)(.*)"+ parenGroup);
+
+        //Instantiate the initial matcher objects
         Matcher p = parentheses.matcher(output);
         Matcher lp = longPhrase.matcher(output);
         Matcher be = boolExpr.matcher(output);
         Matcher ce = comparativeExpr.matcher(output);
+        Matcher n = negation.matcher(output);
 
         //Look for groups of parentheses and replace them with a simplified value
         while(p.find()){
+            //Increase the grouping here. If there are parentheses remaining, we will want the next group in the recursive stack
+            if(Tag.containsParentheses(output)){
+                parenGroup++;
+            }
             output = p.replaceFirst(evaluateBooleanExpression(p.group(1)));      //Call the recursive method using the group that was found
-            p = parentheses.matcher(output);                         //Re-Match for more groups of parentheses when the recursive call completes
+            parentheses = Pattern.compile(parenGroup+"(?s)(.*)"+ parenGroup);
+            p = parentheses.matcher(output);                                     //Re-Match for all patterns
             lp = longPhrase.matcher(output);
-            be = boolExpr.matcher(output);                           //Re-Match for boolean expressions that can be simplified
-            ce = comparativeExpr.matcher(output);                    //Re-Match for comparative expressions that can be simplified
+            be = boolExpr.matcher(output);
+            ce = comparativeExpr.matcher(output);
+            n = negation.matcher(output);
         }
 
         while(lp.find()){
-            output = lp.replaceFirst(simplifyPhrase(lp.group(1)));      //Call the recursive method using the group that was found
-            lp = longPhrase.matcher(output);
-            be = boolExpr.matcher(output);                              //Re-Match for boolean expressions that can be simplified
-            ce = comparativeExpr.matcher(output);                       //Re-Match for comparative expressions that can be simplified
+            output = lp.replaceFirst(simplifyPhrase(lp.group(1)));      //Simplify the long phrase and replace with a single tag
+            lp = longPhrase.matcher(output);                            //Re-Match for all patterns
+            be = boolExpr.matcher(output);
+            ce = comparativeExpr.matcher(output);
+            n = negation.matcher(output);
         }
 
         //Look for and solve all comparative boolean expressions
         while(ce.find()){
-            output = ce.replaceFirst(solveBooleanExpression(ce.group(1)));   //Call the recursive method using the group that was found
-            ce = comparativeExpr.matcher(output);                            //Re-Match the new input value
-            be = boolExpr.matcher(output);                                   //Re-Match the new input value
+            output = ce.replaceFirst(solveBooleanExpression(ce.group(1)));   //Solve and replace with a simplified boolean expression
+            ce = comparativeExpr.matcher(output);                            //Re-Match for all patterns
+            be = boolExpr.matcher(output);
+            n = negation.matcher(output);
         }
 
         //Look for a boolean expression pattern
         while(be.find()){
-            output = be.replaceFirst(solveBooleanExpression(be.group(1)));
-            be = boolExpr.matcher(output);
+            output = be.replaceFirst(solveBooleanExpression(be.group(1)));  //Solve and replace with a simplified boolean expression
+            be = boolExpr.matcher(output);                                  //Re-Match for all patterns
+            n = negation.matcher(output);
         }
 
-        try{
-            int o = Integer.parseInt(output);
-        }catch (Exception e){
-            String error = "Incorrect boolean expression format near lineCount: " + Lexer.lineCount;
-            throw new Error(error);
+        while (n.find()){
+            output = n.replaceFirst(getBooleanNegation(n.group(1)));        //Negate a boolean value and replace in the string
+            n = negation.matcher(output);                                   //Re-Match for all patterns
         }
 
-        return output;
+        return output.trim();
+    }
+
+    /**
+     * Method called by the BooleanExpression class to reset the initial numbering of parentheses.
+     */
+    public static void resetGroups(){
+        parenGroup = Tag.PAR1;
     }
 
     /**
@@ -110,7 +142,6 @@ public class BooleanEvaluate {
 
         return input;
     }
-
 
     /**
      * Method to be called when simplifying input
@@ -141,14 +172,14 @@ public class BooleanEvaluate {
 
             //Get a simplified value of the boolean expression
             if(c == Tag.AND){
-                simplified = getBooleanNumber(a&&b);
+                simplified = getBooleanTag(a&&b);
             }else if (c == Tag.OR){
-                simplified = getBooleanNumber(a||b);
+                simplified = getBooleanTag(a||b);
             }
         }
 
         else if(Tag.isNumber(values[0]) && Tag.isComparisonOperator(values[1]) && Tag.isNumber(values[2])){
-            simplified = getBooleanNumber(compareNumbers(values[0], values[1], values[2]));
+            simplified = getBooleanTag(compareNumbers(values[0], values[1], values[2]));
         }
 
         //Update the string to be returned
@@ -164,8 +195,14 @@ public class BooleanEvaluate {
         return input;
     }
 
+    /**
+     * Returns a boolean value given a 2 numbers and a comparison expression
+     * @param num1 first number to be compared
+     * @param compareOp the tag of the comparison operator being used
+     * @param num2 the second number to be compared
+     * @return true or false depending on the outcome
+     */
     private static boolean compareNumbers(int num1, int compareOp, int num2){
-
         switch (compareOp){
             case Tag.EQ:
                 return num1 == num2;
@@ -189,6 +226,11 @@ public class BooleanEvaluate {
         throw new Error("Error comparing values near lineCount: " + Lexer.lineCount);
     }
 
+    /**
+     * Returns a boolean true or false given a supposed Boolean Tag
+     * @param value the Tag of a Lexer Token
+     * @return true or false
+     */
     private static boolean getBooleanValue(int value){
         switch (value){
             case Tag.FALSE:
@@ -200,7 +242,35 @@ public class BooleanEvaluate {
         }
     }
 
-    private static int getBooleanNumber(boolean bool){
+    /**
+     * Negates a boolean value
+     * @param input a string containing at least Tag.NOT and Tag.TRUE | Tag.False
+     * @return the s
+     * @throws Exception
+     */
+    private static String getBooleanNegation(String input) throws Exception{
+        input = input.trim();
+        String[] split = input.split("\\s+");
+        assert split.length >=2;
+        int neg = Integer.parseInt(split[0]);
+        int bool = Integer.parseInt(split[1]);
+
+        if(neg == Tag.NOT && bool == Tag.FALSE){
+            return Integer.toString(Tag.TRUE);
+        }
+        else if(neg == Tag.NOT && bool == Tag.TRUE){
+            return Integer.toString(Tag.FALSE);
+        }
+
+        //Throw an error for incorrect negation
+        else {
+            String error = ERROR_NEGATION + Lexer.lineCount;
+            throw new Error(error);
+        }
+    }
+
+
+    private static int getBooleanTag(boolean bool){
         if(bool){
             return Tag.TRUE;
         }

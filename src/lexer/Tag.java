@@ -1,6 +1,7 @@
 package lexer;
 
 /**
+ * TODO: Make the containsParentheses method more flexible in the case of refactoring
  * Define constants for Tokens (for readability)
  * Refactored to group like tags
  * Created by Justin Gagne on 6/5/16.
@@ -74,6 +75,18 @@ public class Tag {
     public static final int
             EOF         = 290;
 
+    public static final int
+            PAR1        = 291,
+            PAR2        = 292,
+            PAR3        = 293,
+            PAR4        = 294,
+            PAR5        = 295,
+            PAR6        = 296,
+            PAR7        = 297,
+            PAR8        = 298,
+            PAR9        = 299;
+
+
     /**
      * Check if a tag is a valid boolean value
      * @param tag the tag of the token
@@ -105,5 +118,17 @@ public class Tag {
     public static boolean isJoiningOperator(int tag){
         return (tag == Tag.AND ||
                 tag == Tag.OR);
+    }
+
+    public static boolean containsParentheses(String input){
+        return input.contains("291") ||
+                input.contains("292")||
+                input.contains("293")||
+                input.contains("294")||
+                input.contains("295")||
+                input.contains("296")||
+                input.contains("297")||
+                input.contains("298")||
+                input.contains("299");
     }
 }

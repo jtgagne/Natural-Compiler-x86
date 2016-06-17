@@ -22,9 +22,19 @@ public class BooleanTest {
         booleanExpression.evaluateExpression();
         booleanExpression.evaluateExpression();
         booleanExpression.evaluateExpression();
-        booleanExpression.evaluateExpression(); //Should throw an exception for empty boolean expression
+        booleanExpression.evaluateExpression();
+        booleanExpression.evaluateExpression();
+        booleanExpression.evaluateExpression();
+        booleanExpression.evaluateExpression();
+        booleanExpression.evaluateExpression();
+        booleanExpression.evaluateExpression();
+        booleanExpression.evaluateExpression();
+        booleanExpression.evaluateExpression();
+        booleanExpression.evaluateExpression();
+        booleanExpression.evaluateExpression();
+        booleanExpression.evaluateExpression();
+
 
         lex.closeReader();
     }
-
 }
