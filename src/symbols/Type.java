@@ -16,6 +16,7 @@ public class Type extends Word {
         width = w;
     }
 
+    //TODO: Maybe add tag values for each individual data type?
     // ********************************************************
     // Constants
     // **********************************************************

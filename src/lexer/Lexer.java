@@ -29,6 +29,7 @@ public class Lexer {
     private static Lexer _lexer;
     private static String _line;
     private static int _location = 0;
+    private static boolean hasNextLine = true;
 
     public static Lexer getInstance(){
         if(_lexer == null){
@@ -50,7 +51,9 @@ public class Lexer {
     public void openReader(String file) throws IOException{
         Reader reader = new InputStreamReader(new FileInputStream(new File(file)));
         _reader = new BufferedReader(reader);
-
+        _location = 0;
+        _line = null;
+        lineCount = 0;
         //System.setIn(new FileInputStream(new File(file)));
     }
 
@@ -64,15 +67,19 @@ public class Lexer {
     // ******************************************************
     void readch() throws IOException {
 
+        //peek = (char) System.in.read();
+
         //If the lineCount has not been read yet read it from the file. If the location is at the length of the string, all values have been read
         if(_line == null || _location == _line.length()){
             _line = _reader.readLine();
             lineCount++;
             _location = 0;
+            hasNextLine = true;
         }
 
         //If the lineCount is null after reading the file, there are no more or there is no lines to read.
         if(_line == null){
+            hasNextLine = false;
             System.exit(0);
         }
 
@@ -81,6 +88,10 @@ public class Lexer {
             peek = _line.charAt(_location);
             _location++;
         }
+    }
+
+    public boolean hasNext(){
+        return hasNextLine;
     }
 
     // ******************************************************
@@ -111,7 +122,6 @@ public class Lexer {
                 lineCount = lineCount + 1;
                 _location = 0;
                 isComment = false;
-                return new Token('\n');
             }
             else if ( peek != ' ' && peek != '\t' )
                 break;
@@ -266,7 +276,7 @@ public class Lexer {
     }
 
     // ******************************************************
-    // MAIN : BooleanTest our lexer before the parser is written.
+    // MAIN : Test our lexer before the parser is written.
     // ******************************************************
     public static void main(String[] args) throws IOException {
         Lexer lex = new Lexer();
