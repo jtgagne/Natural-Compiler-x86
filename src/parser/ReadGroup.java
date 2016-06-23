@@ -13,11 +13,12 @@ import java.util.ArrayList;
  */
 public class ReadGroup {
 
-    private static final String ERROR_DEFAULT = "Invalid boolean expression near lineCount: ";
-    private static final String ERROR_EMPTY_EXPR = "Empty boolean expression near lineCount: ";
-    private static final String ERROR_BOOLEAN_JOIN = "Invalid boolean expression ending with an operator near lineCount: ";
-    private static final String ERROR_MISSING_PAREN = "Missing parenthesis near lineCount: ";
-
+    private static final String ERROR_DEFAULT = "Invalid boolean expression near line: ";
+    private static final String ERROR_EMPTY_EXPR = "Empty boolean expression near line: ";
+    private static final String ERROR_BOOLEAN_JOIN = "Invalid boolean expression ending with an operator near line: ";
+    private static final String ERROR_MISSING_PAREN = "Missing parenthesis near line: ";
+    private static final String ERROR_FILE = "File ended unexpectedly near line: ";
+    private static String _expression = "";
     private static ArrayList<Token> _expr;         //An array list containing a list of tokens supposed to be a boolean expression
     private static Lexer _lexer;
     private static Token _look;
@@ -73,11 +74,15 @@ public class ReadGroup {
 
         }while(close != open);
 
-        return concatExpr();
+        if(_type == ReadType.FOR_LOOP){
+            return concatFor();
+        }else{
+            return concatExpr();
+        }
     }
 
     /**
-     * TODO: this can probably be combined with setUniqueGroups eventually, too lazy at the moment
+     * TODO: this can probably be combined with setUniqueGroups eventually.
      * @return the string to be evaluated
      */
     private static String concatExpr(){
@@ -95,17 +100,20 @@ public class ReadGroup {
                     error(ERROR_BOOLEAN_JOIN);
                 }
             }
-
-            if(i == _expr.size() - 1){
-                continue;
-            }
-
             sb.append(" ");
         }
 
         String input = sb.toString();
+        return input.trim();
+    }
 
-        return input;
+    private static String concatFor(){
+        StringBuilder sb = new StringBuilder();         //Build a string from the acquired tokens
+        for(int i = 0; i < _expr.size(); i++){
+            sb.append(_expr.get(i).tag);
+            sb.append(" ");
+        }
+        return sb.toString().trim();
     }
 
     /**
@@ -113,11 +121,17 @@ public class ReadGroup {
      * complete
      * @throws IOException exception thrown by the lexer.
      */
-    private static void move() throws IOException{
-        _look = _lexer.scan();
-        while(_lexer.isMakingPhrase()){
+    private static void move() throws IOException {
+
+        try{
             _look = _lexer.scan();
+            while(_lexer.isMakingPhrase()){
+                _look = _lexer.scan();
+            }
+        }catch (Exception e){
+            throw new Error(ERROR_FILE + Lexer.lineCount);
         }
+
     }
 
 
@@ -142,7 +156,6 @@ public class ReadGroup {
 
         if(_look.tag == c){
             move();
-
             //Make sure there isn't the following occurring: ()
             if(previous.tag == '(' && _look.tag == ')'){
                 if(_type == ReadType.BOOLEAN_EXPRESSION) //Throw an error for empty boolean but not empty for loops

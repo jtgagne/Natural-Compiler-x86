@@ -5,7 +5,6 @@ import lexer.Tag;
 import lexer.Token;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * Justin Gagne and Zach Farrer
@@ -25,9 +24,10 @@ import java.util.ArrayList;
  */
 public class BooleanExpression {
 
-    private static int exprCount = 1;
-    private static final String ERROR_DEFAULT = "Invalid boolean expression near lineCount: ";
+    private static final String ERROR_DEFAULT = "Invalid boolean expression: ";
     private static String _expression;
+    private static String _output;
+    private static boolean hasSyntaxError;
 
     /**
      * Required public constructor.
@@ -41,28 +41,44 @@ public class BooleanExpression {
      * Evaluate boolean expressions when they are expected by the parser.
      * @throws IOException
      */
-    public static void evaluateExpression() throws IOException {
-        _expression = ReadGroup.readExpression(ReadType.BOOLEAN_EXPRESSION);   //Read a supposed grouped boolean expression to be evaluated
-
-        _expression = setUniqueGroups(_expression); //Set unique values for inner groupings of parentheses
-
-        String output;
+    public static void evaluateExpression() {
+        if(!Lexer.getInstance().hasNext()){
+            return;
+        }
 
         try{
-            output = BooleanEvaluate.evaluateBooleanExpression(_expression);
+            _expression = ReadGroup.readExpression(ReadType.BOOLEAN_EXPRESSION);   //Read a supposed grouped boolean expression to be evaluated
+
+            _expression = setUniqueGroups(_expression); //Set unique values for inner groupings of parentheses
+
+            _output = BooleanEvaluate.evaluateBooleanExpression(_expression);
             BooleanEvaluate.resetGroups();
+
+            int out = Integer.parseInt(_output);
+
+            if(out != Tag.TRUE && out != Tag.FALSE) {    //If the value was reduced to a single boolean tag, the _expression was successful.
+                hasSyntaxError = true;
+            }
+
         } catch (Exception e){
-            throw new Error(ERROR_DEFAULT);
+            //throw new Error(ERROR_DEFAULT);
+            hasSyntaxError = true;
+            return;
         }
+    }
 
-        int out = Integer.parseInt(output);
-
-        if(out == Tag.TRUE || out == Tag.FALSE){    //If the value was reduced to a single boolean tag, the _expression was successful.
-            System.out.printf("%d. Input: %s\t Output Tag: %d\n", exprCount, _expression, out);
-            exprCount++;
-        } else{
-            error(ERROR_DEFAULT);
+    public static void printOutput(){
+        if(hasSyntaxError){
+            printError();
+            hasSyntaxError = false;
         }
+        else{
+            System.out.printf("%d. Input: %s\t Output Tag: %d\n", Lexer.getInstance().lineCount, _expression, Integer.parseInt(_output));
+        }
+    }
+
+    private static void printError(){
+        System.err.printf("%s %s near line: %d\n", ERROR_DEFAULT, Lexer.getInstance().getLine(), Lexer.getInstance().lineCount);
     }
 
 
@@ -75,12 +91,11 @@ public class BooleanExpression {
      */
     private static String setUniqueGroups(String input){
         String[] split = input.split("\\s");
-        int tag = Tag.PAR1;                      //Start at first paren group value.
+        int tag = Tag.PAREN_GROUP;                      //Start at first paren group value.
 
         //By default the first and last values must be parentheses
         split[0] = Integer.toString(tag);
         split[split.length - 1] = Integer.toString(tag);
-        String temp = split.toString();
 
         tag++;                                  //The tag of the unique parentheses group
         int open = 1;                           //The count of open parentheses

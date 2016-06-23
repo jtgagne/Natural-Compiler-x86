@@ -208,9 +208,9 @@ public class Parser {
 
       case Tag.IF:
          match(Tag.IF); 
-         match('('); 
+         match('('); //
          x = bool(); 
-         match(')');
+         match(')'); //
          s1 = stmt();
          if( look.tag != Tag.ELSE )
              return new If(x, s1);

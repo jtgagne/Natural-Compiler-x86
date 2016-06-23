@@ -1,6 +1,8 @@
+(false true)
 ((not false) and (true) or (5 greater than or equal to 6))
 (true or false)
 (5 less than 6)
+(5 is 5)
 (7 greater than or equal to 6)
 (false or ((7 greater than or equal to 6) and true))
 (((((((((true) and false ))))))))

@@ -21,7 +21,7 @@ public class BooleanEvaluate {
 
     private static final String ERROR_NEGATION = "Incorrect boolean negation near line: ";
 
-    private static int parenGroup = Tag.PAR1;   //Dynamically change the grouping identifiers
+    private static int parenGroup = Tag.PAREN_GROUP;   //Dynamically change the grouping identifiers
 
     //Look for anything that is in between 40 and 41, these are the int values of '(' and ')' respectively
     private static Pattern parentheses =
@@ -114,7 +114,7 @@ public class BooleanEvaluate {
      * Method called by the BooleanExpression class to reset the initial numbering of parentheses.
      */
     public static void resetGroups(){
-        parenGroup = Tag.PAR1;
+        parenGroup = Tag.PAREN_GROUP;
     }
 
     /**

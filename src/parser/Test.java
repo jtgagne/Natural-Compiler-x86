@@ -1,6 +1,7 @@
 package parser;
 
 import lexer.Lexer;
+
 import java.io.IOException;
 
 /**
@@ -8,31 +9,62 @@ import java.io.IOException;
  * Created by gagnej3 on 6/14/16.
  */
 public class Test {
+    private static final String FILE_BOOLEAN_EXPR = "boolean_expr_test.nat";
+    private static final String FILE_FOR = "for_loop_test.txt";
+    private static final String FILE_NATURAL_SYNTAX = "natural_syntax.nat";
 
     public static void main(String[] args) throws IOException{
 
         Lexer lex = Lexer.getInstance();
-        lex.openReader(args[0]);
-        BooleanExpression booleanExpression = new BooleanExpression();
 
-        //Evaluate the 15 boolean expressions from the src/test/boolean_expr_test.nat file
-        for(int i = 0; i < 15; i++){
-            BooleanExpression.evaluateExpression();
+        for(int i = 0; i < args.length; i++){
+
+            lex.openReader(args[i]);
+
+            if(args[i].contains(FILE_BOOLEAN_EXPR)){
+                System.out.printf("\n\nTesting: %s\n", FILE_BOOLEAN_EXPR);
+                testBooleanExpression();
+            }
+
+            else if(args[i].contains(FILE_FOR)){
+                System.out.printf("\n\nTesting: %s\n", FILE_FOR);
+                testForSyntax();
+            }
+
+            else if(args[i].contains(FILE_NATURAL_SYNTAX)){
+                System.out.printf("\n\nTesting: %s\n", FILE_NATURAL_SYNTAX);
+                testNaturalFile();
+            }
+
+            lex.closeReader();
         }
+    }
 
-        lex.closeReader();
 
-        lex.openReader(args[1]);
+    private static void testBooleanExpression(){
+        while(Lexer.getInstance().hasNext()){
+            BooleanExpression.evaluateExpression();
+            BooleanExpression.printOutput();
+        }
+    }
 
+    private static void testForSyntax() throws IOException{
         int count = 1;
-        //The last value will throw an exception
-        while(lex.hasNext()){
+
+        while(Lexer.getInstance().hasNext()){
             For.evaluateSyntax();
-            System.out.printf("%d. Valid Syntax\n", count);
+            For.printOutput();
             count++;
         }
 
-        lex.closeReader();
+    }
 
+    private static void testNaturalFile() throws IOException{
+        int count = 1;
+        while(Lexer.getInstance().hasNext()){
+            NaturalSyntax.evaluateControl();
+            System.out.printf("%d. Valid Syntax\n", count);
+            count++;
+        }
     }
 }

@@ -6,6 +6,7 @@ package lexer;
  *
  */
 
+import parser.FileEnd;
 import symbols.Type;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class Lexer {
     private static BufferedReader _reader;
     private static Lexer _lexer;
     private static String _line;
+    private static String _nextline;
     private static int _location = 0;
     private static boolean hasNextLine = true;
 
@@ -53,13 +55,15 @@ public class Lexer {
         _reader = new BufferedReader(reader);
         _location = 0;
         _line = null;
+        _nextline = null;
         lineCount = 0;
-        //System.setIn(new FileInputStream(new File(file)));
+        hasNextLine = true;
     }
 
     public void closeReader() throws IOException{
-        System.in.close();
+        _reader.close();
     }
+
 
     // ******************************************************
     // Read from a file to be evaluated by the lexer. Read by lineCount
@@ -69,18 +73,21 @@ public class Lexer {
 
         //peek = (char) System.in.read();
 
-        //If the lineCount has not been read yet read it from the file. If the location is at the length of the string, all values have been read
-        if(_line == null || _location == _line.length()){
-            _line = _reader.readLine();
-            lineCount++;
-            _location = 0;
-            hasNextLine = true;
-        }
+        if( _line == null || _location == _line.length()){
+            if(lineCount == 0){
+                _line = _reader.readLine();
+                _nextline = _reader.readLine();
+                lineCount++;
+            } else {
+                _line = _nextline;
+                _nextline = _reader.readLine();
+                _location = 0;
+                lineCount++;
+            }
 
-        //If the lineCount is null after reading the file, there are no more or there is no lines to read.
-        if(_line == null){
-            hasNextLine = false;
-            System.exit(0);
+            if(_nextline == null){
+                hasNextLine = false;
+            }
         }
 
         //Get the next character
@@ -88,6 +95,10 @@ public class Lexer {
             peek = _line.charAt(_location);
             _location++;
         }
+    }
+
+    public String getLine(){
+        return _line;
     }
 
     public boolean hasNext(){
@@ -287,4 +298,5 @@ public class Lexer {
             }
         }
     }
+
 }

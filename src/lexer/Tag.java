@@ -75,16 +75,9 @@ public class Tag {
     public static final int
             EOF         = 290;
 
+    //Everything <= PAREN_GROUP indicates a coupled group of parentheses LEAVE AS THE LAST VALUE
     public static final int
-            PAR1        = 291,
-            PAR2        = 292,
-            PAR3        = 293,
-            PAR4        = 294,
-            PAR5        = 295,
-            PAR6        = 296,
-            PAR7        = 297,
-            PAR8        = 298,
-            PAR9        = 299;
+            PAREN_GROUP = 291;
 
 
     /**
