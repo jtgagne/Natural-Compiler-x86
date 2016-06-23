@@ -2,9 +2,6 @@ package parser;
 
 import lexer.Lexer;
 import lexer.Tag;
-import lexer.Token;
-
-import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

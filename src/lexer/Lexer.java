@@ -6,7 +6,6 @@ package lexer;
  *
  */
 
-import parser.FileEnd;
 import symbols.Type;
 
 import java.util.ArrayList;

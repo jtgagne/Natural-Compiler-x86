@@ -4,6 +4,7 @@ import lexer.Lexer;
 import lexer.Tag;
 import lexer.Token;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -17,13 +18,17 @@ public class NaturalSyntax {
      */
     public static void evaluateControl() throws IOException{
         Token token = Lexer.getInstance().scan();
+
         int tag = token.tag;
+
         switch (tag){
             case Tag.FOR:
                 For.evaluateSyntax();                       //Read from the lexer in the For class and check for proper syntax
+                For.printOutput();
                 break;
             case Tag.IF:
                 BooleanExpression.evaluateExpression();     //Read from the lexer in the BooleanExpression class and confirm proper syntax
+                BooleanExpression.printOutput();
                 break;
         }
     }

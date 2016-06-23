@@ -49,12 +49,10 @@ public class Test {
     }
 
     private static void testForSyntax() throws IOException{
-        int count = 1;
 
         while(Lexer.getInstance().hasNext()){
             For.evaluateSyntax();
             For.printOutput();
-            count++;
         }
 
     }
@@ -63,7 +61,6 @@ public class Test {
         int count = 1;
         while(Lexer.getInstance().hasNext()){
             NaturalSyntax.evaluateControl();
-            System.out.printf("%d. Valid Syntax\n", count);
             count++;
         }
     }
