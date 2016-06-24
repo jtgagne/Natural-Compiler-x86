@@ -12,28 +12,31 @@ import inter.*;
 public class Parser {
 
     /** lexical analyzer for this parser */
-   private final Lexer lex;     
+   private static Lexer lex;
    
    /** lookahead  */
-   private Token look;
+   private static Token look;
    
    /** current or top symbol table */
-   Env top = null;     
+   Env top = null;
    
    /** storage used for declarations */
    int used = 0;         
 
    /**
     * Sets the lexer (from the input parameter) and calls move to get the first token
-    * @param l the lexer object 
     * @see Lexer
     * @throws IOException Compiler errors
     */
-   public Parser(Lexer l) throws IOException 
-   { 
-       lex = l; 
-       move();   
+   public Parser() throws IOException {
+
    }
+
+    public void runParser() throws IOException{
+        lex = Lexer.getInstance();
+        move();
+        program();
+    }
 
     /**
      * Calls the scan method of the Lexer to get the next token and assigns the next
@@ -41,7 +44,7 @@ public class Parser {
      * @see Lexer
      * @throws IOException Error scanning in token from lexer. 
      */
-    private void move() throws IOException {
+    private static void move() throws IOException {
         look = lex.scan();
     }
 
@@ -54,35 +57,39 @@ public class Parser {
        throw new Error("near lineCount "+Lexer.lineCount +": "+s);
    }
 
-   /**
+    /**
     * Match the lookahead token returned by move() against what we are expecting
     * @param t Token that we expect to get next.
     * @throws IOException Mismatch between token expected and token found.
     */
-   void match(int t) throws IOException 
-   {
+    void match(int t) throws IOException
+    {
       if( look.tag == t )
           move();
-      else 
+      else
           error("syntax error"); // call error method
-   }
-   
-    
-   
-   /**
+    }
+
+
+    /**
     * EBNF : program = block
     * Start symbol for the grammar
     * @throws IOException Error in program 
     */
-    public void program() throws IOException {  
+    public void program() throws IOException {
        
         /** block() returns node of type Stmt */
         //Stmt s = block();
         Env savedEnv = top;
         top = new Env(top);
 
-        decls();
-        Stmt s = stmts();
+        try{
+            decls();
+            //Stmt s = stmts();
+        }catch (Exception e){
+            System.err.printf("Null");
+        }
+
 
 
         top = savedEnv;
@@ -124,21 +131,38 @@ public class Parser {
     * @throws IOException Error somewhere below decls
     */
     public void decls() throws IOException {
-        while( look.tag == Tag.BASIC ) {
+
+        while(look.tag == Tag.BASIC ) {
             
             /** call type() */
-            Type p = type();   
+            Type p = type();
+
+            //Move the lexer to check for an identifier
+            move();
             Token tok = look;
-         
-            match(Tag.ID); 
-            match('\n');
-         
-            /** Create node in syntax tree */
-            Id id = new Id((Word)tok, p, used);
-            top.put( tok, id );
-            used = used + p.width;
+
+            if(check(Tag.ID)){
+                /** Create node in syntax tree */
+                Id id = new Id((Word)tok, p, used);
+                top.put( tok, id );
+                used = used + p.width;
+            }
+
+            //match(Tag.ID);
+
+
+
+            //Move the lexer to continue looking
+            move();
       }
    }
+
+    private boolean check(int tag){
+        if(look.tag == tag){
+            return true;
+        }
+        return false;
+    }
 
     
     /**
@@ -279,7 +303,6 @@ public class Parser {
       
       match(Tag.ID);
       
-
       Id id = top.get(t);
       if( id == null ) 
           error(t.toString() + " undeclared");

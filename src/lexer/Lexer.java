@@ -76,6 +76,11 @@ public class Lexer {
     void readch() throws IOException {
         //peek = (char) System.in.read();
 
+        /*if(_line != null && _location == _line.length()){
+            peek = '\n';
+            _location++;
+        }*/
+
         //If the line is null or we have arrived at the last index, update
         if( _line == null || _location == _line.length()){
 
@@ -153,6 +158,7 @@ public class Lexer {
                 lineCount = lineCount + 1;
                 _location = 0;
                 isComment = false;              //Single line comments are done at a new line
+                //return new Token('\n');
             }
             else if ( peek != ' ' && peek != '\t' )
                 break;
@@ -184,6 +190,7 @@ public class Lexer {
                     isComment = !isComment;
                     skipComment();                                              //Skip the rest of the line
                 }
+
         }
 
         // ******************************************************
@@ -219,7 +226,18 @@ public class Lexer {
             StringBuilder b = new StringBuilder();
 
             do {
+
                 b.append(peek);
+
+                //If we have already reached the last accessible index in the line it needs to break
+                if(_location == _line.length() ){
+
+                    //if next line is not null set peek to the next char in the new line
+                    if(_nextline != null){
+                        readch();
+                    }
+                    break;
+                }
                 readch();
             } while( Character.isLetterOrDigit(peek) && peek != '\n' && peek != '\t' && peek != ' ');
 
@@ -255,6 +273,10 @@ public class Lexer {
         peek = ' ';
 
         return tok;
+    }
+
+    public boolean isNewLine(){
+        return peek =='\n';
     }
 
     /**

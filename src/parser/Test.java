@@ -21,11 +21,13 @@ public class Test {
         for(int i = 0; i < args.length; i++){
 
             lex.openReader(args[i]);
+
             if(args[i].contains(FILE_NATURAL_PROGRAM)){
                 System.out.printf("\n\nTesting: %s\n", FILE_NATURAL_PROGRAM);
-                Parser parser = new Parser(lex);
-                parser.program();
+                Parser parser = new Parser();
+                parser.runParser();
             }
+
             if(args[i].contains(FILE_BOOLEAN_EXPR)){
                 System.out.printf("\n\nTesting: %s\n", FILE_BOOLEAN_EXPR);
                 testBooleanExpression();
@@ -44,6 +46,7 @@ public class Test {
             lex.closeReader();
         }
     }
+
 
 
     private static void testBooleanExpression(){
