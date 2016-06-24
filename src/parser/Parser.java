@@ -279,6 +279,7 @@ public class Parser {
       
       match(Tag.ID);
       
+
       Id id = top.get(t);
       if( id == null ) 
           error(t.toString() + " undeclared");
