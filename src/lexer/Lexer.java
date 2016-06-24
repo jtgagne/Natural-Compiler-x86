@@ -194,7 +194,7 @@ public class Lexer {
             do {
                 b.append(peek);
                 readch();
-            } while( Character.isLetterOrDigit(peek) );
+            } while( Character.isLetterOrDigit(peek) && peek != '\n' && peek != '\t' && peek != ' ');
 
             String s = b.toString();
 

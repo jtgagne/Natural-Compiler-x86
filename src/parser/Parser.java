@@ -77,8 +77,15 @@ public class Parser {
     public void program() throws IOException {  
        
         /** block() returns node of type Stmt */
-        Stmt s = block();   
+        //Stmt s = block();
+        Env savedEnv = top;
+        top = new Env(top);
 
+        decls();
+        Stmt s = stmts();
+
+
+        top = savedEnv;
         /*
         int begin = s.newlabel();  
         int after = s.newlabel();
@@ -124,7 +131,7 @@ public class Parser {
             Token tok = look;
          
             match(Tag.ID); 
-            match(';');
+            match('\n');
          
             /** Create node in syntax tree */
             Id id = new Id((Word)tok, p, used);

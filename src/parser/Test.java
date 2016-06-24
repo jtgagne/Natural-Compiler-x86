@@ -12,6 +12,7 @@ public class Test {
     private static final String FILE_BOOLEAN_EXPR = "boolean_expr_test.nat";
     private static final String FILE_FOR = "for_loop_test.txt";
     private static final String FILE_NATURAL_SYNTAX = "natural_syntax.nat";
+    private static final String FILE_NATURAL_PROGRAM = "natural_program.nat";
 
     public static void main(String[] args) throws IOException{
 
@@ -20,7 +21,11 @@ public class Test {
         for(int i = 0; i < args.length; i++){
 
             lex.openReader(args[i]);
-
+            if(args[i].contains(FILE_NATURAL_PROGRAM)){
+                System.out.printf("\n\nTesting: %s\n", FILE_NATURAL_PROGRAM);
+                Parser parser = new Parser(lex);
+                parser.program();
+            }
             if(args[i].contains(FILE_BOOLEAN_EXPR)){
                 System.out.printf("\n\nTesting: %s\n", FILE_BOOLEAN_EXPR);
                 testBooleanExpression();
