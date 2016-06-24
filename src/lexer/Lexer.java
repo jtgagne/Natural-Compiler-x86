@@ -76,11 +76,6 @@ public class Lexer {
     void readch() throws IOException {
         //peek = (char) System.in.read();
 
-        /*if(_line != null && _location == _line.length()){
-            peek = '\n';
-            _location++;
-        }*/
-
         //If the line is null or we have arrived at the last index, update
         if( _line == null || _location == _line.length()){
 
@@ -139,9 +134,10 @@ public class Lexer {
      */
     public void skipComment() throws IOException{
         //Skip all tokens until new line
-        while(isComment){
-            scan();
-        }
+        _location = _line.length();
+
+        //Read the next char
+        readch();
     }
 
     // ******************************************************
@@ -154,14 +150,29 @@ public class Lexer {
         // Eat whitespace
         // ******************************************************
         for( ; ; readch() ) {
-            if( peek == '\n' ){
+
+            if(peek == '\n' ){
                 lineCount = lineCount + 1;
                 _location = 0;
                 isComment = false;              //Single line comments are done at a new line
                 //return new Token('\n');
             }
+
             else if ( peek != ' ' && peek != '\t' )
                 break;
+        }
+
+
+        if(peek == '#'){
+            if(readch('#')) {
+                isMultiLineComment = !isMultiLineComment;                   //Switch the state of the boolean
+                if(isMultiLineComment){
+                    skipMultiLineComment();                                 //Read until the end of a multiline comment
+                }
+            } else{
+                isComment = true;
+                skipComment();                                              //Skip the rest of the line
+            }
         }
 
         // ******************************************************
@@ -182,14 +193,6 @@ public class Lexer {
                 if( readch('=') ) return Word.ge;   else return new Token(Tag.GREATER);
             case ':':
                 if( readch('=') ) return Word.assign;   else return Word.error;
-            case '#':
-                if(readch('#')) {
-                    isMultiLineComment = !isMultiLineComment;                   //Switch the state of the boolean
-                    if(isMultiLineComment){ scanMultiLineComment(); }           //Scan until the end of multi line comment
-                } else{
-                    isComment = !isComment;
-                    skipComment();                                              //Skip the rest of the line
-                }
 
         }
 
@@ -283,10 +286,16 @@ public class Lexer {
      * Scan until it is no longer a multiline comment
      * @throws IOException
      */
-    private void scanMultiLineComment() throws IOException{
+    private void skipMultiLineComment() throws IOException{
         while(isMultiLineComment){
-            scan();
+            readch();
+            if(peek == '#'){
+                if(readch('#')){
+                    isMultiLineComment = false;
+                }
+            }
         }
+        readch();
     }
 
     public static boolean isMakingPhrase(){

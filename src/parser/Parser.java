@@ -85,12 +85,10 @@ public class Parser {
 
         try{
             decls();
-            //Stmt s = stmts();
+            Stmt s = stmts();
         }catch (Exception e){
             System.err.printf("Null");
         }
-
-
 
         top = savedEnv;
         /*
@@ -138,19 +136,17 @@ public class Parser {
             Type p = type();
 
             //Move the lexer to check for an identifier
-            move();
+            //move();
             Token tok = look;
 
             if(check(Tag.ID)){
-                /** Create node in syntax tree */
-                Id id = new Id((Word)tok, p, used);
-                top.put( tok, id );
-                used = used + p.width;
+                move();
             }
 
-            //match(Tag.ID);
-
-
+            /*Create node in syntax tree*/
+            Id id = new Id((Word)tok, p, used);
+            top.put( tok, id );
+            used = used + p.width;
 
             //Move the lexer to continue looking
             move();
