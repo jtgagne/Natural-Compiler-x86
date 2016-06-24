@@ -17,20 +17,25 @@ import java.io.*;
 // Read in next lexeme and return it's associated token
 // ******************************************************
 public class Lexer {
-    public static int lineCount = 1;                         // Line of code
+    private static Lexer _lexer;                        // Current instance of the lexer
+    public static int lineCount = 1;                    // Line count of the code
     char peek = ' ';                                    // Peek at next character
 
     public static Hashtable words = new Hashtable();    // Reserved,identifiers, multi-symbol operators
     public static Hashtable phrases = new Hashtable();  // Hash Table for keeping track of phrases / word groupings
     public ArrayList<Word> _phrase;                     // Multiple words entered that should be grouped
-    private static boolean isMakingPhrase = false;        // Track if a _phrase has been input appropriately
-    private static boolean isComment = false;            // Track if input should be ignored or not
-    private static BufferedReader _reader;
-    private static Lexer _lexer;
-    private static String _line;
-    private static String _nextline;
-    private static int _location = 0;
-    private static boolean hasNextLine = true;
+    private static BufferedReader _reader;              // Reader for getting File IO
+    private static String _line;                        // Current line being scanned by the lexer
+    private static String _nextline;                    // Next line of the file, null if at the end of the file
+    private static int _location = 0;                   // Current char index of _line
+
+    private static boolean hasNextLine = true;          // Check if the file has more lines to be scanned
+    private static boolean isMakingPhrase = false;      // Track if a _phrase has been input appropriately
+    private static boolean isMultiLineComment = false;  // Ignore input while true.
+    private static boolean isComment = false;
+
+
+
 
     public static Lexer getInstance(){
         if(_lexer == null){
@@ -69,21 +74,28 @@ public class Lexer {
     // and then by char
     // ******************************************************
     void readch() throws IOException {
-
         //peek = (char) System.in.read();
 
+        //If the line is null or we have arrived at the last index, update
         if( _line == null || _location == _line.length()){
+
+            //Initial condition, set values for line and next line if we are at the first line in the file
             if(lineCount == 0){
                 _line = _reader.readLine();
                 _nextline = _reader.readLine();
                 lineCount++;
-            } else {
+            }
+
+            //If the Lexer has passed the first line of the file, update the values accordingly
+            else {
                 _line = _nextline;
                 _nextline = _reader.readLine();
                 _location = 0;
                 lineCount++;
+                isComment = false;
             }
 
+            //The end of file is near
             if(_nextline == null){
                 hasNextLine = false;
             }
@@ -109,13 +121,22 @@ public class Lexer {
     // ******************************************************
     boolean readch(char c) throws IOException {
         readch();
-
         if( peek != c ) {
             return false;
         }
-
         peek = ' ';
         return true;
+    }
+
+    /**
+     * Since single line comments only ignore the remaining information on the current line, we can just
+     * Skip everything after the comment symbol
+     */
+    public void skipComment() throws IOException{
+        //Skip all tokens until new line
+        while(isComment){
+            scan();
+        }
     }
 
     // ******************************************************
@@ -131,7 +152,7 @@ public class Lexer {
             if( peek == '\n' ){
                 lineCount = lineCount + 1;
                 _location = 0;
-                isComment = false;
+                isComment = false;              //Single line comments are done at a new line
             }
             else if ( peek != ' ' && peek != '\t' )
                 break;
@@ -156,7 +177,13 @@ public class Lexer {
             case ':':
                 if( readch('=') ) return Word.assign;   else return Word.error;
             case '#':
-                isComment = true;                                                   //Switch the state of the boolean
+                if(readch('#')) {
+                    isMultiLineComment = !isMultiLineComment;                   //Switch the state of the boolean
+                    if(isMultiLineComment){ scanMultiLineComment(); }           //Scan until the end of multi line comment
+                } else{
+                    isComment = !isComment;
+                    skipComment();                                              //Skip the rest of the line
+                }
         }
 
         // ******************************************************
@@ -228,6 +255,16 @@ public class Lexer {
         peek = ' ';
 
         return tok;
+    }
+
+    /**
+     * Scan until it is no longer a multiline comment
+     * @throws IOException
+     */
+    private void scanMultiLineComment() throws IOException{
+        while(isMultiLineComment){
+            scan();
+        }
     }
 
     public static boolean isMakingPhrase(){

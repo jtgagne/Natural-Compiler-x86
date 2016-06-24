@@ -1,5 +1,10 @@
+<<<<<<< Updated upstream
 (false true)
 ((not false) and (true) or (5 greater than or equal to 6))asdfae a 2
+=======
+(false true) #this doesnt matter
+((not false) and (true) or (5 greater than or equal to 6))
+>>>>>>> Stashed changes
 (true or false)
 (5 less than 6)
 (5 is 5)

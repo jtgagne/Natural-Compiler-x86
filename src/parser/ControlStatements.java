@@ -11,7 +11,7 @@ import java.io.IOException;
  * Class to evaluate proper syntax of various control statements
  * Created by gagnej3 on 6/19/16.
  */
-public class NaturalSyntax {
+public class ControlStatements {
 
     /**
      * Checks the name of the control statement and decides the type of expression expected next

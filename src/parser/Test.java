@@ -65,7 +65,7 @@ public class Test {
     private static void testNaturalFile() throws IOException{
         int count = 1;
         while(Lexer.getInstance().hasNext()){
-            NaturalSyntax.evaluateControl();
+            ControlStatements.evaluateControl();
             count++;
         }
     }
