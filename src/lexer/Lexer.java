@@ -29,6 +29,7 @@ public class Lexer {
     private static String _nextline;                    // Next line of the file, null if at the end of the file
     private static int _location = 0;                   // Current char index of _line
 
+    private static boolean lastLine = false;           // Used to know if the line being read is the final line in the program
     private static boolean hasNextLine = true;          // Check if the file has more lines to be scanned
     private static boolean isMakingPhrase = false;      // Track if a _phrase has been input appropriately
     private static boolean isMultiLineComment = false;  // Ignore input while true.
@@ -94,7 +95,9 @@ public class Lexer {
                 lineCount++;
                 isComment = false;
             }
-
+            if(hasNextLine == false){
+                lastLine = true;
+            }
             //The end of file is near
             if(_nextline == null){
                 hasNextLine = false;
@@ -116,6 +119,9 @@ public class Lexer {
         return hasNextLine;
     }
 
+    public boolean isLastLine() {
+        return lastLine;
+    }
     // ******************************************************
     //
     // ******************************************************
@@ -238,6 +244,8 @@ public class Lexer {
                     //if next line is not null set peek to the next char in the new line
                     if(_nextline != null){
                         readch();
+                    }else{
+                        peek = Tag.END;
                     }
                     break;
                 }
@@ -273,7 +281,9 @@ public class Lexer {
 
         // Unidentified tokens
         Token tok = new Token(peek);
-        peek = ' ';
+        if(peek != Tag.END) {
+            peek = ' ';
+        }
 
         return tok;
     }

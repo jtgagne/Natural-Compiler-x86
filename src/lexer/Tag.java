@@ -8,6 +8,8 @@ package lexer;
  */
 public class Tag {
 
+    public final static int
+            END         = 0;
     //Values start at 256
 
     //Join operators

@@ -130,7 +130,7 @@ public class Parser {
     */
     public void decls() throws IOException {
 
-        while(look.tag == Tag.BASIC ) {
+        while(look.tag == Tag.BASIC && !Lexer.getInstance().isLastLine()) {
             
             /** call type() */
             Type p = type();
@@ -140,9 +140,7 @@ public class Parser {
             Token tok = look;
 
             if(check(Tag.ID)){
-                if(Lexer.getInstance().hasNext()) {
-                    move();
-                }
+                move();
             }
 
             /*Create node in syntax tree*/
@@ -151,8 +149,9 @@ public class Parser {
             used = used + p.width;
 
             //Move the lexer to continue looking
-            // move();
+            //move();
       }
+    move();
    }
 
     private boolean check(int tag){
@@ -206,11 +205,11 @@ public class Parser {
      * @return Stmt Seq object, which is of type Node, and holds a statement and then possibly a sequence of statements.
      * @throws IOException Error somewhere below stmts
      */
-    public Stmt stmts() throws IOException 
+    public Stmt stmts() throws IOException
     {
-      if ( look.tag == '}' )
+      if ( look.tag == '}' || look.tag == 0)
           return Stmt.Null;
-      else 
+      else
           return new Seq(stmt(), stmts());
     }
 
