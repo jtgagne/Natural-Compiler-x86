@@ -140,7 +140,9 @@ public class Parser {
             Token tok = look;
 
             if(check(Tag.ID)){
-                move();
+                if(Lexer.getInstance().hasNext()) {
+                    move();
+                }
             }
 
             /*Create node in syntax tree*/
@@ -149,7 +151,7 @@ public class Parser {
             used = used + p.width;
 
             //Move the lexer to continue looking
-            move();
+            // move();
       }
    }
 
@@ -234,10 +236,7 @@ public class Parser {
          return Stmt.Null;
 
       case Tag.IF:
-         match(Tag.IF); 
-         match('('); //
-         x = bool(); 
-         match(')'); //
+         x = bool();
          s1 = stmt();
          if( look.tag != Tag.ELSE )
              return new If(x, s1);
@@ -250,7 +249,6 @@ public class Parser {
          While whilenode = new While();
          savedStmt = Stmt.Enclosing; 
          Stmt.Enclosing = whilenode;
-         match(Tag.WHILE); 
          match('('); 
          x = bool(); 
          match(')');
@@ -303,7 +301,7 @@ public class Parser {
       if( id == null ) 
           error(t.toString() + " undeclared");
 
-      if( look.tag == '=' ) {           // S -> id = E ;
+      if( look.tag == Tag.ASSIGNMENT) {           // S -> id = E ;
          move();  
          stmt = new Set(id, bool());    // Set node
       }
@@ -432,11 +430,11 @@ public class Parser {
     */
     public Expr unary() throws IOException {
        
-      if( look.tag == '-' ) {
+      if( look.tag == Tag.MINUS) {
          move();  
          return new Unary(Word.minus, unary());     // Return Unary node
       }
-      else if( look.tag == '!' ) {
+      else if( look.tag == Tag.NOT ) {
          Token tok = look;
          move();  
          return new Not(tok, unary());              // Return Not node
