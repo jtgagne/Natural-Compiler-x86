@@ -414,7 +414,7 @@ public class Parser {
       Expr n = expr();
       
       switch( look.tag ) {
-        case '<': case Tag.LE: case Tag.GE: case '>':
+        case Tag.LESS: case Tag.LE: case Tag.GE: case Tag.GREATER:
            Token tok = look;
            move();  
            return new Rel(tok,n,expr());    // Rel node
