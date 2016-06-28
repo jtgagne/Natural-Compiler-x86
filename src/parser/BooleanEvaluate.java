@@ -25,7 +25,7 @@ public class BooleanEvaluate {
 
     //Look for anything that is in between 40 and 41, these are the int values of '(' and ')' respectively
     private static Pattern parentheses =
-            Pattern.compile(parenGroup+"(?s)(.*)"+ parenGroup);
+            Pattern.compile(parenGroup+"(?s)(.*)"+parenGroup);
 
     //Pattern to look for a boolean expression ie: false and true
     private static final Pattern boolExpr =
@@ -72,7 +72,7 @@ public class BooleanEvaluate {
                 parenGroup++;
             }
             output = p.replaceFirst(evaluateBooleanExpression(p.group(1)));      //Call the recursive method using the group that was found
-            parentheses = Pattern.compile(parenGroup+"(?s)(.*)"+ parenGroup);
+            parentheses = Pattern.compile(parenGroup+"(?s)(.*)"+parenGroup);
             p = parentheses.matcher(output);                                     //Re-Match for all patterns
             lp = longPhrase.matcher(output);
             be = boolExpr.matcher(output);

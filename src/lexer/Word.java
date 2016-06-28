@@ -57,8 +57,7 @@ public class Word extends Token {
         increase    = new Word( "increase", Tag.INCREASE, Tag.INITIALIZER),
         decrease    = new Word( "decrease", Tag.DECREASE, Tag.INITIALIZER),
         by          = new Word( "by", Tag.NULL, Tag.TERMINAL),
-        error       = new Word( "ERROR", Tag.ERROR),
-        eof         = new Word( "eof", Tag.EOF);
+        error       = new Word( "ERROR", Tag.ERROR);
 
     /**
      * Store the reserved words in a hash table
@@ -96,7 +95,6 @@ public class Word extends Token {
         words.put(increase.lexeme, increase);
         words.put(decrease.lexeme, decrease);
         words.put(by.lexeme, by);
-        words.put(eof.lexeme, eof);
     }
 
 

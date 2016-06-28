@@ -21,12 +21,12 @@ public class Type extends Word {
     // Constants
     // **********************************************************
     public static final Type
-            Int     = new Type( "int",   Tag.BASIC, 4 ),
-            Long    = new Type( "long", Tag.BASIC, 8),
-            Float   = new Type( "float", Tag.BASIC, 8 ),
-            Double  = new Type( "double", Tag.BASIC, 16),
-            Char    = new Type( "char",  Tag.BASIC, 1 ),
-            Bool    = new Type( "boolean",  Tag.BASIC, 1 );
+            Int     = new Type( "int",   Tag.INT, 4 ),
+            Long    = new Type( "long", Tag.LONG, 8),
+            Float   = new Type( "float", Tag.FLOAT, 8 ),
+            Double  = new Type( "double", Tag.DOUBLE, 16),
+            Char    = new Type( "char",  Tag.CHAR, 1 ),
+            Bool    = new Type( "boolean",  Tag.BOOL, 1 );
 
 
     /**
@@ -74,6 +74,15 @@ public class Type extends Word {
     @Override
     public String toString() {
         return "TYPE: Lexeme is " + lexeme + " tag is " + tag + " Width is " + width;
+    }
+
+    public static boolean isType(int tag){
+        return tag == Tag.INT ||
+                tag == Tag.LONG ||
+                tag == Tag.FLOAT ||
+                tag == Tag.DOUBLE ||
+                tag == Tag.CHAR ||
+                tag == Tag.BOOL;
     }
 }
 

@@ -36,6 +36,7 @@ public class Parser {
         lex = Lexer.getInstance();
         move();
         program();
+
     }
 
     /**
@@ -168,9 +169,13 @@ public class Parser {
      * @throws IOException Error somewhere below type
      */
     Type type() throws IOException {
-
         Type t = (Type)look;
-        match(Tag.BASIC);
+
+        if(Type.isType(look.tag)){
+            move();
+        } else {
+            error("Not a valid type");
+        }
 
         /** basic type or array type */
         if( look.tag != '[' )
