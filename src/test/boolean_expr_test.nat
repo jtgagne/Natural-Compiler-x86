@@ -17,3 +17,4 @@
 (not not true)
 (not(false or not true))
 (not false or not true)
+(booleanValue)

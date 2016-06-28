@@ -42,6 +42,10 @@ public class BooleanEvaluate {
     private static final Pattern negation =
             Pattern.compile("(("+Tag.NOT+")\\s(("+Tag.FALSE+")|("+(Tag.TRUE)+")))");
 
+    //Look for single variables that may be alone
+    private static final Pattern variable =
+            Pattern.compile("("+Tag.ID+")\\s(("+Tag.AND+")|("+Tag.OR+"))\\s("+Tag.ID+")");
+
     /**
      * Recursive method to evaluate boolean expressions. Accounts for the order of operations dictated by parentheses
      * grouping.Reduces the expression down to its single boolean meaning and returns the Tag value in the form of a

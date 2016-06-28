@@ -136,8 +136,6 @@ public class Parser {
             /** call type() */
             Type p = type();
 
-            //Move the lexer to check for an identifier
-            //move();
             Token tok = look;
 
             if(check(Tag.ID)) {
@@ -152,8 +150,6 @@ public class Parser {
             top.put( tok, id );
             used = used + p.width;
 
-            //Move the lexer to continue looking
-            //move();
       }
     move();
    }
