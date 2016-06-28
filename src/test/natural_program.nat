@@ -2,6 +2,7 @@ int a
 int b
 int i
 float c
+
 #boolean e
 #a is 1
 #e := false

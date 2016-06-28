@@ -143,7 +143,7 @@ public class Parser {
             match(Tag.ID);
 //            if(check(Tag.ID)) {
 //                move();
-//                declared = true;
+//               declared = true;
 //                if (check(Tag.ASSIGNMENT)) {
 //
 //                }
