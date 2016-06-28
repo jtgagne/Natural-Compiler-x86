@@ -37,14 +37,15 @@ public class BooleanEvaluate {
 
     //Pattern to look for comparative statements
     private static final Pattern comparativeExpr =
-            Pattern.compile("(("+Tag.NUM+")\\s(("+Tag.EQ+")|("+Tag.GE+")|("+Tag.GREATER+")|("+Tag.LE+")|("+Tag.LESS+")|("+Tag.NE+"))\\s("+Tag.NUM+"))");
+            Pattern.compile("((("+Tag.NUM+")|("+Tag.ID+"))\\s(("+Tag.EQ+")|("+Tag.GE+")|("+Tag.GREATER+")|("+Tag.LE+")|("+Tag.LESS+")|("+Tag.NE+"))\\s(("+Tag.NUM+")|("+Tag.ID+")))");
 
     private static final Pattern negation =
             Pattern.compile("(("+Tag.NOT+")\\s(("+Tag.FALSE+")|("+(Tag.TRUE)+")))");
 
     /**
-     * Recursive method to evaluate boolean expressions. Accounts for the order of operations dictated by parentheses grouping.
-     * Reduces the expression down to its single boolean meaning and returns the Tag value in the form of a string upon completion.
+     * Recursive method to evaluate boolean expressions. Accounts for the order of operations dictated by parentheses
+     * grouping.Reduces the expression down to its single boolean meaning and returns the Tag value in the form of a
+     * string upon completion.
      * @param input the string to be evaluated
      * @return a simplified string containing Lexer Tag values
      * @throws Exception upon incorrect boolean expression format
@@ -55,7 +56,7 @@ public class BooleanEvaluate {
         String output = input;
 
         //Recompile for the new input string that is coming in
-        parentheses = Pattern.compile(parenGroup+"(?s)(.*)"+ parenGroup);
+        parentheses = Pattern.compile(parenGroup+"(?s)(.*)"+parenGroup);
 
         //Instantiate the initial matcher objects
         Matcher p = parentheses.matcher(output);
@@ -178,7 +179,8 @@ public class BooleanEvaluate {
             }
         }
 
-        else if(Tag.isNumber(values[0]) && Tag.isComparisonOperator(values[1]) && Tag.isNumber(values[2])){
+        else if((Tag.isNumber(values[0]) || values[0] == Tag.ID) && Tag.isComparisonOperator(values[1]) &&
+                (Tag.isNumber(values[2]) || values[2] == Tag.ID)){
             simplified = getBooleanTag(compareNumbers(values[0], values[1], values[2]));
         }
 

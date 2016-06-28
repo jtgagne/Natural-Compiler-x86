@@ -6,6 +6,7 @@ package lexer;
  *
  */
 
+import symbols.Array;
 import symbols.Type;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class Lexer {
     private static boolean isMakingPhrase = false;      // Track if a _phrase has been input appropriately
     private static boolean isMultiLineComment = false;  // Ignore input while true.
     private static boolean isComment = false;
+    private static ArrayList<String> _identifiers;
 
 
 
@@ -61,6 +63,7 @@ public class Lexer {
         _location = 0;
         _line = null;
         _nextline = null;
+        _identifiers = new ArrayList<>();
         lineCount = 0;
         hasNextLine = true;
     }
@@ -274,11 +277,14 @@ public class Lexer {
             }
 
 
+            //hash table WILL return null if the lexeme does not exist
             if( w != null )
                 return w;
 
             w = new Word(s, Tag.ID);
             words.put(s, w);
+
+            _identifiers.add(w.lexeme);
 
             return w;
         }
@@ -380,4 +386,11 @@ public class Lexer {
         }
     }
 
+    public static ArrayList<String> getIdentifiers(){
+        return _identifiers;
+    }
+
+    public static void clearIdentifiers(){
+        _identifiers.clear();
+    }
 }

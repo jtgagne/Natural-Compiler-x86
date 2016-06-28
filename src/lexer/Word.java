@@ -97,7 +97,7 @@ public class Word extends Token {
         words.put(decrease.lexeme, decrease);
         words.put(by.lexeme, by);
         words.put(eof.lexeme, eof);
-
     }
+
 
 }

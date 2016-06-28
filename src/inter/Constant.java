@@ -4,9 +4,8 @@ import symbols.*;
 
 public class Constant extends Expr 
 {
-   public Constant(Token tok, Type p) 
-   { 
-       super(tok, p); 
+   public Constant(Token tok, Type p) {
+      super(tok, p);
    }
    public Constant(int i) 
    { 
