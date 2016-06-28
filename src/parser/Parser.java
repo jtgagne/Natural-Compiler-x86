@@ -131,7 +131,7 @@ public class Parser {
     */
     public void decls() throws IOException {
 
-        while(look.tag == Tag.BASIC && !Lexer.getInstance().isLastLine()) {
+        while(Tag.isDataType(look.tag) && !Lexer.getInstance().isLastLine()) {
             
             /** call type() */
             Type p = type();
@@ -149,7 +149,6 @@ public class Parser {
             Id id = new Id((Word)tok, p, used);
             top.put( tok, id );
             used = used + p.width;
-
       }
     move();
    }

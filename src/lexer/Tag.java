@@ -114,6 +114,15 @@ public class Tag {
                 tag == Tag.NE);
     }
 
+    public static boolean isDataType(int tag){
+        return (tag == Tag.INT ||
+                tag == Tag.LONG ||
+                tag == Tag.FLOAT ||
+                tag == Tag.DOUBLE ||
+                tag == Tag.CHAR ||
+                tag == Tag.BOOL);
+    }
+
     public static boolean isJoiningOperator(int tag){
         return (tag == Tag.AND ||
                 tag == Tag.OR);
