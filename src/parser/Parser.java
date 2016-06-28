@@ -251,8 +251,9 @@ public class Parser {
          While whilenode = new While();
          savedStmt = Stmt.Enclosing; 
          Stmt.Enclosing = whilenode;
-         match('('); 
-         x = bool(); 
+         move();
+         match('(');
+         x = bool();
          match(')');
          s1 = stmt();
          whilenode.init(x, s1);
@@ -263,13 +264,14 @@ public class Parser {
          Do donode = new Do();
          savedStmt = Stmt.Enclosing; 
          Stmt.Enclosing = donode;
+         move();
          match(Tag.DO);
          s1 = stmt();
          match(Tag.WHILE); 
          match('('); 
          x = bool(); 
          match(')'); 
-         match(';');
+         //match(';');
          donode.init(s1, x);
          Stmt.Enclosing = savedStmt;    // reset Stmt.Enclosing
          return donode;                 // Return a Do node
