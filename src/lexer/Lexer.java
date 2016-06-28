@@ -108,9 +108,13 @@ public class Lexer {
         }
 
         //Get the next character
-        if(_location < _line.length()){
-            peek = _line.charAt(_location);
-            _location++;
+        if(_line != null) {
+            if (_location < _line.length()) {
+                peek = _line.charAt(_location);
+                _location++;
+            }
+        }else{
+            peek = Tag.END;
         }
     }
 
@@ -222,7 +226,7 @@ public class Lexer {
 
             for(;;) {
                 readch();
-                if( ! Character.isDigit(peek) )
+                if( ! Character.isDigit(peek) || peek == Tag.END)
                     break;
                 x = x + Character.digit(peek, 10) / d;
                 d = d*10;
