@@ -280,8 +280,12 @@ public class Lexer {
 
 
             //hash table WILL return null if the lexeme does not exist
-            if( w != null )
+            if(w != null){
+                if(w.tag == Tag.ID){
+                    _identifiers.add(w.lexeme);
+                }
                 return w;
+            }
 
             w = new Word(s, Tag.ID);
             words.put(s, w);
@@ -300,9 +304,6 @@ public class Lexer {
         return tok;
     }
 
-    public boolean isNewLine(){
-        return peek =='\n';
-    }
 
     /**
      * Scan until it is no longer a multiline comment

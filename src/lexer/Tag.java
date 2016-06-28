@@ -9,77 +9,81 @@ package lexer;
 public class Tag {
 
     public final static int
-            END         = 0;
-    //Values start at 256
+        END         = 0;
 
     //Join operators
     public final static int
-            AND         = 256,
-            NOT         = 257,
-            OR          = 258;
+        AND         = 256,
+        NOT         = 257,
+        OR          = 258;
 
     //Control values
     public final static int
-            BREAK       = 259,
-            DO          = 260,
-            FOR         = 261,
-            ELSE        = 262,
-            IF          = 263,
-            WHILE       = 264;
+        BREAK       = 259,
+        DO          = 260,
+        FOR         = 261,
+        ELSE        = 262,
+        IF          = 263,
+        WHILE       = 264;
 
     //Boolean values
     public static final int
-            FALSE       = 265,
-            TRUE        = 266;
+        FALSE       = 265,
+        TRUE        = 266;
 
     //Data types
     public static final int
-            BASIC       = 267,
-            NUM         = 268,
-            REAL        = 269;
+        BASIC       = 267,
+        NUM         = 268,
+        REAL        = 269;
 
     //Comparison operators
     public static final int
-            EQ          = 270,
-            GE          = 271,
-            GREATER     = 272,
-            LE          = 273,
-            LESS        = 274,
-            NE          = 275,
-            THAN        = 276;
+        EQ          = 270,
+        GE          = 271,
+        GREATER     = 272,
+        LE          = 273,
+        LESS        = 274,
+        NE          = 275,
+        THAN        = 276;
 
     //Phrase Identification values
     public static final int
-            ERROR       = 277,
-            INITIALIZER = 278,
-            NULL        = 279,
-            PHRASE      = 280,
-            TERMINAL    = 281;
+        ERROR       = 277,
+        INITIALIZER = 278,
+        NULL        = 279,
+        PHRASE      = 280,
+        TERMINAL    = 281;
 
     //Incrementation  / looping operators
     public static final int
-            DECREASE    = 282,
-            INCREASE    = 283,
-            TO          = 284;
+        DECREASE    = 282,
+        INCREASE    = 283,
+        TO          = 284;
 
     //Variable declaration and assignment
     public static final int
-            ASSIGNMENT  = 285,
-            ID          = 286,
-            INDEX       = 287,
-            TEMP        = 288;
+        ASSIGNMENT  = 285,
+        ID          = 286,
+        INDEX       = 287,
+        TEMP        = 288;
 
     //Arithmetic operators
     public static final int
-            MINUS       = 289;
+        MINUS       = 289;
 
-    //End of file
+    //Data type tags
     public static final int
-            EOF         = 290;
+        INT         = 290,
+        LONG        = 291,
+        FLOAT       = 292,
+        DOUBLE      = 293,
+        CHAR        = 294,
+        BOOL        = 295;
 
     //Everything <= PAREN_GROUP indicates a coupled group of parentheses LEAVE AS THE LAST VALUE
     public static final int
-            PAREN_GROUP = 291;
+        PAREN_GROUP = 296;
 
 
     /**
@@ -116,14 +120,18 @@ public class Tag {
     }
 
     public static boolean containsParentheses(String input){
-        return input.contains("291") ||
-                input.contains("292")||
-                input.contains("293")||
-                input.contains("294")||
-                input.contains("295")||
-                input.contains("296")||
-                input.contains("297")||
-                input.contains("298")||
-                input.contains("299");
+
+        input = input.trim();
+
+        String[] split = input.split("\\s");
+
+        for(String str: split){
+            int tag = Integer.parseInt(str);
+
+            if(tag >= Tag.PAREN_GROUP){
+                return true;
+            }
+        }
+        return false;
     }
 }

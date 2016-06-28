@@ -38,10 +38,10 @@ public class Test {
                 testForSyntax();
             }
 
-            else if(args[i].contains(FILE_NATURAL_SYNTAX)){
+            /*else if(args[i].contains(FILE_NATURAL_SYNTAX)){
                 System.out.printf("\n\nTesting: %s\n", FILE_NATURAL_SYNTAX);
                 testNaturalFile();
-            }
+            }*/
 
             lex.closeReader();
         }
@@ -65,11 +65,11 @@ public class Test {
 
     }
 
-    private static void testNaturalFile() throws IOException{
+    /*private static void testNaturalFile() throws IOException{
         int count = 1;
         while(Lexer.getInstance().hasNext()){
             ControlStatements.evaluateControl();
             count++;
         }
-    }
+    }*/
 }

@@ -13,13 +13,12 @@ import java.io.IOException;
  */
 public class ControlStatements {
 
+    private static String _parse;
+
     /**
      * Checks the name of the control statement and decides the type of expression expected next
      */
-    public static void evaluateControl() throws IOException{
-        Token token = Lexer.getInstance().scan();
-
-        int tag = token.tag;
+    public static void evaluateControl(int tag) throws IOException{
 
         switch (tag){
             case Tag.FOR:
