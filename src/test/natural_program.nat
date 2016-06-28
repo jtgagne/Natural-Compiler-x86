@@ -1,15 +1,23 @@
 int a
 int b
 float c
-boolean e
-
-a is 1
-#a increase by 1
-e := false
-b is -a
+#boolean e
+#a is 1
+#e := false
+int q
+q := 3
+b := -a
 while(true){
-    int d
-
+    boolean d
+    d is true
+    while(d){
+        if(a == b){
+            float ab
+            ab := 3.4
+            a is a - 1
+        }
+    a is a + 1
+    }
     b is 1
     a is a + 1
 }

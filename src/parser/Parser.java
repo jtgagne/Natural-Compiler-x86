@@ -81,11 +81,13 @@ public class Parser {
        
         /** block() returns node of type Stmt */
         //Stmt s = block();
-        Env savedEnv = top;
+        Env savedEnv = null;
         top = new Env(top);
         Stmt s = new Stmt();
         try{
             decls();
+            savedEnv = top;
+            //move();
             s = stmts();
         }catch (Exception e){
             System.err.printf("Null");
@@ -115,7 +117,8 @@ public class Parser {
        Env savedEnv = top;  
        top = new Env(top);
       
-       decls(); 
+       decls();
+        //move();
        Stmt s = stmts();
       
        match('}');  
@@ -130,27 +133,31 @@ public class Parser {
     * @throws IOException Error somewhere below decls
     */
     public void decls() throws IOException {
-
+        boolean declared = false;
         while(Tag.isDataType(look.tag) && !Lexer.getInstance().isLastLine()) {
             
             /** call type() */
             Type p = type();
 
             Token tok = look;
-
-            if(check(Tag.ID)) {
-                move();
-                if (check(Tag.ASSIGNMENT)) {
-
-                }
-            }
+            match(Tag.ID);
+//            if(check(Tag.ID)) {
+//                move();
+//                declared = true;
+//                if (check(Tag.ASSIGNMENT)) {
+//
+//                }
+//            }
 
             /*Create node in syntax tree*/
             Id id = new Id((Word)tok, p, used);
             top.put( tok, id );
             used = used + p.width;
       }
-    move();
+        if(declared){
+            move();
+        }
+    //move();
    }
 
     private boolean check(int tag){
@@ -238,7 +245,10 @@ public class Parser {
          return Stmt.Null;
 
       case Tag.IF:
+          move();
+          match('(');
          x = bool();
+          match(')');
          s1 = stmt();
          if( look.tag != Tag.ELSE )
              return new If(x, s1);
@@ -259,6 +269,8 @@ public class Parser {
          whilenode.init(x, s1);
          Stmt.Enclosing = savedStmt;    // reset Stmt.Enclosing
          return whilenode;              // Return a While node
+      case Tag.FOR:
+
 
       case Tag.DO:
          Do donode = new Do();

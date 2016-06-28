@@ -151,6 +151,16 @@ public class Lexer {
 
         //Read the next char
         readch();
+        if(peek == '#'){
+            if(readch('#')) {
+                isMultiLineComment = !isMultiLineComment;                   //Switch the state of the boolean
+                if (isMultiLineComment) {
+                    skipMultiLineComment();                                 //Read until the end of a multiline comment
+                }
+            }else{
+                skipComment();
+            }
+        }
     }
 
     // ******************************************************
