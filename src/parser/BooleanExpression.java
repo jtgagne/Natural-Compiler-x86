@@ -47,7 +47,7 @@ public class BooleanExpression {
 
             _expression = Replace.setUniqueGroups(_expression);                    // Set unique values for inner groupings of parentheses
 
-            _expression = Replace.simplifyPhrases(_expression);                            // Combine the compound phrases before evaluation
+            _expression = Replace.simplifyPhrases(_expression);                    // Combine the compound phrases before evaluation
 
             _parse = Replace.replaceIdentifiers(_expression,                       // Set the String to be passed to the parser containing tags and variables
                     ReadGroup.getIdentifiers());

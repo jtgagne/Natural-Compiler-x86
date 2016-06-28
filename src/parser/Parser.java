@@ -1,6 +1,8 @@
 package parser;
-import java.io.*; 
-import lexer.*; 
+import java.io.*;
+
+import inter.For;
+import lexer.*;
 import symbols.*; 
 import inter.*;
 
@@ -134,6 +136,7 @@ public class Parser {
     */
     public void decls() throws IOException {
         boolean declared = false;
+
         while(Tag.isDataType(look.tag) && !Lexer.getInstance().isLastLine()) {
             
             /** call type() */
@@ -153,12 +156,15 @@ public class Parser {
             Id id = new Id((Word)tok, p, used);
             top.put( tok, id );
             used = used + p.width;
+
+            System.out.printf("Declaration: %s", id.toString());
       }
         if(declared){
             move();
         }
     //move();
    }
+
 
     private boolean check(int tag){
         if(look.tag == tag){
@@ -247,13 +253,13 @@ public class Parser {
       case Tag.IF:
           move();
           match('(');
-         x = bool();
+          x = bool();
           match(')');
-         s1 = stmt();
-         if( look.tag != Tag.ELSE )
-             return new If(x, s1);
-         match(Tag.ELSE);
-         s2 = stmt();
+          s1 = stmt();
+          if( look.tag != Tag.ELSE )
+              return new If(x, s1);
+          match(Tag.ELSE);
+          s2 = stmt();
          
          return new Else(x, s1, s2);    // return an Else node
 
@@ -269,6 +275,7 @@ public class Parser {
          whilenode.init(x, s1);
          Stmt.Enclosing = savedStmt;    // reset Stmt.Enclosing
          return whilenode;              // Return a While node
+<<<<<<< Updated upstream
       case Tag.FOR:
           For fornode = new For();
           move();
@@ -286,6 +293,18 @@ public class Parser {
           s1 = stmt();
           fornode.init(x, y, s1);
           top = savedEnv;
+
+      case Tag.FOR:
+          For fornode = new For();
+          savedStmt = Stmt.Enclosing;
+          Stmt.Enclosing = fornode;
+          move();
+          match('(');
+          x = bool();
+          match(')');
+          s1 = stmt();
+          fornode.init(x, s1);
+          Stmt.Enclosing = savedStmt;
           return fornode;
 
       case Tag.DO:
@@ -324,27 +343,31 @@ public class Parser {
     * @throws IOException  Error below assign
     */
     public Stmt assign() throws IOException {
-      Stmt stmt;  
-      Token t = look;
-      
-      match(Tag.ID);
-      
-      Id id = top.get(t);
-      if( id == null ) 
+        Stmt stmt;
+        Token t = look;
+
+        match(Tag.ID);
+
+        Id id = top.get(t);
+        if( id == null )
           error(t.toString() + " undeclared");
 
-      if( look.tag == Tag.ASSIGNMENT) {           // S -> id = E ;
-         move();  
-         stmt = new Set(id, bool());    // Set node
-      }
-      else {                            // S -> L = E ;
+        if( look.tag == Tag.ASSIGNMENT) {           // S -> id = E ;
+          move();
+          stmt = new Set(id, bool());    // Set node
+
+        }
+        else {                            // S -> L = E ;
          Access x = offset(id);
-         match('=');  
+         match('=');
          stmt = new SetElem(x, bool()); // SetElem node
-      }
-      
-      //match(';');
-      return stmt;
+        }
+
+
+        System.out.printf()
+
+        //match(';');
+        return stmt;
    }
 
    

@@ -43,8 +43,11 @@ public class BooleanEvaluate {
             Pattern.compile("(("+Tag.NOT+")\\s(("+Tag.FALSE+")|("+(Tag.TRUE)+")))");
 
     //Look for single variables that may be alone
+    private static final Pattern booleanVariables =
+            Pattern.compile("(("+Tag.ID+")|("+Tag.TRUE+")|("+Tag.FALSE+"))\\s(("+Tag.AND+")|("+Tag.OR+"))\\s(("+Tag.ID+")|("+Tag.TRUE+")|("+Tag.FALSE+"))");
+
     private static final Pattern variable =
-            Pattern.compile("("+Tag.ID+")\\s(("+Tag.AND+")|("+Tag.OR+"))\\s("+Tag.ID+")");
+            Pattern.compile("("+Tag.ID+")");
 
     /**
      * Recursive method to evaluate boolean expressions. Accounts for the order of operations dictated by parentheses
@@ -68,6 +71,8 @@ public class BooleanEvaluate {
         Matcher be = boolExpr.matcher(output);
         Matcher ce = comparativeExpr.matcher(output);
         Matcher n = negation.matcher(output);
+        Matcher bv = booleanVariables.matcher(output);
+        Matcher v = variable.matcher(output);
 
         //Look for groups of parentheses and replace them with a simplified value
         while(p.find()){
@@ -82,6 +87,8 @@ public class BooleanEvaluate {
             be = boolExpr.matcher(output);
             ce = comparativeExpr.matcher(output);
             n = negation.matcher(output);
+            bv = booleanVariables.matcher(output);
+            v = variable.matcher(output);
         }
 
         while(lp.find()){
@@ -90,6 +97,8 @@ public class BooleanEvaluate {
             be = boolExpr.matcher(output);
             ce = comparativeExpr.matcher(output);
             n = negation.matcher(output);
+            bv = booleanVariables.matcher(output);
+            v = variable.matcher(output);
         }
 
         //Look for and solve all comparative boolean expressions
@@ -98,6 +107,8 @@ public class BooleanEvaluate {
             ce = comparativeExpr.matcher(output);                            //Re-Match for all patterns
             be = boolExpr.matcher(output);
             n = negation.matcher(output);
+            bv = booleanVariables.matcher(output);
+            v = variable.matcher(output);
         }
 
         //Look for a boolean expression pattern
@@ -105,11 +116,26 @@ public class BooleanEvaluate {
             output = be.replaceFirst(solveBooleanExpression(be.group(1)));  //Solve and replace with a simplified boolean expression
             be = boolExpr.matcher(output);                                  //Re-Match for all patterns
             n = negation.matcher(output);
+            bv = booleanVariables.matcher(output);
+            v = variable.matcher(output);
         }
 
         while (n.find()){
             output = n.replaceFirst(getBooleanNegation(n.group(1)));        //Negate a boolean value and replace in the string
             n = negation.matcher(output);                                   //Re-Match for all patterns
+            bv = booleanVariables.matcher(output);
+            v = variable.matcher(output);
+        }
+
+        while (bv.find()){
+            output = bv.replaceFirst(Integer.toString(Tag.TRUE));
+            bv = booleanVariables.matcher(output);
+            v = variable.matcher(output);
+        }
+
+        while (v.find()){
+            output = v.replaceFirst(Integer.toString(Tag.TRUE));
+            v = variable.matcher(output);
         }
 
         return output.trim();

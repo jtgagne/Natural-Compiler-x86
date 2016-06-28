@@ -18,3 +18,4 @@
 (not(false or not true))
 (not false or not true)
 (booleanValue)
+(booleanValue and a less than b)

@@ -21,8 +21,7 @@ public class While extends Stmt
    }
    
    @Override
-   public void gen(int b, int a) 
-   {
+   public void gen(int b, int a){
         after = a;                                // save label a
         expr.jumping(0, a);
         int label = newlabel();                   // label for stmt

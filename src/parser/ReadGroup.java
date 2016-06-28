@@ -113,7 +113,7 @@ public class ReadGroup {
             if(i == _expr.size() - 2){
                 int tag = token.tag;
                 if(Tag.isComparisonOperator(tag) || Tag.isJoiningOperator(tag)){
-                    error(ERROR_BOOLEAN_JOIN);
+                    //error(ERROR_BOOLEAN_JOIN);
                 }
             }
             sb.append(" ");
