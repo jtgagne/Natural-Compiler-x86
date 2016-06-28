@@ -192,6 +192,8 @@ public class Lexer {
         // OPERATOR
         // ******************************************************
         switch( peek ) {
+            case '-':
+                if(!readch(' '))return Word.minus; else return new Token('-');
             case '&':
                 if( readch('&') ) return Word.and;  else return new Token('&');
             case '|':
