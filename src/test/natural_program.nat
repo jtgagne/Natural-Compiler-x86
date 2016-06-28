@@ -1,5 +1,6 @@
-{
 int a
 int b
-int c
-}
+float c
+
+b := 5
+c is 4

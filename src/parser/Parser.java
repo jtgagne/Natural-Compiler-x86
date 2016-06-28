@@ -83,14 +83,14 @@ public class Parser {
         //Stmt s = block();
         Env savedEnv = top;
         top = new Env(top);
-
+        Stmt s = new Stmt();
         try{
             decls();
-            Stmt s = stmts();
+            s = stmts();
         }catch (Exception e){
             System.err.printf("Null");
         }
-
+        //s.gen(1,2);
         top = savedEnv;
         /*
         int begin = s.newlabel();  
@@ -140,8 +140,11 @@ public class Parser {
             //move();
             Token tok = look;
 
-            if(check(Tag.ID)){
+            if(check(Tag.ID)) {
                 move();
+                if (check(Tag.ASSIGNMENT)) {
+
+                }
             }
 
             /*Create node in syntax tree*/
@@ -212,7 +215,7 @@ public class Parser {
      */
     public Stmt stmts() throws IOException
     {
-      if ( look.tag == '}' || look.tag == 0)
+      if ( look.tag == '}' || look.tag == Tag.END)
           return Stmt.Null;
       else
           return new Seq(stmt(), stmts());
@@ -315,18 +318,18 @@ public class Parser {
          stmt = new SetElem(x, bool()); // SetElem node
       }
       
-      match(';');
+      //match(';');
       return stmt;
    }
 
    
    /**
-    * Create node for logical OR operator
-    *   EBNF bool = join { OR join }
-    *   Lowest precedence (last to be calculated)
-    * @return Or node
-    * @throws IOException error below bool
-    */
+     * Create node for logical OR operator
+     *   EBNF bool = join { OR join }
+     *   Lowest precedence (last to be calculated)
+     * @return Or node
+     * @throws IOException error below bool
+     */
    public Expr bool() throws IOException {
       Expr n = join();
       while( look.tag == Tag.OR ) {
@@ -475,7 +478,7 @@ public class Parser {
 
         case Tag.TRUE:
            n = Constant.True;                       // Return Constant node
-           move(); 
+           move();
            return n;
 
         case Tag.FALSE:
