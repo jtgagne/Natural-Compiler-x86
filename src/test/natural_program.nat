@@ -1,13 +1,30 @@
 int a
 int b
 int i
+#
 float c
+boolean e
 
-#boolean e
-#a is 1
-#e := false
-int q
-q := 3
+
+
+
+#a
+#a
+#a
+#a
+#a
+#e is 1
+
+a is 3
+
+if(true != false){
+
+}
+
+
+a is 1
+e := false
+#q := 3
 b := -a
 while(true){
     boolean d
@@ -24,7 +41,9 @@ while(true){
     a is a + 1
 }
 do{
+    int r
     a := 3
+    r :=0
 }while(a == 3)
 
 for(i := 0; i <= i ; i := i+1){
