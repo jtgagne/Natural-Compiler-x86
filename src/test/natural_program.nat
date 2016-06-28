@@ -1,5 +1,6 @@
 int a
 int b
+int i
 float c
 #boolean e
 #a is 1
@@ -20,4 +21,11 @@ while(true){
     }
     b is 1
     a is a + 1
+}
+do{
+    a := 3
+}while(a == 3)
+
+for(i := 0; i <= i ; i := i+1){
+    i := i+1
 }

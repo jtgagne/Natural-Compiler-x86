@@ -270,14 +270,30 @@ public class Parser {
          Stmt.Enclosing = savedStmt;    // reset Stmt.Enclosing
          return whilenode;              // Return a While node
       case Tag.FOR:
+          For fornode = new For();
+          move();
+          match('(');
+          Env savedEnv = top;
+          top = new Env(top);
 
+          assign();
+          //move();
+          match(';');
+          x = bool();
+          match(';');
+          Stmt y = assign();
+          match(')');
+          s1 = stmt();
+          fornode.init(x, y, s1);
+          top = savedEnv;
+          return fornode;
 
       case Tag.DO:
          Do donode = new Do();
          savedStmt = Stmt.Enclosing; 
          Stmt.Enclosing = donode;
          move();
-         match(Tag.DO);
+         //match(Tag.DO);
          s1 = stmt();
          match(Tag.WHILE); 
          match('('); 
