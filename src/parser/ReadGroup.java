@@ -3,6 +3,7 @@ package parser;
 import lexer.Lexer;
 import lexer.Tag;
 import lexer.Token;
+import symbols.Array;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,7 +23,9 @@ public class ReadGroup {
     private static ArrayList<Token> _expr;         //An array list containing a list of tokens supposed to be a boolean expression
     private static Lexer _lexer;
     private static Token _look;
+    private static String _line;
     private static ReadType _type;
+    private static ArrayList<String> _identifiers;
 
     /**
      * Read a value of grouped tokens from the lexer, return the values in a string seperated by spaces
@@ -33,11 +36,15 @@ public class ReadGroup {
         _type = type;
         _lexer = Lexer.getInstance();
         _expr = new ArrayList<>();
+        _identifiers = new ArrayList<>();
 
         boolean isLastParen = false;
         int open = 0;                   //Count of open parentheses
         int close = 0;                  //Count of closing parentheses
+
         move();                         //Get the first token from the lexer
+
+        _line = Lexer.getInstance().getLine();
 
         if(check('(')){
             _expr.add(_look);
@@ -45,6 +52,7 @@ public class ReadGroup {
 
         match('(');                     //Expressions should be contained within parentheses (calls move if successful throws error otherwise)
         open++;
+
 
         do{
             if(check('(')) {
@@ -74,12 +82,20 @@ public class ReadGroup {
 
         }while(close != open);
 
+        //Get the identifiers found in the boolean expression
+        _identifiers.addAll(Lexer.getIdentifiers());
+
+        //Clear the ArrayList of identifiers
+        //Lexer.clearIdentifiers();
+
         if(_type == ReadType.FOR_LOOP){
             return concatFor();
         }else{
             return concatExpr();
         }
     }
+
+
 
     /**
      * TODO: this can probably be combined with setUniqueGroups eventually.
@@ -134,7 +150,6 @@ public class ReadGroup {
 
     }
 
-
     /**
      * Used to check various situations that could occur
      * @param tag the tag of the token
@@ -173,6 +188,19 @@ public class ReadGroup {
      */
     private static void error(String error){
         throw new Error(error + Lexer.lineCount);
+    }
+
+    public static String getLine(){
+        return _line;
+    }
+
+    public static ArrayList<String> getIdentifiers(){
+        return _identifiers;
+    }
+
+    public static void clearIdentifiers(){
+        _identifiers.clear();
+        Lexer.clearIdentifiers();
     }
 
 }

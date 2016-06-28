@@ -34,6 +34,9 @@ public class Type extends Word {
      * @param words the hashtable to be used by the lexer
      */
     public static void reserveTypes(Hashtable words){
+        if(words == null){
+            words = new Hashtable();
+        }
         words.put(Int.lexeme, Int);
         words.put(Long.lexeme, Long);
         words.put(Float.lexeme, Float);

@@ -33,6 +33,11 @@ public class Phrase extends Token{
      * Initialize the reserved phrases and add all the phrases to this arraylist.
      */
     public static void reservePhrases(Hashtable phrases){
+
+        if(phrases == null){
+            phrases = new Hashtable();
+        }
+
         phrases.put(and.lexeme, and);
         phrases.put(or.lexeme, or);
         phrases.put(eq.lexeme, eq);
