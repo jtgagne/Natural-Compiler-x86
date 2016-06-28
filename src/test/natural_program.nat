@@ -1,6 +1,8 @@
 int a
 int b
 float c
+boolean e
 
-b := 5
-c is 4
+a is 8
+e := false
+b is -a
