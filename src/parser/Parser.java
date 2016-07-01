@@ -1,15 +1,15 @@
 package parser;
-import java.io.*;
-
-import inter.For;
-import lexer.*;
-import symbols.*;
+import java.io.*; 
+import lexer.*; 
+import symbols.*; 
 import inter.*;
 
 /**
  * Parses an input program in language based on from Appendix A in the
  * dragon book. 
- * 
+ *
+ *
+ * AUTHORS: Justin Gagne and Zack Farrer
  */
 public class Parser {
 
@@ -40,10 +40,10 @@ public class Parser {
     }
 
     public void runParser() throws IOException{
-        _forValues = new Iterator();
         lex = Lexer.getInstance();
         move();
         program();
+
     }
 
     /**
@@ -140,21 +140,63 @@ public class Parser {
     * @throws IOException Error somewhere below decls
     */
     public void decls() throws IOException {
-
         while(Tag.isDataType(look.tag) && !Lexer.getInstance().isLastLine()) {
-
+            
+            /** call type() */
             Type p = type();
 
             Token tok = look;
             match(Tag.ID);
+//            if(check(Tag.ID)) {
+//                move();
+//               declared = true;
+//                if (check(Tag.ASSIGNMENT)) {
+//
+//                }
+//            }
 
             /*Create node in syntax tree*/
             Id id = new Id((Word)tok, p, used);
             top.put( tok, id );
             used = used + p.width;
-
-            System.out.printf("Declaration: %s", id.toString());
       }
+   }
+
+    public Stmt fordecls() throws IOException{
+        Stmt stmt;
+        Type p = null;
+        boolean noDeclaration = false;
+        Token tok = look;                   //Get the current token
+
+        if(!check(Tag.INT)){                //Check for declaration
+            if(check(Tag.ID)){
+                p  = top.get(tok).type;     //Set the type of the identifier
+            }
+            match(Tag.ID);
+        }
+
+        else {                            //Type declaration was made
+            p = type();                     //Set the type
+            match(Tag.ID);                  //Match for identifier
+        }
+
+        if(p == null){
+            error("For loop iterator was not initialized near line: " + Lexer.lineCount);
+        }
+
+        //Set the _forId iterator variable to be accessed when making the other expressions
+        _forId = new Id((Word)tok, p, used);
+        _forValues.setIdentifier(_forId);
+
+        top.put(tok, _forId);     //Add the iterator to the top enviornment
+        match(Tag.ASSIGNMENT);  //Ensure assignment operator
+        if(!check(Tag.NUM)){    //Check for a number
+            error("Expected an assignment value near line: " + Lexer.lineCount);
+        }
+        stmt = new Set(_forId, bool());    // Set using the iterator and the number
+        return stmt;
+    }
+
     }
 
 
@@ -215,35 +257,38 @@ public class Parser {
         } else {
             error("Not a valid type");
         }
-
-        /** basic type or array type */
-        if( look.tag != '[' )
-            return t;                  
-        else 
-            return dims(t);            
+//
+//        /** basic type or array type */
+//        if( look.tag != '[' )
+            return t;
+//        else
+//            return dims(t);
     }
 
-    
-    /**
-     * EBNF: dims = "[" num "]" dims
-     * @param t Basic type for the array. 
-     * @return Type Array of either a base type or an array
-     * @throws IOException  Error somewhere below dims
-     */
-    public Type dims(Type t) throws IOException 
-    {
-        match('[');  
-        Token tok = look;
-        match(Tag.NUM);  
-        match(']');
-
-        if( look.tag == '[' )
-            t = dims(t);
-        
-        return new Array(((Num)tok).value, t); // t could be basic type or array, itself...
-   }
-   
-    
+/**
+ *  !!!!! OLD ARRAY STUFF, REMOVE ONCE DOESN'T BREAK THINGS !!!!
+ *
+  */
+//    /**
+//     * EBNF: dims = "[" num "]" dims
+//     * @param t Basic type for the array.
+//     * @return Type Array of either a base type or an array
+//     * @throws IOException  Error somewhere below dims
+//     */
+//    public Type dims(Type t) throws IOException
+//    {
+//        match('[');
+//        Token tok = look;
+//        match(Tag.NUM);
+//        match(']');
+//
+//        if( look.tag == '[' )
+//            t = dims(t);
+//
+//        return new Array(((Num)tok).value, t); // t could be basic type or array, itself...
+//   }
+//
+//
     /**
      * EBNF stmts = stmt stmts
      * @return Stmt Seq object, which is of type Node, and holds a statement and then possibly a sequence of statements.
@@ -274,15 +319,11 @@ public class Parser {
        Stmt assignment = null;
        Stmt update = null;
        Stmt loopThrough = null;
-      
+
       /** save enclosing loop for breaks */
       Stmt savedStmt;         
 
       switch( look.tag ) {
-
-      case ';':
-         move();
-         return Stmt.Null;
 
       case Tag.IF:
           move();
@@ -387,28 +428,35 @@ public class Parser {
     * @throws IOException  Error below assign
     */
     public Stmt assign() throws IOException {
-        Stmt stmt;
-        Token t = look;
-
-        match(Tag.ID);
-
-        Id id = top.get(t);
-        if( id == null )
+      Stmt stmt;  
+      Token t = look;
+      
+      match(Tag.ID);
+      
+      Id id = top.get(t);
+      if( id == null ) 
           error(t.toString() + " undeclared");
 
-        if( look.tag == Tag.ASSIGNMENT) {       // S -> id = E ;
-          move();
-          stmt = new Set(id, bool());           // Set node
-        }
-        else {                                  // S -> L = E ;
-         Access x = offset(id);
-         match('=');
-         stmt = new SetElem(x, bool());         // SetElem node
-        }
+      if( look.tag == Tag.ASSIGNMENT) {           // S -> id = E ;
+         move();  
+         stmt = new Set(id, bool());    // Set node
+      }
+      else {                            // S -> L = E ;
+          error("Syntax error");
+          stmt = null;
 
+          /**
+           *    !!!!!   OLD ARRAY STUFF, REMOVE ONCE DOESN'T BREAK THINGS   !!!!!
+           *
+           * Access x = offset(id);
+           //         match('=');
+           //stmt = new SetElem(x, bool()); // SetElem node
+           */
 
-        //match(';');
-        return stmt;
+      }
+      
+      //match(';');
+      return stmt;
    }
 
    
@@ -464,26 +512,24 @@ public class Parser {
       return n;
    }
 
-/**
-* Create nodes for the relational operators
-* EBNF: rel = expr {(LT | LE | GE| GT) expr}
-* @return Rel node or node returned from expr
-* @throws IOException Error below rel
-*/
-public Expr rel() throws IOException {
-    Expr n = expr();
-    Token tok;
-
-    switch( look.tag ) {
-        case '<': case Tag.LE: case Tag.GE: case '>':
-            tok = look;
-            move();
-            return new Rel(tok,n,expr());    // Rel node
-
+   /**
+    * Create nodes for the relational operators 
+    * EBNF: rel = expr {(LT | LE | GE| GT) expr}
+    * @return Rel node or node returned from expr
+    * @throws IOException Error below rel
+    */
+   public Expr rel() throws IOException {
+      Expr n = expr();
+      
+      switch( look.tag ) {
+        case Tag.LESS: case Tag.LE: case Tag.GE: case Tag.GREATER:
+           Token tok = look;
+           move();  
+           return new Rel(tok,n,expr());    // Rel node
         default:
-            return n;
-    }
-}
+           return n;
+      }
+   }
 
    
    /**
@@ -589,51 +635,71 @@ public Expr rel() throws IOException {
            if( id == null )                         // Not found...
                error(s + " undeclared");
            
-           move();
-           if( look.tag != '[' )
-               return id;                           // Return Id node
-           else 
-               return offset(id);                   // Return Access node
+            move();
+            return id;              // Return Id node
+
+
+          /**
+           *        !!!!!   OLD ARRAY STUFF, REMOVE ONCE DOESN'T BREAK THINGS   !!!!!
+           *
+           * //if( look.tag != '[' )
+                //else
+           //       return offset(id);     // Return Access node
+           *
+           *
+           */
+
       }
    }
 
-   /**
-    * Create a node for accessing an array element (id,subtree for calculating location, and base type of elements)
-    * EBNF:  offset =  "[" bool "]" { "[" bool "]" }
-    * @param id Object of type Id
-    * @return Access Node for accessing an array element (id,subtree for calculating location,and base type of elements)
-    * @throws IOException Error creating a node for array element access
-    */
-    public Access offset(Id id) throws IOException {  
-       
-      Expr iExpr;                                   // Node (expr) for index
-      Expr wExpr;                                   // Node (expr) for width
-      Expr t1, t2; 
-      Expr loc;  
 
-      Type type = id.type;
-      match('[');                                   // first index, I -> [ E ]
-      iExpr = bool();                               // Expression for index
-      match(']');     
-      
-      type = ((Array)type).of;                      // Get type for array elements (may be an array)
-      wExpr = new Constant(type.width);             // width of base type
-      t1 = new Arith(new Token('*'), iExpr, wExpr); // Node for calculation of offset in array (number x width)
-                                                    // of array element
-      loc = t1;
-      
-      while( look.tag == '[' ) {                    // multi-dimensional I -> [E] I
-         match('['); 
-         iExpr = bool();                            // Expression for next index
-         match(']');
-         type = ((Array)type).of;                   // Get base type for array elements (may be an array)
-         wExpr = new Constant(type.width);          // Get width
-         t1 = new Arith(new Token('*'),iExpr,wExpr); // Node for calculation of offset in array (number x width)
-         t2 = new Arith(new Token('+'),loc,t1);     // Node to add offset for this dimension to running offset
-         loc = t2;                                  
-      }
 
-      return new Access(id, loc, type);             // Node for accessing an array element (id,subtree for calculating 
-                                                    // location, and base type of elements)
-   }
+
+    /**
+     * ====================================================================================
+     * !!!!!         ARRAY STUFF, REMOVE ONCE KNOWN TO BE SAFE          !!!!!
+     *
+     * ------------------------------------------------------------------------------------
+     */
+
+
+//   /**
+//    * Create a node for accessing an array element (id,subtree for calculating location, and base type of elements)
+//    * EBNF:  offset =  "[" bool "]" { "[" bool "]" }
+//    * @param id Object of type Id
+//    * @return Access Node for accessing an array element (id,subtree for calculating location,and base type of elements)
+//    * @throws IOException Error creating a node for array element access
+//    */
+//    public Access offset(Id id) throws IOException {
+//
+//      Expr iExpr;                                   // Node (expr) for index
+//      Expr wExpr;                                   // Node (expr) for width
+//      Expr t1, t2;
+//      Expr loc;
+//
+//      Type type = id.type;
+//      match('[');                                   // first index, I -> [ E ]
+//      iExpr = bool();                               // Expression for index
+//      match(']');
+//
+//      type = ((Array)type).of;                      // Get type for array elements (may be an array)
+//      wExpr = new Constant(type.width);             // width of base type
+//      t1 = new Arith(new Token('*'), iExpr, wExpr); // Node for calculation of offset in array (number x width)
+//                                                    // of array element
+//      loc = t1;
+//
+//      while( look.tag == '[' ) {                    // multi-dimensional I -> [E] I
+//         match('[');
+//         iExpr = bool();                            // Expression for next index
+//         match(']');
+//         type = ((Array)type).of;                   // Get base type for array elements (may be an array)
+//         wExpr = new Constant(type.width);          // Get width
+//         t1 = new Arith(new Token('*'),iExpr,wExpr); // Node for calculation of offset in array (number x width)
+//         t2 = new Arith(new Token('+'),loc,t1);     // Node to add offset for this dimension to running offset
+//         loc = t2;
+//      }
+//
+//      return new Access(id, loc, type);             // Node for accessing an array element (id,subtree for calculating
+//                                                    // location, and base type of elements)
+//   }
 }

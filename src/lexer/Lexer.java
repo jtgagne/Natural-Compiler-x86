@@ -4,6 +4,7 @@ package lexer;
  * Provides command lineCount application for testing reserved words for the lexer of Natural
  * Created by Justin Gagne on 6/5/16.
  *
+ * AUTHORS: Justin Gagne and Zack Farrer
  */
 
 import symbols.Array;
@@ -109,7 +110,9 @@ public class Lexer {
 
         //Get the next character
         if(_line != null) {
-            if (_location < _line.length()) {
+            if(_line.length()==0) {
+                readch();
+            }else if (_location < _line.length()) {
                 peek = _line.charAt(_location);
                 _location++;
             }
