@@ -3,7 +3,7 @@ import java.io.*;
 
 import inter.For;
 import lexer.*;
-import symbols.*; 
+import symbols.*;
 import inter.*;
 
 /**
@@ -14,31 +14,36 @@ import inter.*;
 public class Parser {
 
     /** lexical analyzer for this parser */
-   private static Lexer lex;
-   
-   /** lookahead  */
-   private static Token look;
-   
-   /** current or top symbol table */
-   Env top = null;
-   
-   /** storage used for declarations */
-   int used = 0;         
+    private static Lexer lex;
 
-   /**
+    //For loop iterator
+    private static Id _forId;
+    private static Iterator _forValues;
+
+
+    /** lookahead  */
+    private static Token look;
+
+    /** current or top symbol table */
+    Env top = null;
+
+    /** storage used for declarations */
+    int used = 0;
+
+    /**
     * Sets the lexer (from the input parameter) and calls move to get the first token
     * @see Lexer
     * @throws IOException Compiler errors
     */
-   public Parser() throws IOException {
+    public Parser() throws IOException {
 
-   }
+    }
 
     public void runParser() throws IOException{
+        _forValues = new Iterator();
         lex = Lexer.getInstance();
         move();
         program();
-
     }
 
     /**
@@ -130,27 +135,18 @@ public class Parser {
        return s;
     }
     
-   /**
+    /**
     * EBNF: decls = type ID ; { type ID; }
     * @throws IOException Error somewhere below decls
     */
     public void decls() throws IOException {
-        boolean declared = false;
 
         while(Tag.isDataType(look.tag) && !Lexer.getInstance().isLastLine()) {
-            
-            /** call type() */
+
             Type p = type();
 
             Token tok = look;
             match(Tag.ID);
-//            if(check(Tag.ID)) {
-//                move();
-//                declared = true;
-//                if (check(Tag.ASSIGNMENT)) {
-//
-//                }
-//            }
 
             /*Create node in syntax tree*/
             Id id = new Id((Word)tok, p, used);
@@ -159,11 +155,43 @@ public class Parser {
 
             System.out.printf("Declaration: %s", id.toString());
       }
-        if(declared){
-            move();
+    }
+
+
+    public Stmt fordecls() throws IOException{
+        Stmt stmt;
+        Type p = null;
+        boolean noDeclaration = false;
+        Token tok = look;                   //Get the current token
+
+        if(!check(Tag.INT)){                //Check for declaration
+            if(check(Tag.ID)){
+                p  = top.get(tok).type;     //Set the type of the identifier
+            }
+            match(Tag.ID);
         }
-    //move();
-   }
+
+        else {                            //Type declaration was made
+            p = type();                     //Set the type
+            match(Tag.ID);                  //Match for identifier
+        }
+
+        if(p == null){
+            error("For loop iterator was not initialized near line: " + Lexer.lineCount);
+        }
+
+        //Set the _forId iterator variable to be accessed when making the other expressions
+        _forId = new Id((Word)tok, p, used);
+        _forValues.setIdentifier(_forId);
+
+        top.put(tok, _forId);     //Add the iterator to the top enviornment
+        match(Tag.ASSIGNMENT);  //Ensure assignment operator
+        if(!check(Tag.NUM)){    //Check for a number
+            error("Expected an assignment value near line: " + Lexer.lineCount);
+        }
+        stmt = new Set(_forId, bool());    // Set using the iterator and the number
+        return stmt;
+    }
 
 
     private boolean check(int tag){
@@ -240,6 +268,12 @@ public class Parser {
    {
       Expr x;  
       Stmt s, s1, s2;
+
+       //For for loops
+       Expr condition = null;
+       Stmt assignment = null;
+       Stmt update = null;
+       Stmt loopThrough = null;
       
       /** save enclosing loop for breaks */
       Stmt savedStmt;         
@@ -275,24 +309,6 @@ public class Parser {
          whilenode.init(x, s1);
          Stmt.Enclosing = savedStmt;    // reset Stmt.Enclosing
          return whilenode;              // Return a While node
-<<<<<<< Updated upstream
-      case Tag.FOR:
-          For fornode = new For();
-          move();
-          match('(');
-          Env savedEnv = top;
-          top = new Env(top);
-
-          assign();
-          //move();
-          match(';');
-          x = bool();
-          match(';');
-          Stmt y = assign();
-          match(')');
-          s1 = stmt();
-          fornode.init(x, y, s1);
-          top = savedEnv;
 
       case Tag.FOR:
           For fornode = new For();
@@ -300,12 +316,40 @@ public class Parser {
           Stmt.Enclosing = fornode;
           move();
           match('(');
-          x = bool();
+
+          Env savedEnv = top;
+          top = new Env(top);
+          if(check(')')){
+              condition = new Expr(new Token(Tag.TRUE), Type.Bool);
+              loopThrough = stmt();
+              fornode.init(condition, assignment, update, loopThrough);
+              return fornode;
+          }
+
+          assignment = fordecls();   //Assignment node
+          if (!check(Tag.TO)){
+            error("Expected a target value in for loop");
+          }
+
+          condition = equality();   //set the equality node
+
+          //No increase or decrease
+          if(!check(Tag.INCREASE) && !check(Tag.DECREASE)){
+              error("Expected increase by or decrease by in for loop near line: " + Lexer.lineCount);
+          }
+
+          move();
+          update = new Set(_forId, bool());
+
           match(')');
-          s1 = stmt();
-          fornode.init(x, s1);
+
+          loopThrough = stmt();
+
+          fornode.init(condition, assignment, update, loopThrough);
+          top = savedEnv;
           Stmt.Enclosing = savedStmt;
           return fornode;
+
 
       case Tag.DO:
          Do donode = new Do();
@@ -352,19 +396,16 @@ public class Parser {
         if( id == null )
           error(t.toString() + " undeclared");
 
-        if( look.tag == Tag.ASSIGNMENT) {           // S -> id = E ;
+        if( look.tag == Tag.ASSIGNMENT) {       // S -> id = E ;
           move();
-          stmt = new Set(id, bool());    // Set node
-
+          stmt = new Set(id, bool());           // Set node
         }
-        else {                            // S -> L = E ;
+        else {                                  // S -> L = E ;
          Access x = offset(id);
          match('=');
-         stmt = new SetElem(x, bool()); // SetElem node
+         stmt = new SetElem(x, bool());         // SetElem node
         }
 
-
-        System.out.printf()
 
         //match(';');
         return stmt;
@@ -414,8 +455,8 @@ public class Parser {
     */
    public Expr equality() throws IOException {
       Expr n = rel();
-      
-      while( look.tag == Tag.EQ || look.tag == Tag.NE ) {
+
+      while( look.tag == Tag.EQ || look.tag == Tag.NE || look.tag == Tag.TO) {
          Token tok = look;
          move();  
          n = new Rel(tok, n, rel());        // Rel node
@@ -423,24 +464,26 @@ public class Parser {
       return n;
    }
 
-   /**
-    * Create nodes for the relational operators 
-    * EBNF: rel = expr {(LT | LE | GE| GT) expr}
-    * @return Rel node or node returned from expr
-    * @throws IOException Error below rel
-    */
-   public Expr rel() throws IOException {
-      Expr n = expr();
-      
-      switch( look.tag ) {
+/**
+* Create nodes for the relational operators
+* EBNF: rel = expr {(LT | LE | GE| GT) expr}
+* @return Rel node or node returned from expr
+* @throws IOException Error below rel
+*/
+public Expr rel() throws IOException {
+    Expr n = expr();
+    Token tok;
+
+    switch( look.tag ) {
         case '<': case Tag.LE: case Tag.GE: case '>':
-           Token tok = look;
-           move();  
-           return new Rel(tok,n,expr());    // Rel node
+            tok = look;
+            move();
+            return new Rel(tok,n,expr());    // Rel node
+
         default:
-           return n;
-      }
-   }
+            return n;
+    }
+}
 
    
    /**

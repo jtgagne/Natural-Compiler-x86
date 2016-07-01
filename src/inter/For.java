@@ -3,34 +3,44 @@ import symbols.*;
 
 public class For extends Stmt
 {
-    Stmt assigned;
-    Expr expr;
-    Stmt stmt;
+    Expr breakCondition;
+    Stmt assignment;
+    Stmt updateCondition;
+    Stmt loopContent;
 
     public For()
     {
-        assigned = null;
-        expr = null;
-        stmt = null;
+        assignment = null;
+        breakCondition = null;
+        updateCondition = null;
+        loopContent = null;
     }
 
-    public void init(Expr x, Stmt y,Stmt s)
+
+    /**
+     *
+     * @param condition The boolean break condition of the for loop.
+     * @param assign the assignment of the loop variable to and initial value
+     * @param update updating the iterator
+     */
+    public void init(Expr condition, Stmt assign, Stmt update, Stmt loop)
     {
-        assigned = y;
-        expr = x;
-        stmt = s;
-        if( expr.type != Type.Bool )
-            expr.error("boolean required in while");
+        assignment = assign;
+        breakCondition = condition;
+        updateCondition = update;
+        loopContent = loop;
+        if( breakCondition.type != Type.Bool )
+            breakCondition.error("boolean required in while");
     }
 
     @Override
     public void gen(int b, int a)
     {
         after = a;                                // save label a
-        expr.jumping(0, a);
+        breakCondition.jumping(0, a);
         int label = newlabel();                   // label for stmt
         emitlabel(label);
-        stmt.gen(label, b);
+        loopContent.gen(label, b);
         emit("goto L" + b);
     }
 }

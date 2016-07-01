@@ -1,4 +1,10 @@
 int a
+
+for(int x is 1 to 6 increase by 1){
+    int age
+    age = 21 + x
+}
+
 int b
 int i
 float c
@@ -8,6 +14,7 @@ float c
 int q
 q := 3
 b := -a
+
 while(true){
     boolean d
     d is true

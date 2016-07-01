@@ -1,6 +1,5 @@
 package parser;
 
-import inter.For;
 import lexer.Lexer;
 
 import java.io.IOException;
@@ -59,10 +58,10 @@ public class Test {
 
     private static void testForSyntax() throws IOException{
 
-//        while(Lexer.getInstance().hasNext()){
-//            For.evaluateSyntax();
-//            For.printOutput();
-//        }
+        while(Lexer.getInstance().hasNext()){
+            For.evaluateSyntax();
+            For.printOutput();
+        }
 
     }
 
