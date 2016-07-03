@@ -16,7 +16,7 @@ public class Phrase extends Token{
             and = new Phrase("and", Tag.AND),
             or = new Phrase( "or", Tag.OR),
             eq = new Phrase( "equal to", Tag.EQ),
-            ne = new Phrase( "not equal to", Tag.EQ),
+            ne = new Phrase( "not equal to", Tag.NE),
             le = new Phrase( "less than or equal to", Tag.LE),
             ge = new Phrase( "greater than or equal to", Tag.GE),
             gt = new Phrase("greater than", Tag.GREATER),

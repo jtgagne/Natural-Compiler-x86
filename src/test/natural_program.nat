@@ -3,16 +3,21 @@ int b is 4
 boolean e is false
 int q := 7
 
-for(a := 4; a less than 6; a increase by 1){
+if(a not equal to b){
+    a is b + 1
+}
+
+for(a := 4; not(a less than 6); a increase by 1){
     int test is 2
     test is test + 2
 }
 
 a is 4
 b is 6
-if(a less than b){
+if(a less than or equal to b){
     a is b + 1
 }
+
 
 #
 float c

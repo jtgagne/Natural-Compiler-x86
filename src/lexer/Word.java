@@ -55,7 +55,7 @@ public class Word extends Token {
         equal 	    = new Word( "equal", Tag.EQ, Tag.INITIALIZER),
         equals      = new Word( "equals", Tag.EQ),                              //if(a equals b)
         to 	        = new Word( "to", Tag.TO, Tag.TERMINAL),                    //This can only occur at the end of a _phrase
-        not         = new Word( "not", Tag.NOT, Tag.TERMINAL),
+        not         = new Word( "not", Tag.NOT, Tag.INITIALIZER),
         less        = new Word( "less", Tag.LESS, Tag.INITIALIZER),             //Initializer means that it must be the the start of a new _phrase to be valid
         than        = new Word( "than", Tag.THAN, Tag.TERMINAL),
         greater     = new Word( "greater", Tag.GREATER, Tag.INITIALIZER),

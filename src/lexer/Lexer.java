@@ -315,17 +315,22 @@ public class Lexer {
      */
     private Token readPhrase(Token initialWord) throws IOException{
         Word initializer = null;
+        Phrase phrase;
 
-        if(initialWord.isWord()){
-            initializer = (Word) initialWord;
-        }
-
+        if(initialWord.isWord()){ initializer = (Word) initialWord; }
         if(initializer == null){ phraseError();}
 
         StringBuilder builder = new StringBuilder();
         builder.append(initializer.lexeme);             //Add the initializer lexeme
-        builder.append(' ');                            //Add a space.
+        phrase = (Phrase) phrases.get(builder.toString().trim());
 
+        if(phrase != null && phrase == Phrase.not){
+            builder = makeLongPhrase(builder);
+            phrase = (Phrase)phrases.get(builder.toString());
+            return phrase;
+        }
+
+        builder.append(' ');                            //Add a space.
         //Read the next char.
         readch();
 
@@ -333,39 +338,63 @@ public class Lexer {
 
         do {
             builder.append(peek);
-
-            //A phrase was found, it should break.
-            if(phrases.get(builder.toString()) != null){
+            if(phrases.get(builder.toString()) != null){                                            //A phrase was found, it should break.
+                phrase = (Phrase) phrases.get(builder.toString().trim());
+                if(phrase == Phrase.lt || phrase == Phrase.gt || phrase == Phrase.not){             //Less than | greater than. check for "or equal to"
+                    builder = makeLongPhrase(builder);
+                }
                 readch();
                 break;
             }
-
-            //If we have already reached the last accessible index in the line it needs to break
-            if(_location == _line.length() ){
-
-
-                //if next line is not null set peek to the next char in the new line
-                if(_nextline != null){
+            if(_location == _line.length()){             // Already reached the last accessible index, break
+                if(_nextline != null){                   // Update peek if there is another line
                     readch();
-                }else{
-                    peek = Tag.END;
-                }
-
+                } else { peek = Tag.END; }
                 break;
             }
-
             readch();
 
         } while(Character.isLetterOrDigit(peek) && peek != '\n' && peek != '\t' && peek != ' ');
 
         //Check for correct phrase.
-        Phrase phrase = (Phrase) phrases.get(builder.toString());
+        phrase = (Phrase) phrases.get(builder.toString());
 
         if(phrase == null){
             throw new Error("Incorrect phrase near line: " + Lexer.lineCount);
         }
-
         return phrase;
+    }
+
+    private StringBuilder makeLongPhrase(StringBuilder builder) throws IOException{
+
+        String readAhead = _line.substring(_location);          // Read ahead of current location
+        int offset = readAhead.length();                        // Offset to keep track of potential white space characters
+        readAhead = readAhead.trim();
+        offset = offset - readAhead.length();                   // Set the offset value after trimming
+
+        String orEq = "or equal to";
+        String eq = "equal to";
+        int len;                                                // Length of the string being checked for
+
+        if(readAhead.contains(orEq)){
+            len = orEq.length();
+        } else if(readAhead.contains(eq)){
+            len = eq.length();
+        } else{
+            return builder;
+        }
+
+        readAhead = readAhead.substring(0, len);                // Find if the string has the desired substring
+
+        if(!readAhead.contains(orEq) && !readAhead.contains(eq)){
+            return builder;
+        }
+
+        builder.append(" ");
+        builder.append(readAhead);
+        _location = _location + len + offset;
+
+        return builder;
     }
 
     /**
