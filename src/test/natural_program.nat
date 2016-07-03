@@ -1,11 +1,11 @@
-int a
-int b
-boolean e
-int q
+int a is 10
+int b is 4
+boolean e is false
+int q := 7
 
 for(a := 4; a less than 6; a increase by 1){
-    int thisIsABitch
-     thisIsABitch is 2
+    int test is 2
+    test is test + 2
 }
 
 a is 4

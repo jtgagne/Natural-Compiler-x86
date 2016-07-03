@@ -1,5 +1,7 @@
 package parser;
 import java.io.*;
+import java.util.ArrayList;
+
 import lexer.*;
 import symbols.*;
 import inter.*;
@@ -16,11 +18,11 @@ public class Parser {
     /** lexical analyzer for this parser */
     private static Lexer lex;
 
-    //For loop iterator
-    private static Id _forId;
-
     /** lookahead  */
     private static Token look;
+
+    private static ArrayList<Stmt> _assignments = null;    //For assignments that occur during declaration
+    private static int _assignmentNum = 0;
 
     /** current or top symbol table */
     Env top = null;
@@ -38,10 +40,10 @@ public class Parser {
     }
 
     public void runParser() throws IOException{
+        _assignments = new ArrayList<>();
         lex = Lexer.getInstance();
         move();
         program();
-
     }
 
     /**
@@ -92,21 +94,11 @@ public class Parser {
         try{
             decls();
             savedEnv = top;
-            //move();
             s = stmts();
         }catch (Exception e){
             System.err.printf("Null");
         }
-        //s.gen(1,2);
         top = savedEnv;
-        /*
-        int begin = s.newlabel();
-        int after = s.newlabel();
-        s.emitlabel(begin);
-        s.gen(begin, after);
-        s.emitlabel(after);
-        */
-
     }
 
 
@@ -146,13 +138,17 @@ public class Parser {
 
             Token tok = look;
             match(Tag.ID);
-            //move();
 
             /*Create node in syntax tree*/
             Id id = new Id((Word)tok, p, used);
             top.put( tok, id );
             used = used + p.width;
 
+            if(check(Tag.ASSIGNMENT) || check(Tag.INCREASE) || check(Tag.DECREASE)){
+                move();
+                Stmt stmt = new Set(id, bool());
+                _assignments.add(stmt);             //Add an assignment node to the ArrayList
+            }
         }
     }
 
@@ -184,15 +180,15 @@ public class Parser {
         }
 
         //Set the _forId iterator variable to be accessed when making the other expressions
-        _forId = new Id((Word)tok, p, used);
+        Id id = new Id((Word)tok, p, used);
 
-        top.put(tok, _forId);     //Add the iterator to the top enviornment
+        top.put(tok, id);     //Add the iterator to the top enviornment
         match(Tag.ASSIGNMENT);  //Ensure assignment operator
         if(!check(Tag.NUM)){    //Check for a number
             error("Expected an assignment value near line: " + Lexer.lineCount);
         }
 
-        stmt = new Set(_forId, factor());    // Set the iterator and the number
+        stmt = new Set(id, factor());    // Set the iterator and the number
 
         return stmt;
     }
@@ -230,10 +226,19 @@ public class Parser {
      */
     public Stmt stmts() throws IOException
     {
-      if ( look.tag == '}' || look.tag == Tag.END)
-          return Stmt.Null;
-      else
-          return new Seq(stmt(), stmts());
+        if(_assignmentNum < _assignments.size()){           //Add nodes for all assignments that occurred during declarations
+            Stmt stmt = _assignments.get(_assignmentNum);
+            _assignmentNum++;
+            if(_assignmentNum == _assignments.size()){
+                _assignmentNum = 0;
+                _assignments.clear();
+            }
+            return new Seq(stmt, stmts());
+        }
+        if ( look.tag == '}' || look.tag == Tag.END)
+            return Stmt.Null;
+        else
+            return new Seq(stmt(), stmts());
     }
 
 
@@ -567,14 +572,6 @@ public class Parser {
                 n = Constant.False;
                 move();
                 return n;                                // Return Constant node
-
-            case Tag.TO:
-                move();
-                if(!check(Tag.NUM)){
-                    error("Missing to statement near line: " + Lexer.lineCount);
-                }
-                n = new Rel(new Token(Tag.TO), _forId, factor());
-                return n;
 
             default:
                 error("syntax error");
