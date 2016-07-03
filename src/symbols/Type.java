@@ -10,6 +10,16 @@ import java.util.Hashtable;
 public class Type extends Word {
     public int width = 0;          // width is used for storage allocation
 
+    @Override
+    public boolean isType() {
+        return true;
+    }
+
+    @Override
+    public boolean isWord() {
+        return false;
+    }
+
     public Type(String s, int tag, int w)
     {
         super(s, tag);

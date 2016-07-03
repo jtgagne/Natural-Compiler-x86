@@ -1,12 +1,12 @@
 package parser;
-import java.io.*; 
-import lexer.*; 
-import symbols.*; 
+import java.io.*;
+import lexer.*;
+import symbols.*;
 import inter.*;
 
 /**
  * Parses an input program in language based on from Appendix A in the
- * dragon book. 
+ * dragon book.
  *
  *
  * AUTHORS: Justin Gagne and Zack Farrer
@@ -18,8 +18,6 @@ public class Parser {
 
     //For loop iterator
     private static Id _forId;
-    private static Iterator _forValues;
-
 
     /** lookahead  */
     private static Token look;
@@ -50,10 +48,10 @@ public class Parser {
      * Calls the scan method of the Lexer to get the next token and assigns the next
      * token to the class variable look.
      * @see Lexer
-     * @throws IOException Error scanning in token from lexer. 
+     * @throws IOException Error scanning in token from lexer.
      */
     private static void move() throws IOException {
-        look = lex.scan();
+        look = Lexer.getInstance().scan();
     }
 
 
@@ -82,10 +80,10 @@ public class Parser {
     /**
     * EBNF : program = block
     * Start symbol for the grammar
-    * @throws IOException Error in program 
+    * @throws IOException Error in program
     */
     public void program() throws IOException {
-       
+
         /** block() returns node of type Stmt */
         //Stmt s = block();
         Env savedEnv = null;
@@ -102,70 +100,71 @@ public class Parser {
         //s.gen(1,2);
         top = savedEnv;
         /*
-        int begin = s.newlabel();  
+        int begin = s.newlabel();
         int after = s.newlabel();
-        s.emitlabel(begin);  
-        s.gen(begin, after);  
+        s.emitlabel(begin);
+        s.gen(begin, after);
         s.emitlabel(after);
         */
-      
+
     }
 
-   
+
     /**
      * EBNF: block = { decls stmts }
-     * @return Stmt root of syntax tree 
+     * @return Stmt root of syntax tree
      * @throws IOException Error somewhere below block
      */
-    public Stmt block() throws IOException {  
-      
-       match('{');  
-       
-       Env savedEnv = top;  
+    public Stmt block() throws IOException {
+
+       match('{');
+
+       Env savedEnv = top;
        top = new Env(top);
-      
+
        decls();
         //move();
        Stmt s = stmts();
-      
-       match('}');  
-       
+
+       match('}');
+
        top = savedEnv;
-      
+
        return s;
     }
-    
+
     /**
     * EBNF: decls = type ID ; { type ID; }
     * @throws IOException Error somewhere below decls
     */
     public void decls() throws IOException {
+
         while(Tag.isDataType(look.tag) && !Lexer.getInstance().isLastLine()) {
-            
+
             /** call type() */
             Type p = type();
 
             Token tok = look;
             match(Tag.ID);
-//            if(check(Tag.ID)) {
-//                move();
-//               declared = true;
-//                if (check(Tag.ASSIGNMENT)) {
-//
-//                }
-//            }
+            //move();
 
             /*Create node in syntax tree*/
             Id id = new Id((Word)tok, p, used);
             top.put( tok, id );
             used = used + p.width;
-      }
-   }
 
+        }
+    }
+
+
+    /**
+     * Returns an assignment node for a for loop, tested and works
+     * @return assignment node for the for loop iterator
+     * @throws IOException
+     */
     public Stmt fordecls() throws IOException{
         Stmt stmt;
         Type p = null;
-        boolean noDeclaration = false;
         Token tok = look;                   //Get the current token
 
         if(!check(Tag.INT)){                //Check for declaration
@@ -186,55 +185,17 @@ public class Parser {
 
         //Set the _forId iterator variable to be accessed when making the other expressions
         _forId = new Id((Word)tok, p, used);
-        _forValues.setIdentifier(_forId);
 
         top.put(tok, _forId);     //Add the iterator to the top enviornment
         match(Tag.ASSIGNMENT);  //Ensure assignment operator
         if(!check(Tag.NUM)){    //Check for a number
             error("Expected an assignment value near line: " + Lexer.lineCount);
         }
-        stmt = new Set(_forId, bool());    // Set using the iterator and the number
+
+        stmt = new Set(_forId, factor());    // Set the iterator and the number
+
         return stmt;
     }
-
-    }
-
-
-    public Stmt fordecls() throws IOException{
-        Stmt stmt;
-        Type p = null;
-        boolean noDeclaration = false;
-        Token tok = look;                   //Get the current token
-
-        if(!check(Tag.INT)){                //Check for declaration
-            if(check(Tag.ID)){
-                p  = top.get(tok).type;     //Set the type of the identifier
-            }
-            match(Tag.ID);
-        }
-
-        else {                            //Type declaration was made
-            p = type();                     //Set the type
-            match(Tag.ID);                  //Match for identifier
-        }
-
-        if(p == null){
-            error("For loop iterator was not initialized near line: " + Lexer.lineCount);
-        }
-
-        //Set the _forId iterator variable to be accessed when making the other expressions
-        _forId = new Id((Word)tok, p, used);
-        _forValues.setIdentifier(_forId);
-
-        top.put(tok, _forId);     //Add the iterator to the top enviornment
-        match(Tag.ASSIGNMENT);  //Ensure assignment operator
-        if(!check(Tag.NUM)){    //Check for a number
-            error("Expected an assignment value near line: " + Lexer.lineCount);
-        }
-        stmt = new Set(_forId, bool());    // Set using the iterator and the number
-        return stmt;
-    }
-
 
     private boolean check(int tag){
         if(look.tag == tag){
@@ -243,9 +204,9 @@ public class Parser {
         return false;
     }
 
-    
+
     /**
-     * EBNF:  type = basic [ dims ] 
+     * EBNF:  type = basic [ dims ]
      * @return
      * @throws IOException Error somewhere below type
      */
@@ -257,38 +218,11 @@ public class Parser {
         } else {
             error("Not a valid type");
         }
-//
-//        /** basic type or array type */
-//        if( look.tag != '[' )
             return t;
-//        else
-//            return dims(t);
+
     }
 
-/**
- *  !!!!! OLD ARRAY STUFF, REMOVE ONCE DOESN'T BREAK THINGS !!!!
- *
-  */
-//    /**
-//     * EBNF: dims = "[" num "]" dims
-//     * @param t Basic type for the array.
-//     * @return Type Array of either a base type or an array
-//     * @throws IOException  Error somewhere below dims
-//     */
-//    public Type dims(Type t) throws IOException
-//    {
-//        match('[');
-//        Token tok = look;
-//        match(Tag.NUM);
-//        match(']');
-//
-//        if( look.tag == '[' )
-//            t = dims(t);
-//
-//        return new Array(((Num)tok).value, t); // t could be basic type or array, itself...
-//   }
-//
-//
+
     /**
      * EBNF stmts = stmt stmts
      * @return Stmt Seq object, which is of type Node, and holds a statement and then possibly a sequence of statements.
@@ -302,16 +236,16 @@ public class Parser {
           return new Seq(stmt(), stmts());
     }
 
-   
+
     /**
      * BNF: Stmt =  L=E; | if(B) S | if(B) S else S | while(B) S
      *              | do S while (B); | break; | { DD SS }
      * @return Stmt A node for specific statement type that is parsed.
      * @throws IOException  Error below stmt
      */
-   public Stmt stmt() throws IOException 
+   public Stmt stmt() throws IOException
    {
-      Expr x;  
+      Expr x;
       Stmt s, s1, s2;
 
        //For for loops
@@ -321,7 +255,7 @@ public class Parser {
        Stmt loopThrough = null;
 
       /** save enclosing loop for breaks */
-      Stmt savedStmt;         
+      Stmt savedStmt;
 
       switch( look.tag ) {
 
@@ -335,12 +269,12 @@ public class Parser {
               return new If(x, s1);
           match(Tag.ELSE);
           s2 = stmt();
-         
+
          return new Else(x, s1, s2);    // return an Else node
 
       case Tag.WHILE:
          While whilenode = new While();
-         savedStmt = Stmt.Enclosing; 
+         savedStmt = Stmt.Enclosing;
          Stmt.Enclosing = whilenode;
          move();
          match('(');
@@ -357,7 +291,6 @@ public class Parser {
           Stmt.Enclosing = fornode;
           move();
           match('(');
-
           Env savedEnv = top;
           top = new Env(top);
           if(check(')')){
@@ -366,50 +299,36 @@ public class Parser {
               fornode.init(condition, assignment, update, loopThrough);
               return fornode;
           }
-
           assignment = fordecls();   //Assignment node
-          if (!check(Tag.TO)){
-            error("Expected a target value in for loop");
-          }
-
-          condition = equality();   //set the equality node
-
-          //No increase or decrease
-          if(!check(Tag.INCREASE) && !check(Tag.DECREASE)){
-              error("Expected increase by or decrease by in for loop near line: " + Lexer.lineCount);
-          }
-
-          move();
-          update = new Set(_forId, bool());
-
+          match(';');
+          condition = bool();
+          match(';');
+          update = assign();
           match(')');
-
           loopThrough = stmt();
-
           fornode.init(condition, assignment, update, loopThrough);
           top = savedEnv;
           Stmt.Enclosing = savedStmt;
           return fornode;
 
-
       case Tag.DO:
          Do donode = new Do();
-         savedStmt = Stmt.Enclosing; 
+         savedStmt = Stmt.Enclosing;
          Stmt.Enclosing = donode;
          move();
          //match(Tag.DO);
          s1 = stmt();
-         match(Tag.WHILE); 
-         match('('); 
-         x = bool(); 
-         match(')'); 
+         match(Tag.WHILE);
+         match('(');
+         x = bool();
+         match(')');
          //match(';');
          donode.init(s1, x);
          Stmt.Enclosing = savedStmt;    // reset Stmt.Enclosing
          return donode;                 // Return a Do node
 
       case Tag.BREAK:
-         match(Tag.BREAK); 
+         match(Tag.BREAK);
          match(';');
          return new Break();
 
@@ -421,45 +340,51 @@ public class Parser {
       }
    }
 
- 
+
    /**
     * EBNF: assign =  (id | L ) = bool;
     * @return Either a Set or SetElem (for array elements) Node
     * @throws IOException  Error below assign
     */
     public Stmt assign() throws IOException {
-      Stmt stmt;  
+      Stmt stmt;
       Token t = look;
-      
+
       match(Tag.ID);
-      
+
       Id id = top.get(t);
-      if( id == null ) 
+
+      if( id == null )
           error(t.toString() + " undeclared");
 
       if( look.tag == Tag.ASSIGNMENT) {           // S -> id = E ;
-         move();  
+         move();
          stmt = new Set(id, bool());    // Set node
       }
+
+      else if(look.tag == Tag.INCREASE){
+          //Update statement
+          move();                                       // Get next token
+          Token addition = new Token('+');              // Create an addition token corresponding to increase tag
+          Token num = look;                             // Access current token which should be a number
+          match(Tag.NUM);                               // Match for a whole number after an increase by tag
+          Expr variable = new Expr(id.op, id.type);     // New expression containing the previously found variable
+          Expr number = new Expr(num, Type.Int);        // New expression containing the number that was found
+          Arith arith = new Arith(addition, variable, number);           // New Arithmetic node: variable addition number
+          stmt = new Set(id, arith);                    // id = id + number
+      }
+
       else {                            // S -> L = E ;
           error("Syntax error");
           stmt = null;
 
-          /**
-           *    !!!!!   OLD ARRAY STUFF, REMOVE ONCE DOESN'T BREAK THINGS   !!!!!
-           *
-           * Access x = offset(id);
-           //         match('=');
-           //stmt = new SetElem(x, bool()); // SetElem node
-           */
-
       }
-      
+
       //match(';');
       return stmt;
    }
 
-   
+
    /**
      * Create node for logical OR operator
      *   EBNF bool = join { OR join }
@@ -471,15 +396,15 @@ public class Parser {
       Expr n = join();
       while( look.tag == Tag.OR ) {
          Token tok = look;
-         move();  
+         move();
          n = new Or(tok, n, join());    // OR node
       }
       return n;
    }
 
-   
+
    /**
-    * Create nodes for logical AND operator 
+    * Create nodes for logical AND operator
     *   EBNF: join = equality { AND equality }
     * @return And node
     * @throws IOException  Error below join
@@ -488,13 +413,13 @@ public class Parser {
       Expr n = equality();
       while( look.tag == Tag.AND ) {
          Token tok = look;
-         move();  
+         move();
          n = new And(tok, n, equality());
       }
       return n;
    }
 
-   
+
    /**
     * Create nodes for equality operators (equal and not equal)
     * EBNF: equality =  rel {(equal to | Not equal to) rel}
@@ -504,34 +429,38 @@ public class Parser {
    public Expr equality() throws IOException {
       Expr n = rel();
 
-      while( look.tag == Tag.EQ || look.tag == Tag.NE || look.tag == Tag.TO) {
-         Token tok = look;
-         move();  
-         n = new Rel(tok, n, rel());        // Rel node
+      while( look.tag == Tag.EQ || look.tag == Tag.NE) {
+          Token tok = look;
+          move();
+          n = new Rel(tok, n, rel());        // Rel node
       }
       return n;
    }
 
+
    /**
-    * Create nodes for the relational operators 
+    * Create nodes for the relational operators
     * EBNF: rel = expr {(LT | LE | GE| GT) expr}
     * @return Rel node or node returned from expr
     * @throws IOException Error below rel
     */
    public Expr rel() throws IOException {
-      Expr n = expr();
-      
-      switch( look.tag ) {
-        case Tag.LESS: case Tag.LE: case Tag.GE: case Tag.GREATER:
-           Token tok = look;
-           move();  
-           return new Rel(tok,n,expr());    // Rel node
+       Token tok;
+
+       Expr n = expr();
+
+       switch( look.tag ) {
+          case Tag.LESS: case Tag.LE: case Tag.GE: case Tag.GREATER:
+               tok = look;
+               move();
+               return new Rel(tok,n,expr());    // Rel node
+
         default:
            return n;
       }
    }
 
-   
+
    /**
     * Parse and create a node for the arithmetic operators + and -
     * EBNF: expr = term {(+ | -) term}
@@ -539,17 +468,33 @@ public class Parser {
     * @throws IOException Error below expr
     */
     public Expr expr() throws IOException {
-      Expr n = term();
-      
-      while( look.tag == '+' || look.tag == '-' ) {
-         Token tok = look;
-         move();  
-         n = new Arith(tok, n, term());     // Arith node
+        Expr n = term();
+        Token tok;
+
+        while( look.tag == '+' || look.tag == '-' || look.tag == Tag.INCREASE || look.tag == Tag.DECREASE) {
+
+            if(look.tag == Tag.INCREASE){
+                tok = new Token((int)'+');
+            }
+
+            else if(look.tag == Tag.DECREASE){
+                tok = new Token((int)'-');
+            }
+
+            else{
+                tok = look;
+            }
+            move();
+
+            n = new Arith(tok, n, term());     // Arith node
       }
+
       return n;
    }
 
-   
+
+
+
    /**
     * Parse and create a node for the arithmetic operators * and /
     * EBNF: term = unary {(* | /) unary}
@@ -560,32 +505,32 @@ public class Parser {
       Expr n = unary();
       while(look.tag == '*' || look.tag == '/' ) {
          Token tok = look;
-         move();   
+         move();
          n = new Arith(tok, n, unary());    // Arith node
       }
       return n;
    }
 
    /**
-    * Parse and create a node for the unary operators 
+    * Parse and create a node for the unary operators
     * EBNF: unary = {(- | !)} factor
     * @return Unary, Not nodes or node returned from factor()
     * @throws IOException Error below unary
     */
     public Expr unary() throws IOException {
-       
+
       if( look.tag == Tag.MINUS) {
-         move();  
+         move();
          return new Unary(Word.minus, unary());     // Return Unary node
       }
       else if( look.tag == Tag.NOT ) {
          Token tok = look;
-         move();  
+         move();
          return new Not(tok, unary());              // Return Not node
       }
       else return factor();
    }
-   
+
    /**
     * Parse for factor
     * EBNF: factor = (bool) | num | real | true | false | ID { "[" bool "]" }
@@ -593,50 +538,58 @@ public class Parser {
     * @throws IOException Error below factor
     */
     public Expr factor() throws IOException {
-      Expr n = null;
-      
-      switch( look.tag ) {
-          
-        case '(':
-           move(); 
-           n = bool();                              // Subexpression
-           match(')');
-           return n;                                
+        Expr n = null;
 
-        case Tag.NUM:
-           n = new Constant(look, Type.Int);        // Return Constant node
-           move(); 
-           return n;
+        switch( look.tag ) {
 
-        case Tag.REAL:
-           n = new Constant(look, Type.Float);      // Return Constant node
-           move(); 
-           return n;
+            case '(':
+                move();
+                n = bool();                              // Subexpression
+                match(')');
+                return n;
 
-        case Tag.TRUE:
-           n = Constant.True;                       // Return Constant node
-           move();
-           return n;
+            case Tag.NUM:
+                n = new Constant(look, Type.Int);        // Return Constant node
+                move();
+                return n;
 
-        case Tag.FALSE:
-           n = Constant.False;                  
-           move(); 
-           return n;                                // Return Constant node
+            case Tag.REAL:
+                n = new Constant(look, Type.Float);      // Return Constant node
+                move();
+                return n;
 
-        default:
-           error("syntax error");
-           return n;
+            case Tag.TRUE:
+                n = Constant.True;                       // Return Constant node
+                move();
+                return n;
 
-        case Tag.ID:
-           String s = look.toString();
-           
-           Id id = top.get(look);                   // Lookup in symbol table
-           
-           if( id == null )                         // Not found...
-               error(s + " undeclared");
-           
-            move();
-            return id;              // Return Id node
+            case Tag.FALSE:
+                n = Constant.False;
+                move();
+                return n;                                // Return Constant node
+
+            case Tag.TO:
+                move();
+                if(!check(Tag.NUM)){
+                    error("Missing to statement near line: " + Lexer.lineCount);
+                }
+                n = new Rel(new Token(Tag.TO), _forId, factor());
+                return n;
+
+            default:
+                error("syntax error");
+                return n;
+
+            case Tag.ID:
+                String s = look.toString();
+
+                Id id = top.get(look);                   // Lookup in symbol table
+
+                if( id == null )                         // Not found...
+                error(s + " undeclared");
+
+                move();
+                return id;              // Return Id node
 
 
           /**

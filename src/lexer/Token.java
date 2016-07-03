@@ -34,4 +34,15 @@ public class Token {
             return "TOKEN: tag is " + (char) tag + " TOKEN: tag2 is " + (char)tag2;
         }
     }
+
+    public boolean isWord(){
+        return false;
+    }
+    public boolean isPhrase(){
+        return false;
+    }
+
+    public boolean isType(){
+        return false;
+    }
 }

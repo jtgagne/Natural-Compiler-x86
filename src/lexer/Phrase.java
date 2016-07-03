@@ -7,6 +7,11 @@ import java.util.Hashtable;
  */
 public class Phrase extends Token{
 
+    @Override
+    public boolean isPhrase() {
+        return true;
+    }
+
     public static final Phrase
             and = new Phrase("and", Tag.AND),
             or = new Phrase( "or", Tag.OR),

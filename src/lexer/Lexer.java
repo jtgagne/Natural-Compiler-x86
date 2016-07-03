@@ -276,36 +276,28 @@ public class Lexer {
 
             String s = b.toString();
 
-            Word w = (Word) words.get(s);                   //check the word against the hash table
+            Token token = (Token) words.get(s);                   //check the word against the hash table
 
-            try{
-
-                if(w.tag2 != Tag.NULL){                     //If tag 2 is not NULL, the word is part of a phrase
-                    w = concatPhrases(w);                   //Try to make a phrase from the previous words
-                    if(w == null){                          //A phrase is being made, don't print until complete
-                        return w;
-                    }
-                }
-
-            } catch (Exception e){
-                System.out.printf("");
+            if(token != null && token.tag2 == Tag.INITIALIZER){                 //Read the phrase and return the phrase
+                return readPhrase(token);
             }
 
+            Word word = (Word) token;
 
             //hash table WILL return null if the lexeme does not exist
-            if(w != null){
-                if(w.tag == Tag.ID){
-                    _identifiers.add(w.lexeme);
+            if(word != null){
+                if(word.tag == Tag.ID){
+                    _identifiers.add(word.lexeme);
                 }
-                return w;
+                return word;
             }
 
-            w = new Word(s, Tag.ID);
-            words.put(s, w);
+            word = new Word(s, Tag.ID);
+            words.put(s, word);
 
-            _identifiers.add(w.lexeme);
+            _identifiers.add(word.lexeme);
 
-            return w;
+            return word;
         }
 
         // Unidentified tokens
@@ -317,6 +309,64 @@ public class Lexer {
         return tok;
     }
 
+    /**
+     * Read the rest of a phrase and return the phrase value. Gets called when a phrase initializer token is found.
+     * @return a phrase token.
+     */
+    private Token readPhrase(Token initialWord) throws IOException{
+        Word initializer = null;
+
+        if(initialWord.isWord()){
+            initializer = (Word) initialWord;
+        }
+
+        if(initializer == null){ phraseError();}
+
+        StringBuilder builder = new StringBuilder();
+        builder.append(initializer.lexeme);             //Add the initializer lexeme
+        builder.append(' ');                            //Add a space.
+
+        //Read the next char.
+        readch();
+
+        if(peek == Tag.END){ phraseError(); }
+
+        do {
+            builder.append(peek);
+
+            //A phrase was found, it should break.
+            if(phrases.get(builder.toString()) != null){
+                readch();
+                break;
+            }
+
+            //If we have already reached the last accessible index in the line it needs to break
+            if(_location == _line.length() ){
+
+
+                //if next line is not null set peek to the next char in the new line
+                if(_nextline != null){
+                    readch();
+                }else{
+                    peek = Tag.END;
+                }
+
+                break;
+            }
+
+            readch();
+
+        } while(Character.isLetterOrDigit(peek) && peek != '\n' && peek != '\t' && peek != ' ');
+
+        //Check for correct phrase.
+        Phrase phrase = (Phrase) phrases.get(builder.toString());
+
+        if(phrase == null){
+            throw new Error("Incorrect phrase near line: " + Lexer.lineCount);
+        }
+
+        return phrase;
+    }
 
     /**
      * Scan until it is no longer a multiline comment
@@ -339,56 +389,6 @@ public class Lexer {
     }
 
 
-    /**
-     * Keep track of words that are keywords of compound phrases. Once a terminal word is reached, the group
-     * of words should be concatenated into a single Word object and output to the console. If the phrase entered is
-     * not in correct form, this should be printed to the console as well.
-     * @param word a Word object to be added to the phrase
-     * @return null if a TERMINAL tag has not yet been reached, a Word object with the phrase otherwise
-     */
-    public Word concatPhrases(Word word) throws IOException{
-
-        //Once a terminal is reached, check the phrases hash table for correctness.
-        if(word.tag2 == Tag.TERMINAL){
-            _phrase.add(word);
-            String checkPhrase = "";
-
-            //Get all strings from the words to make a _phrase
-            for(Word w : _phrase){
-                checkPhrase += w.lexeme + " ";
-            }
-
-            checkPhrase = checkPhrase.trim();
-
-            _phrase.clear();        //Reset the phrase input
-
-            isMakingPhrase = false;
-
-            try{
-
-                Phrase phrase = (Phrase) phrases.get(checkPhrase);
-                return new Word(phrase.getLexeme(), phrase.getTag());
-
-            }catch (Exception e){
-                return new Word("Incorrect Phrase Format", Tag.ERROR);
-            }
-        }
-
-        //If the word is an initializer that doesn't follow another initializer
-        else if(word.tag2 == Tag.INITIALIZER ){
-            _phrase.add(word);
-            isMakingPhrase = true; //User started _phrase with a valid keyword
-        }
-
-        //If the first value of a _phrase is not an initializer, return an error
-        else if(!isMakingPhrase){
-            return new Word("Incorrect Phrase Format", Tag.ERROR);
-        }
-
-
-        return null;
-    }
-
     // ******************************************************
     // MAIN : Test our lexer before the parser is written.
     // ******************************************************
@@ -408,5 +408,9 @@ public class Lexer {
 
     public static void clearIdentifiers(){
         _identifiers.clear();
+    }
+
+    public static void phraseError(){
+        throw new Error("Incorrect phrase near line: " + Lexer.lineCount);
     }
 }

@@ -28,15 +28,11 @@ public class Test {
                 parser.runParser();
             }
 
-            if(args[i].contains(FILE_BOOLEAN_EXPR)){
+            /*if(args[i].contains(FILE_BOOLEAN_EXPR)){
                 System.out.printf("\n\nTesting: %s\n", FILE_BOOLEAN_EXPR);
                 testBooleanExpression();
-            }
+            } */
 
-            else if(args[i].contains(FILE_FOR)){
-                System.out.printf("\n\nTesting: %s\n", FILE_FOR);
-                testForSyntax();
-            }
 
             /*else if(args[i].contains(FILE_NATURAL_SYNTAX)){
                 System.out.printf("\n\nTesting: %s\n", FILE_NATURAL_SYNTAX);
@@ -56,14 +52,6 @@ public class Test {
         }
     }
 
-    private static void testForSyntax() throws IOException{
-
-        while(Lexer.getInstance().hasNext()){
-            For.evaluateSyntax();
-            For.printOutput();
-        }
-
-    }
 
     /*private static void testNaturalFile() throws IOException{
         int count = 1;

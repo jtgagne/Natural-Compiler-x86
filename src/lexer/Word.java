@@ -9,6 +9,12 @@ import java.util.Hashtable;
 public class Word extends Token {
     public String lexeme = "";
 
+    @Override
+    public boolean isWord() {
+        return true;
+    }
+
+
     public Word(String s, int tag1) {
         super(tag1);
         lexeme = s;

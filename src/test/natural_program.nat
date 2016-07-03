@@ -1,19 +1,21 @@
 int a
+int b
+boolean e
+int q
 
-for(int x is 1 to 6 increase by 1){
-    int age
-    age = 21 + x
+for(a := 4; a less than 6; a increase by 1){
+    int thisIsABitch
+     thisIsABitch is 2
 }
 
-int b
-int i
+a is 4
+b is 6
+if(a less than b){
+    a is b + 1
+}
+
 #
 float c
-boolean e
-
-
-
-
 #a
 #a
 #a
@@ -22,15 +24,16 @@ boolean e
 #e is 1
 
 a is 3
+q is 5
 
-if(true != false){
-
+if(a < q){
+    a is 6
 }
 
 
 a is 1
 e := false
-#q := 3
+q := 3
 b := -a
 
 while(true){
@@ -41,9 +44,11 @@ while(true){
             float ab
             ab := 3.4
             a is a - 1
-        } else if (q less than a) {
-            b = b + 1
-        } else {
+        }
+        else if (q less than a) {
+            b := b + 1
+        }
+        else {
             d is false
         }
         a is a + 1
@@ -56,7 +61,3 @@ do{
     a := 3
     r :=0
 }while(a == 3)
-
-for(i := 0; i <= i ; i := i+1){
-    i := i+1
-}
