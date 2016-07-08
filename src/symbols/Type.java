@@ -59,7 +59,7 @@ public class Type extends Word {
     // Predicate to determine if numeric type
     // **********************************************************
     public static boolean numeric(Type p) {
-        return p == Type.Char || p == Type.Int || p == Type.Float;
+        return p == Type.Char || p == Type.Int || p == Type.Float || p == Type.Double || p == Type.Long;
     }
 
 

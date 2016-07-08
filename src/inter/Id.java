@@ -19,4 +19,8 @@ public class Id extends Expr {
 	public String toString() {
         return "Line: " + (Lexer.lineCount - 1) + "\tIdentifier: " + _word.lexeme + "\t Type: " + _type.lexeme + "\n";
     }
+
+    public String getName(){
+        return _word.lexeme;
+    }
 }

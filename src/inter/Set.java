@@ -1,4 +1,6 @@
 package inter;
+import lexer.Tag;
+import lexer.Token;
 import symbols.*;
 
 public class Set extends Stmt {
@@ -10,6 +12,16 @@ public class Set extends Stmt {
    {
       id = i;
       expr = x;
+      if(id.type.equals(Type.Long) && expr.type.equals(Type.Int)){
+         Token token = expr.op;
+         expr = new Expr(token, Type.Long);
+      }else if(id.type.equals(Type.Double) && expr.type.equals(Type.Float)){
+         Token token = expr.op;
+         expr = new Expr(token, Type.Double);
+      } else if(id.type.equals(Type.Char) && expr.op.tag == Tag.BASIC){
+          expr.type = Type.Char;
+      }
+
       if ( check(id.type, expr.type) == null ) 
           error("type error");
    }
@@ -20,6 +32,9 @@ public class Set extends Stmt {
           return p2;
       else if ( p1 == Type.Bool && p2 == Type.Bool ) 
           return p2;
+      else if(p1 == Type.Char && p2 == Type.Char){
+          return p2;
+      }
       else return null;
    }
 

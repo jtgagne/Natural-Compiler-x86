@@ -16,13 +16,10 @@ import inter.*;
 public class Parser {
 
     /** lexical analyzer for this parser */
-    private static Lexer lex;
+    private Lexer lex;
 
     /** lookahead  */
-    private static Token look;
-
-    private static ArrayList<Stmt> _assignments = null;    //For assignments that occur during declaration
-    private static int _assignmentNum = 0;
+    private Token look;
 
     /** current or top symbol table */
     Env top = null;
@@ -30,13 +27,18 @@ public class Parser {
     /** storage used for declarations */
     int used = 0;
 
+    private ArrayList<Stmt> _assignments = null;    //For assignments that occur during declaration
+    private int _assignmentNum = 0;
+    private Type _type = null;                      //Type of current assignment
+
+
     /**
     * Sets the lexer (from the input parameter) and calls move to get the first token
     * @see Lexer
     * @throws IOException Compiler errors
     */
     public Parser() throws IOException {
-
+        Stmt.Enclosing = Stmt.Null;
     }
 
     public void runParser() throws IOException{
@@ -52,7 +54,7 @@ public class Parser {
      * @see Lexer
      * @throws IOException Error scanning in token from lexer.
      */
-    private static void move() throws IOException {
+    private void move() throws IOException {
         look = Lexer.getInstance().scan();
     }
 
@@ -62,7 +64,7 @@ public class Parser {
      * @param s the string with more details about the error
      */
    void error(String s) {
-       throw new Error("near lineCount "+Lexer.lineCount +": "+s);
+       throw new Error("near line "+Lexer.lineCount +": "+s);
    }
 
     /**
@@ -131,7 +133,7 @@ public class Parser {
     */
     public void decls() throws IOException {
 
-        while(Tag.isDataType(look.tag) && !Lexer.getInstance().isLastLine()) {
+        while(Tag.isDataType(look.tag)) {
 
             /** call type() */
             Type p = type();
@@ -144,54 +146,33 @@ public class Parser {
             top.put( tok, id );
             used = used + p.width;
 
+
             if(check(Tag.ASSIGNMENT) || check(Tag.INCREASE) || check(Tag.DECREASE)){
                 move();
-                Stmt stmt = new Set(id, bool());
+                Stmt stmt;
+
+                if(p.equals(Type.Char)){
+                    match('\'');
+                    tok = look;
+                    Word word = (Word) tok;
+                    match(Tag.ID);
+                    if(word.lexeme.length() != 1){
+                        error("cannot assign a non-character value to a char variable");
+                    }
+                    Char character = new Char(word.lexeme.charAt(0));
+                    Expr expr = new Expr(character, Type.Char);
+                    stmt = new Set(id, expr);
+                    match('\'');
+                }
+
+                else{
+                    stmt = new Set(id, bool());
+                }
                 _assignments.add(stmt);             //Add an assignment node to the ArrayList
             }
         }
     }
 
-
-    /**
-     * Returns an assignment node for a for loop, tested and works
-     * @return assignment node for the for loop iterator
-     * @throws IOException
-     */
-    public Stmt fordecls() throws IOException{
-        Stmt stmt;
-        Type p = null;
-        Token tok = look;                   //Get the current token
-
-        if(!check(Tag.INT)){                //Check for declaration
-            if(check(Tag.ID)){
-                p  = top.get(tok).type;     //Set the type of the identifier
-            }
-            match(Tag.ID);
-        }
-
-        else {                            //Type declaration was made
-            p = type();                     //Set the type
-            match(Tag.ID);                  //Match for identifier
-        }
-
-        if(p == null){
-            error("For loop iterator was not initialized near line: " + Lexer.lineCount);
-        }
-
-        //Set the _forId iterator variable to be accessed when making the other expressions
-        Id id = new Id((Word)tok, p, used);
-
-        top.put(tok, id);     //Add the iterator to the top enviornment
-        match(Tag.ASSIGNMENT);  //Ensure assignment operator
-        if(!check(Tag.NUM)){    //Check for a number
-            error("Expected an assignment value near line: " + Lexer.lineCount);
-        }
-
-        stmt = new Set(id, factor());    // Set the iterator and the number
-
-        return stmt;
-    }
 
     private boolean check(int tag){
         if(look.tag == tag){
@@ -199,7 +180,6 @@ public class Parser {
         }
         return false;
     }
-
 
     /**
      * EBNF:  type = basic [ dims ]
@@ -226,6 +206,10 @@ public class Parser {
      */
     public Stmt stmts() throws IOException
     {
+        if(Tag.isDataType(look.tag)){
+            decls();
+        }
+
         if(_assignmentNum < _assignments.size()){           //Add nodes for all assignments that occurred during declarations
             Stmt stmt = _assignments.get(_assignmentNum);
             _assignmentNum++;
@@ -235,8 +219,10 @@ public class Parser {
             }
             return new Seq(stmt, stmts());
         }
-        if ( look.tag == '}' || look.tag == Tag.END)
+
+        if (look.tag == '}' || look.tag == Tag.END ){
             return Stmt.Null;
+        }
         else
             return new Seq(stmt(), stmts());
     }
@@ -304,7 +290,13 @@ public class Parser {
               fornode.init(condition, assignment, update, loopThrough);
               return fornode;
           }
-          assignment = fordecls();   //Assignment node
+          decls();
+          if(_assignments.size() == 1){
+              assignment = _assignments.get(0);
+              _assignments.clear();
+          }else{
+              assignment = assign();
+          }
           match(';');
           condition = bool();
           match(';');
@@ -321,20 +313,21 @@ public class Parser {
          savedStmt = Stmt.Enclosing;
          Stmt.Enclosing = donode;
          move();
-         //match(Tag.DO);
          s1 = stmt();
          match(Tag.WHILE);
          match('(');
          x = bool();
          match(')');
-         //match(';');
          donode.init(s1, x);
          Stmt.Enclosing = savedStmt;    // reset Stmt.Enclosing
          return donode;                 // Return a Do node
 
       case Tag.BREAK:
          match(Tag.BREAK);
-         match(';');
+         if(!check(';')){
+             error("missing semicolon after break statement");
+         }
+          move();
          return new Break();
 
       case '{':
@@ -367,22 +360,26 @@ public class Parser {
          stmt = new Set(id, bool());    // Set node
       }
 
-      else if(look.tag == Tag.INCREASE){
+      else if(look.tag == Tag.INCREASE || look.tag == Tag.DECREASE){
+          Token operator;
+          if(look.tag == Tag.INCREASE){
+              operator = new Token('+');
+          } else{
+              operator = new Token('-');
+          }
           //Update statement
           move();                                       // Get next token
-          Token addition = new Token('+');              // Create an addition token corresponding to increase tag
           Token num = look;                             // Access current token which should be a number
           match(Tag.NUM);                               // Match for a whole number after an increase by tag
           Expr variable = new Expr(id.op, id.type);     // New expression containing the previously found variable
           Expr number = new Expr(num, Type.Int);        // New expression containing the number that was found
-          Arith arith = new Arith(addition, variable, number);           // New Arithmetic node: variable addition number
+          Arith arith = new Arith(operator, variable, number);           // New Arithmetic node: variable addition number
           stmt = new Set(id, arith);                    // id = id + number
       }
 
       else {                            // S -> L = E ;
-          error("Syntax error");
+          error("Syntax error, expected an identifier ");
           stmt = null;
-
       }
 
       //match(';');
@@ -480,17 +477,13 @@ public class Parser {
 
             if(look.tag == Tag.INCREASE){
                 tok = new Token((int)'+');
-            }
-
-            else if(look.tag == Tag.DECREASE){
+            } else if(look.tag == Tag.DECREASE){
                 tok = new Token((int)'-');
-            }
-
-            else{
+            } else{
                 tok = look;
             }
-            move();
 
+            move();
             n = new Arith(tok, n, term());     // Arith node
       }
 
@@ -554,7 +547,7 @@ public class Parser {
                 return n;
 
             case Tag.NUM:
-                n = new Constant(look, Type.Int);        // Return Constant node
+                n = new Constant(look, Type.Int);              // Return Constant node
                 move();
                 return n;
 
@@ -573,83 +566,21 @@ public class Parser {
                 move();
                 return n;                                // Return Constant node
 
-            default:
-                error("syntax error");
-                return n;
-
             case Tag.ID:
                 String s = look.toString();
 
                 Id id = top.get(look);                   // Lookup in symbol table
 
                 if( id == null )                         // Not found...
-                error(s + " undeclared");
+                    error(s + " undeclared");
 
                 move();
                 return id;              // Return Id node
 
-
-          /**
-           *        !!!!!   OLD ARRAY STUFF, REMOVE ONCE DOESN'T BREAK THINGS   !!!!!
-           *
-           * //if( look.tag != '[' )
-                //else
-           //       return offset(id);     // Return Access node
-           *
-           *
-           */
+            default:
+                error("syntax error");
+                return n;
 
       }
    }
-
-
-
-
-    /**
-     * ====================================================================================
-     * !!!!!         ARRAY STUFF, REMOVE ONCE KNOWN TO BE SAFE          !!!!!
-     *
-     * ------------------------------------------------------------------------------------
-     */
-
-
-//   /**
-//    * Create a node for accessing an array element (id,subtree for calculating location, and base type of elements)
-//    * EBNF:  offset =  "[" bool "]" { "[" bool "]" }
-//    * @param id Object of type Id
-//    * @return Access Node for accessing an array element (id,subtree for calculating location,and base type of elements)
-//    * @throws IOException Error creating a node for array element access
-//    */
-//    public Access offset(Id id) throws IOException {
-//
-//      Expr iExpr;                                   // Node (expr) for index
-//      Expr wExpr;                                   // Node (expr) for width
-//      Expr t1, t2;
-//      Expr loc;
-//
-//      Type type = id.type;
-//      match('[');                                   // first index, I -> [ E ]
-//      iExpr = bool();                               // Expression for index
-//      match(']');
-//
-//      type = ((Array)type).of;                      // Get type for array elements (may be an array)
-//      wExpr = new Constant(type.width);             // width of base type
-//      t1 = new Arith(new Token('*'), iExpr, wExpr); // Node for calculation of offset in array (number x width)
-//                                                    // of array element
-//      loc = t1;
-//
-//      while( look.tag == '[' ) {                    // multi-dimensional I -> [E] I
-//         match('[');
-//         iExpr = bool();                            // Expression for next index
-//         match(']');
-//         type = ((Array)type).of;                   // Get base type for array elements (may be an array)
-//         wExpr = new Constant(type.width);          // Get width
-//         t1 = new Arith(new Token('*'),iExpr,wExpr); // Node for calculation of offset in array (number x width)
-//         t2 = new Arith(new Token('+'),loc,t1);     // Node to add offset for this dimension to running offset
-//         loc = t2;
-//      }
-//
-//      return new Access(id, loc, type);             // Node for accessing an array element (id,subtree for calculating
-//                                                    // location, and base type of elements)
-//   }
 }

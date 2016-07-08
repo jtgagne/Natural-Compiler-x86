@@ -3,13 +3,14 @@ import symbols.*;
 
 public class While extends Stmt 
 {
-   Expr expr; 
-   Stmt stmt;
+    Expr expr;
+    Stmt stmt;
+    Stmt breakStmt;
 
    public While() 
    { 
        expr = null; 
-       stmt = null; 
+       stmt = null;
    }
 
    public void init(Expr x, Stmt s) 

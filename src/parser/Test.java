@@ -2,32 +2,51 @@ package parser;
 
 import lexer.Lexer;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Just a file to test the boolean expression class and the For class
  * Created by gagnej3 on 6/14/16.
  */
 public class Test {
-    private static final String FILE_NATURAL_PROGRAM = "natural_program.nat";
+
+    private static final String EXTENSION = ".nat";
+    private static boolean _eof = false;
 
     public static void main(String[] args) throws IOException{
 
-        Lexer lex = Lexer.getInstance();
+        Path currentRelativePath = Paths.get("");                           // Get the path to the project directory
+        String path = currentRelativePath.toAbsolutePath().toString();      // Convert the path to a string
+        path += "/src/test";                                               // Add the extension to the test files directory
+        File folder = new File(path);                                       // Reference the test directory
+        File[] testFiles = folder.listFiles();                              // Create an array of all files in the test directory.
 
-        for(int i = 0; i < args.length; i++){
+        assert testFiles!=null;
 
-            lex.openReader(args[i]);
+        for(File file: testFiles){
+            String filePath = file.getPath();                               // Get the path of the first file to be evaluated
 
-            if(args[i].contains(FILE_NATURAL_PROGRAM)){
-                System.out.printf("\n\nTesting: %s\n", FILE_NATURAL_PROGRAM);
+            if(!filePath.contains(EXTENSION)) continue;                     // Make sure it is a .nat file
+
+            String contents[] = filePath.split("/");                        // State the name of the file being evaluated
+            String fileName = contents[contents.length-1];
+
+            System.out.printf("Path: %s\n", filePath);
+            System.out.printf("Evaluating: %s\n\n", fileName);
+
+            Lexer.getInstance().openReader(filePath);                       // Open the first file
+            try{
                 Parser parser = new Parser();
                 parser.runParser();
+            } catch (Error e){
+                System.err.printf("%s:\t%s\n", fileName, e.toString());       //Print the file name and the error encountered
             }
 
-            lex.closeReader();
+            Lexer.getInstance().closeReader();
         }
+
     }
-
-
 }

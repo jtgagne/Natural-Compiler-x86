@@ -23,8 +23,8 @@ public class Lexer {
     public static int lineCount = 1;                    // Line count of the code
     char peek = ' ';                                    // Peek at next character
 
-    public static Hashtable words = new Hashtable();    // Reserved,identifiers, multi-symbol operators
-    public static Hashtable phrases = new Hashtable();  // Hash Table for keeping track of phrases / word groupings
+    public Hashtable words;    // Reserved,identifiers, multi-symbol operators
+    public Hashtable phrases;  // Hash Table for keeping track of phrases / word groupings
     public ArrayList<Word> _phrase;                     // Multiple words entered that should be grouped
     private static BufferedReader _reader;              // Reader for getting File IO
     private static String _line;                        // Current line being scanned by the lexer
@@ -35,11 +35,16 @@ public class Lexer {
     private static boolean hasNextLine = true;          // Check if the file has more lines to be scanned
     private static boolean isMakingPhrase = false;      // Track if a _phrase has been input appropriately
     private static boolean isMultiLineComment = false;  // Ignore input while true.
-    private static boolean isComment = false;
     private static ArrayList<String> _identifiers;
 
-
-
+    private Lexer(){
+        words = new Hashtable();
+        phrases = new Hashtable();
+        Word.reserveWords(words);       //Reserve control statements, logical statements etc.
+        Type.reserveTypes(words);       //Reserve data types.
+        Phrase.reservePhrases(phrases); //Reserve the phrases.
+        _phrase = new ArrayList<>();    //Initialize the input array to keep track of potential phrases
+    }
 
     public static Lexer getInstance(){
         if(_lexer == null){
@@ -48,15 +53,6 @@ public class Lexer {
         return _lexer;
     }
 
-    // ******************************************************
-    //Add reserve words to HashTable
-    // ******************************************************
-    private Lexer() {
-        Word.reserveWords(words);       //Reserve control statements, logical statements etc.
-        Type.reserveTypes(words);       //Reserve data types.
-        Phrase.reservePhrases(phrases); //Reserve the phrases.
-        _phrase = new ArrayList<>();    //Initialize the input array to keep track of potential phrases
-    }
 
     public void openReader(String file) throws IOException{
         Reader reader = new InputStreamReader(new FileInputStream(new File(file)));
@@ -71,6 +67,7 @@ public class Lexer {
 
     public void closeReader() throws IOException{
         _reader.close();
+        _lexer = null;
     }
 
 
@@ -97,7 +94,6 @@ public class Lexer {
                 _nextline = _reader.readLine();
                 _location = 0;
                 lineCount++;
-                isComment = false;
             }
             if(hasNextLine == false){
                 lastLine = true;
@@ -180,7 +176,6 @@ public class Lexer {
             if(peek == '\n' ){
                 lineCount = lineCount + 1;
                 _location = 0;
-                isComment = false;              //Single line comments are done at a new line
                 //return new Token('\n');
             }
 
@@ -196,7 +191,6 @@ public class Lexer {
                     skipMultiLineComment();                                 //Read until the end of a multiline comment
                 }
             } else{
-                isComment = true;
                 skipComment();                                              //Skip the rest of the line
             }
         }

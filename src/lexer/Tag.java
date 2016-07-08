@@ -33,7 +33,7 @@ public class Tag {
 
     //Data types
     public static final int
-        BASIC       = 267,
+        BASIC       = 267,          //For characters
         NUM         = 268,
         REAL        = 269;
 
@@ -81,9 +81,6 @@ public class Tag {
         CHAR        = 294,
         BOOL        = 295;
 
-    //Everything <= PAREN_GROUP indicates a coupled group of parentheses LEAVE AS THE LAST VALUE
-    public static final int
-        PAREN_GROUP = 296;
 
 
     /**
@@ -123,24 +120,4 @@ public class Tag {
                 tag == Tag.BOOL);
     }
 
-    public static boolean isJoiningOperator(int tag){
-        return (tag == Tag.AND ||
-                tag == Tag.OR);
-    }
-
-    public static boolean containsParentheses(String input){
-
-        input = input.trim();
-
-        String[] split = input.split("\\s");
-
-        for(String str: split){
-            int tag = Integer.parseInt(str);
-
-            if(tag >= Tag.PAREN_GROUP){
-                return true;
-            }
-        }
-        return false;
-    }
 }
