@@ -1,8 +1,11 @@
 package lexer;
 
 /**
- *
- * Created by gagnej3 on 7/7/16.
+ * Created on 7/7/16.
+ * Justin Gagne and Zack Farrer
+ * Professor Assiter
+ * Wentworth Institute of Technology
+ * Compiler Design - Summer 2016
  */
 public class Char extends Token{
     public final char value;

@@ -1,5 +1,12 @@
 package inter;
 
+/**
+ * Class to store a break node
+ * Justin Gagne and Zack Farrer
+ * Professor Assiter
+ * Wentworth Institute of Technology
+ * Compiler Design - Summer 2016
+ */
 public class Break extends Stmt {
 
    Stmt stmt;

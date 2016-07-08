@@ -1,6 +1,13 @@
 package inter;
 import lexer.*; import symbols.*;
 
+/**
+ * Node for a logical expression
+ * Justin Gagne and Zack Farrer
+ * Professor Assiter
+ * Wentworth Institute of Technology
+ * Compiler Design - Summer 2016
+ */
 public class Logical extends Expr 
 {
    public Expr expr1, expr2;

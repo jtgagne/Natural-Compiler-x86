@@ -1,6 +1,13 @@
 package inter;
 import symbols.*;
 
+/**
+ * Node for an if statement
+ * Justin Gagne and Zack Farrer
+ * Professor Assiter
+ * Wentworth Institute of Technology
+ * Compiler Design - Summer 2016
+ */
 public class If extends Stmt {
 
    Expr expr; 

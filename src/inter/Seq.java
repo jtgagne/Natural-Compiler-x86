@@ -1,5 +1,12 @@
 package inter;
 
+/**
+ * a sequence of statements
+ * Justin Gagne and Zack Farrer
+ * Professor Assiter
+ * Wentworth Institute of Technology
+ * Compiler Design - Summer 2016
+ */
 public class Seq extends Stmt {
 
    Stmt stmt1; Stmt stmt2;

@@ -1,6 +1,13 @@
 package symbols;
 import java.util.*; import lexer.*; import inter.*;
 
+/**
+ * Class used to store the variables of a natural program
+ * Justin Gagne and Zack Farrer
+ * Professor Assiter
+ * Wentworth Institute of Technology
+ * Compiler Design - Summer 2016
+ */
 public class Env {
 
 	private Hashtable table;

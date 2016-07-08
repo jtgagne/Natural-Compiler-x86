@@ -3,6 +3,12 @@ import lexer.*;
 import symbols.*;
 import symbols.Type;
 
+/**
+ * Justin Gagne and Zack Farrer
+ * Professor Assiter
+ * Wentworth Institute of Technology
+ * Compiler Design - Summer 2016
+ */
 public class Temp extends Expr 
 {
 

@@ -1,17 +1,16 @@
 package parser;
 import java.io.*;
 import java.util.ArrayList;
-
 import lexer.*;
 import symbols.*;
 import inter.*;
 
 /**
- * Parses an input program in language based on from Appendix A in the
- * dragon book.
- *
- *
- * AUTHORS: Justin Gagne and Zack Farrer
+ * Parser for natural
+ * Justin Gagne and Zack Farrer
+ * Professor Assiter
+ * Wentworth Institute of Technology
+ * Compiler Design - Summer 2016
  */
 public class Parser {
 

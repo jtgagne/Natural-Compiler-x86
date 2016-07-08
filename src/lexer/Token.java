@@ -1,8 +1,12 @@
 package lexer;
 
 /**
- *
- * Created by Justin Gagne on 6/5/16.
+ * Stores a token read in by the lexer
+ * Created on 6/5/16.
+ * Justin Gagne and Zack Farrer
+ * Professor Assiter
+ * Wentworth Institute of Technology
+ * Compiler Design - Summer 2016
  */
 public class Token {
     public final int tag;

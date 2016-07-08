@@ -1,11 +1,17 @@
 package inter;
 import symbols.*;
 
+/**
+ * Creates a node for a while statement
+ * Justin Gagne and Zack Farrer
+ * Professor Assiter
+ * Wentworth Institute of Technology
+ * Compiler Design - Summer 2016
+ */
 public class While extends Stmt 
 {
     Expr expr;
     Stmt stmt;
-    Stmt breakStmt;
 
    public While() 
    { 

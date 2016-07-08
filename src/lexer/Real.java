@@ -1,8 +1,12 @@
 package lexer;
 
 /**
- *
- * Created by Justin Gagne on 6/5/16.
+ * Object to be used for storing real number values
+ * Created on 6/5/16.
+ * Justin Gagne and Zack Farrer
+ * Professor Assiter
+ * Wentworth Institute of Technology
+ * Compiler Design - Summer 2016
  */
 public class Real extends Token {
     public final float value;

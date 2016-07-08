@@ -2,6 +2,13 @@ package inter;
 import lexer.*;
 import symbols.*;
 
+/**
+ * Create a node containing a numerical constant value
+ * Justin Gagne and Zack Farrer
+ * Professor Assiter
+ * Wentworth Institute of Technology
+ * Compiler Design - Summer 2016
+ */
 public class Constant extends Expr 
 {
    public Constant(Token tok, Type p) {

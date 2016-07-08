@@ -1,9 +1,16 @@
 package inter;
 import lexer.Token;
 
+/**
+ * Class for creating an And node
+ * Justin Gagne and Zack Farrer
+ * Professor Assiter
+ * Wentworth Institute of Technology
+ * Compiler Design - Summer 2016
+ */
 public class And extends Logical {
 
-   public And(Token tok, Expr x1, Expr x2)
+    public And(Token tok, Expr x1, Expr x2)
    { 
        super(tok, x1, x2); 
    }

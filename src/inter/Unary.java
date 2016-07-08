@@ -1,6 +1,13 @@
 package inter;
 import lexer.*; import symbols.*;
 
+/**
+ * Class for storing information on a unary node
+ * Justin Gagne and Zack Farrer
+ * Professor Assiter
+ * Wentworth Institute of Technology
+ * Compiler Design - Summer 2016
+ */
 public class Unary extends Op {
 
    public Expr expr;

@@ -1,10 +1,14 @@
 package lexer;
 
 /**
- * TODO: Make the containsParentheses method more flexible in the case of refactoring
  * Define constants for Tokens (for readability)
+ * Tags for various tokens
  * Refactored to group like tags
- * Created by Justin Gagne on 6/5/16.
+ * Created on 6/5/16.
+ * Justin Gagne and Zack Farrer
+ * Professor Assiter
+ * Wentworth Institute of Technology
+ * Compiler Design - Summer 2016
  */
 public class Tag {
 
@@ -81,35 +85,6 @@ public class Tag {
         CHAR        = 294,
         BOOL        = 295;
 
-
-
-    /**
-     * Check if a tag is a valid boolean value
-     * @param tag the tag of the token
-     * @return true if it is a boolean
-     */
-    public static boolean isBoolean(int tag){
-        return (tag == Tag.FALSE || tag == Tag.TRUE);
-    }
-
-    /**
-     * Check is a tag is classified as a number, real or int
-     * @param tag the tag of the token
-     * @return true if the tag is refers to a number
-     */
-    public static boolean isNumber(int tag){
-        return (tag == Tag.NUM ||
-                tag == Tag.REAL);
-    }
-
-    public static boolean isComparisonOperator(int tag){
-        return (tag == Tag.EQ ||
-                tag == Tag.GE ||
-                tag == Tag.GREATER ||
-                tag == Tag.LE ||
-                tag == Tag.LESS ||
-                tag == Tag.NE);
-    }
 
     public static boolean isDataType(int tag){
         return (tag == Tag.INT ||

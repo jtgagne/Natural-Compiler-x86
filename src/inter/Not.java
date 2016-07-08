@@ -1,6 +1,13 @@
 package inter;
 import lexer.*;
 
+/**
+ * subclass of logical node for negating boolean expressions
+ * Justin Gagne and Zack Farrer
+ * Professor Assiter
+ * Wentworth Institute of Technology
+ * Compiler Design - Summer 2016
+ */
 public class Not extends Logical 
 {
    public Not(Token tok, Expr x2) 

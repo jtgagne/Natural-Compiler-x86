@@ -1,6 +1,13 @@
 package inter;
 import lexer.*; import symbols.*;
 
+/**
+ * Stores data regarding a relational operation
+ * Justin Gagne and Zack Farrer
+ * Professor Assiter
+ * Wentworth Institute of Technology
+ * Compiler Design - Summer 2016
+ */
 public class Rel extends Logical {
 
    public Rel(Token tok, Expr x1, Expr x2) 

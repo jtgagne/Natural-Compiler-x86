@@ -1,6 +1,13 @@
 package inter;
 import symbols.*;
 
+/**
+ * Node for an Else statement
+ * Justin Gagne and Zack Farrer
+ * Professor Assiter
+ * Wentworth Institute of Technology
+ * Compiler Design - Summer 2016
+ */
 public class Else extends Stmt 
 {
    Expr expr; 

@@ -1,23 +1,19 @@
 package lexer;
-//TODO: MATCH FIRST
-/**
- * Provides command lineCount application for testing reserved words for the lexer of Natural
- * Created by Justin Gagne on 6/5/16.
- *
- * AUTHORS: Justin Gagne and Zack Farrer
- */
 
-import symbols.Array;
 import symbols.Type;
-
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.io.*;
 
 
-// ******************************************************
-// Read in next lexeme and return it's associated token
-// ******************************************************
+/**
+ * Scan in tokens for Natural
+ * Created by Justin Gagne on 6/5/16.
+ * Justin Gagne and Zack Farrer
+ * Professor Assiter
+ * Wentworth Institute of Technology
+ * Compiler Design - Summer 2016
+ */
 public class Lexer {
     private static Lexer _lexer;                        // Current instance of the lexer
     public static int lineCount = 1;                    // Line count of the code

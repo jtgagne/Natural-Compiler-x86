@@ -2,6 +2,13 @@ package inter;
 import lexer.*; 
 import symbols.*;
 
+/**
+ * Object class for storing information regarding an identifier
+ * Justin Gagne and Zack Farrer
+ * Professor Assiter
+ * Wentworth Institute of Technology
+ * Compiler Design - Summer 2016
+ */
 public class Id extends Expr {
 
     public int offset;     // relative address

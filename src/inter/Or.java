@@ -1,6 +1,13 @@
 package inter;
-import lexer.*; 
+import lexer.*;
 
+/**
+ * Stores data regarding an OR join
+ * Justin Gagne and Zack Farrer
+ * Professor Assiter
+ * Wentworth Institute of Technology
+ * Compiler Design - Summer 2016
+ */
 public class Or extends Logical {
 
    public Or(Token tok, Expr x1, Expr x2) 

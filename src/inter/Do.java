@@ -1,6 +1,13 @@
 package inter;
 import symbols.*;
 
+/**
+ * Node for a do-while loop
+ * Justin Gagne and Zack Farrer
+ * Professor Assiter
+ * Wentworth Institute of Technology
+ * Compiler Design - Summer 2016
+ */
 public class Do extends Stmt 
 {
    Expr expr; 

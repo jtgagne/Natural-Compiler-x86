@@ -2,6 +2,13 @@ package inter;
 
 import lexer.Lexer;
 
+/**
+ * The base node class
+ * Justin Gagne and Zack Farrer
+ * Professor Assiter
+ * Wentworth Institute of Technology
+ * Compiler Design - Summer 2016
+ */
 public class Node {
 
    int lexline = 0;
@@ -12,7 +19,7 @@ public class Node {
 
    void error(String s) 
    { 
-       throw new Error("near lineCount "+lexline+": "+s);
+       throw new Error("near line "+lexline+": "+s);
    }
 
    static int labels = 0;

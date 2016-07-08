@@ -1,5 +1,12 @@
 package inter;
 
+/**
+ * Base class for statements
+ * Justin Gagne and Zack Farrer
+ * Professor Assiter
+ * Wentworth Institute of Technology
+ * Compiler Design - Summer 2016
+ */
 public class Stmt extends Node 
 {
    public Stmt() { }

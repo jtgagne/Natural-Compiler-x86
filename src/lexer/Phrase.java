@@ -2,8 +2,12 @@ package lexer;
 import java.util.Hashtable;
 
 /**
- * Class to be used to reserve the various phrases used to equality checking
+ * Class to be used to reserve the various phrases used by natural
  * Created by Justin Gagne on 6/5/16.
+ * Justin Gagne and Zack Farrer
+ * Professor Assiter
+ * Wentworth Institute of Technology
+ * Compiler Design - Summer 2016
  */
 public class Phrase extends Token{
 

@@ -1,6 +1,13 @@
 package inter;
 import symbols.*;
 
+/**
+ * Node for a for statement
+ * Justin Gagne and Zack Farrer
+ * Professor Assiter
+ * Wentworth Institute of Technology
+ * Compiler Design - Summer 2016
+ */
 public class For extends Stmt
 {
     Expr breakCondition;

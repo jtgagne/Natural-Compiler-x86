@@ -3,6 +3,13 @@ import lexer.Tag;
 import lexer.Token;
 import symbols.*;
 
+/**
+ * creates a node for variable assignment
+ * Justin Gagne and Zack Farrer
+ * Professor Assiter
+ * Wentworth Institute of Technology
+ * Compiler Design - Summer 2016
+ */
 public class Set extends Stmt {
 
    public Id id; 
