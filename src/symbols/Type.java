@@ -68,14 +68,22 @@ public class Type extends Word {
     // **********************************************************
     public static Type max(Type p1, Type p2 )
     {
-        if ( ! numeric(p1) || ! numeric(p2) )
-            return null;
+
+        if ( p1 == Type.Double   || p2 == Type.Double   )
+            return Type.Double;
 
         else if ( p1 == Type.Float || p2 == Type.Float )
             return Type.Float;
 
+        else if ( p1 == Type.Long   || p2 == Type.Long   )
+            return Type.Long;
+
         else if ( p1 == Type.Int   || p2 == Type.Int   )
             return Type.Int;
+
+        else if(p1 == Type.Bool || p2 == Type.Bool){
+            return Type.Int;
+        }
 
         else
             return Type.Char;

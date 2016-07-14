@@ -45,8 +45,8 @@ public class Token {
     public boolean isPhrase(){
         return false;
     }
-
     public boolean isType(){
         return false;
     }
+    public boolean isChar(){ return false; }
 }

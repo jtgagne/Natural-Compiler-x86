@@ -13,7 +13,11 @@ public class Env {
 	private Hashtable table;
 	protected Env prev;
 
-	public Env(Env n) { table = new Hashtable(); prev = n; }
+	public Env(Env n) {
+		table = new Hashtable();
+		prev = n;
+		System.out.printf("New environment scope instantiated\n");
+	}
 
 	public void put(Token w, Id i) { table.put(w, i); }
 

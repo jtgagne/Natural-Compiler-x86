@@ -19,4 +19,9 @@ public class Char extends Token{
     public String toString() {
         return "BASIC: value is " + value + " and tag is " + tag;
     }
+
+    @Override
+    public boolean isChar() {
+        return true;
+    }
 }

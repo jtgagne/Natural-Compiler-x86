@@ -1,5 +1,6 @@
 package inter;
-import lexer.*; 
+import lexer.*;
+import semantics.TypeCasting;
 import symbols.*;
 
 /**
@@ -17,9 +18,12 @@ public class Arith extends Op {
       super(tok, null); 
       expr1 = x1; 
       expr2 = x2;
+
       type = Type.max(expr1.type, expr2.type);
-      if (type == null ) 
-          error("type error");
+
+      if (type == null){
+         error("type error");
+      }
    }
 
    @Override

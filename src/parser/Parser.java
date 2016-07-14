@@ -28,7 +28,6 @@ public class Parser {
 
     private ArrayList<Stmt> _assignments = null;    //For assignments that occur during declaration
     private int _assignmentNum = 0;
-    private Type _type = null;                      //Type of current assignment
 
 
     /**
@@ -41,7 +40,7 @@ public class Parser {
     }
 
     public void runParser() throws IOException{
-        _assignments = new ArrayList<>();
+        _assignments = new ArrayList<>(); // Tracks any assignments that occurred during declaration
         lex = Lexer.getInstance();
         move();
         program();
@@ -150,7 +149,7 @@ public class Parser {
                 move();
                 Stmt stmt;
 
-                if(p.equals(Type.Char)){
+                /*if(p.equals(Type.Char)){
                     match('\'');
                     tok = look;
                     Word word = (Word) tok;
@@ -166,7 +165,8 @@ public class Parser {
 
                 else{
                     stmt = new Set(id, bool());
-                }
+                }*/
+                stmt = new Set(id,bool());
                 _assignments.add(stmt);             //Add an assignment node to the ArrayList
             }
         }
@@ -545,6 +545,11 @@ public class Parser {
                 match(')');
                 return n;
 
+            case Tag.BASIC:
+                n = new Constant(look, Type.Char);
+                move();
+                return n;
+
             case Tag.NUM:
                 n = new Constant(look, Type.Int);              // Return Constant node
                 move();
@@ -567,7 +572,6 @@ public class Parser {
 
             case Tag.ID:
                 String s = look.toString();
-
                 Id id = top.get(look);                   // Lookup in symbol table
 
                 if( id == null )                         // Not found...

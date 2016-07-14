@@ -24,6 +24,11 @@ public class Constant extends Expr
       False = new Constant(Word.False, Type.Bool);
 
    @Override
+   public String toString() {
+      return op.toString() + " " + type.toString();
+   }
+
+   @Override
    public void jumping(int t, int f)
    {
       if ( this == True && t != 0 ) emit("goto L" + t);

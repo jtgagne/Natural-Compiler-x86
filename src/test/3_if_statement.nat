@@ -1,6 +1,14 @@
-boolean isOfAge
-boolean isRecentlyOfAge
+boolean isOfAge is true
+boolean isRecentlyOfAge is true
+int values := isRecentlyOfAge + isOfAge
+values := values * isRecentlyOfAge
+
 int age is 21
+char c := 'a'
+age := c
+long manyYears := age
+age := manyYears
+int values
 
 if(age equals 21){
     isOfAge is true
@@ -10,6 +18,8 @@ if(age equals 21){
 
 if(isOfAge and age less than 22){
     isRecentlyOfAge is true
+} else {
+    isRecentlyOfAge is false
 }
 
 int birthDay is 2

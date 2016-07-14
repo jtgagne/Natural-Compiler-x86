@@ -35,13 +35,15 @@ public class Logical extends Expr
 
    @Override
    public Expr gen() {
-      int f = newlabel(); int a = newlabel();
-      Temp temp = new Temp(type);
-      this.jumping(0,f);
-      emit(temp.toString() + " = true");
-      emit("goto L" + a);
-      emitlabel(f); emit(temp.toString() + " = false");
-      emitlabel(a);
+      int f = newlabel();                                   //Label for false part
+      int a = newlabel();                                   //Label after false
+      Temp temp = new Temp(type);                           //Holds logical result of expression
+      this.jumping(0,f);                                    //Depends on operator (And, Or, Not ...) .. Fall through on true and generate the label on false
+      emit(temp.toString() + " = true");                    // Put in a line for a temporary as true
+      emit("goto L" + a);                                   // Goto
+      emitlabel(f);
+      emit(temp.toString() + " = false");                   //Print out a line that t2 is false
+      emitlabel(a);                                         // Goto a if t2 is false
       return temp;
    }
 

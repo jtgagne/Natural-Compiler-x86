@@ -211,7 +211,8 @@ public class Lexer {
                 if( readch('=') ) return Word.ge;   else return new Token(Tag.GREATER);
             case ':':
                 if( readch('=') ) return Word.assign;   else return Word.error;
-
+            case '\'':
+                readch(); char c = peek; if(readch('\'')) return new Char(c); else return Word.error;
         }
 
         // ******************************************************

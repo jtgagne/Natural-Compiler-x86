@@ -15,12 +15,12 @@ public class Id extends Expr {
     Word _word;
     Type _type;
 
-    public Id(Word id, Type p, int b) 
-    { 
+    public Id(Word id, Type p, int b){
         super(id, p); 
         offset = b;
         _word = id;
         _type = p;
+        System.out.printf("New identifier: %s\t of type: %s\n", _word.lexeme, _type.toString());
     }
 
 	public String toString() {
@@ -31,3 +31,5 @@ public class Id extends Expr {
         return _word.lexeme;
     }
 }
+
+
