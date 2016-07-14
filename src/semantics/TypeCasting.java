@@ -49,9 +49,6 @@ public class TypeCasting {
 
         //Assigning a type to a double value.
         else if(id.type.equals(Type.Double)){
-            if (expr.type.equals(Type.Float)){
-                Warnings.widening("float", "double");        //Casting long to int may result in data loss
-            }
             expr = new Expr(token, Type.Double);
         }
 
