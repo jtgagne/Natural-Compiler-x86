@@ -32,19 +32,35 @@ Variable declaration is currently supported in the form of a single declaration 
 ## 3. Comparision Operators
 Natural supports the same comparison operators that java, c, and c++ supports but it also supports the written meanings of the operators. This is intended to make the language easy to transfer to for c, java, and c++ programmers but also allow the language to look as close to english/ pseudocode as possible. All synonomous operators are grouped together below.
 
-* <                           (Less than comparison operator)
-* less than                   (Less than comparison operator)
-* >                           (Greater than comparison operator)
-* greater than                (Greater than comparison operator)
-* <=                          (Less than or equal to comparison operator)
-* less than or equal to       (Less thanor equal to comparison operator)
-* >=                          (Greater than or equal to  comparison operator)
-* greater than or equal to    (Greate than or equal to comparison operator)
-* =                           (Equality Operator)
-* equal to                    (Equality Operator)
-* equals                      (Equality Operator)
-* !=                          (Inequality Operator)
-* not equal to                (Inequality Operator)
+Less than comparison operators
+* <                           
+* less than
+
+
+Greater than comparison operators
+* >                           
+* greater than
+
+
+Less than or equal to comparison operators
+* <=                          
+* less than or equal to
+
+
+Greater than or equal to  comparison operator
+* >=                         
+* greater than or equal to
+
+
+Equality Operators
+* =                           
+* equal to                    
+* equals
+
+
+Inequality Operators
+* !=                          
+* not equal to
 
 ## 4. Assignment Operators
 There are two operators for assigning variables in Natural. Variables can be assigned at the same time that they are declared.
