@@ -1,5 +1,6 @@
 package lexer;
 
+import information.Printer;
 import symbols.Type;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -32,6 +33,7 @@ public class Lexer {
     private static boolean isMakingPhrase = false;      // Track if a _phrase has been input appropriately
     private static boolean isMultiLineComment = false;  // Ignore input while true.
     private static ArrayList<String> _identifiers;
+    private boolean isPrintReady = false;
 
     private Lexer(){
         words = new Hashtable();
@@ -81,7 +83,7 @@ public class Lexer {
             if(lineCount == 0){
                 _line = _reader.readLine();
                 _nextline = _reader.readLine();
-                lineCount++;
+                isPrintReady = true;
             }
 
             //If the Lexer has passed the first line of the file, update the values accordingly
@@ -89,7 +91,7 @@ public class Lexer {
                 _line = _nextline;
                 _nextline = _reader.readLine();
                 _location = 0;
-                lineCount++;
+                isPrintReady = true;
             }
             if(hasNextLine == false){
                 lastLine = true;
@@ -111,6 +113,10 @@ public class Lexer {
         }else{
             peek = Tag.END;
         }
+    }
+
+    public int getLineCount(){
+        return lineCount;
     }
 
     public String getLine(){
@@ -177,6 +183,12 @@ public class Lexer {
 
             else if ( peek != ' ' && peek != '\t' )
                 break;
+        }
+
+        if(isPrintReady){
+            Printer.printLexerLine(_line, lineCount);
+            isPrintReady = false;
+            lineCount++;
         }
 
 

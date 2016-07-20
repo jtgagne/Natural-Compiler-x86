@@ -4,7 +4,6 @@ for(int a is 3; a less than 6; a increase by 1){
 }
 
 int b is 3
-
-for(a is 5; a greater than or equal to 0; a decrease by 1){
+for(int a is 5; a greater than or equal to 0; a decrease by 1){
     b increase by 2
 }

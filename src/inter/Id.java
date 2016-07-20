@@ -1,5 +1,6 @@
 package inter;
-import lexer.*; 
+import information.Printer;
+import lexer.*;
 import symbols.*;
 
 /**
@@ -20,11 +21,11 @@ public class Id extends Expr {
         offset = b;
         _word = id;
         _type = p;
-        System.out.printf("New identifier: %s\t of type: %s\n", _word.lexeme, _type.toString());
+        Printer.printIdentifier(this);
     }
 
 	public String toString() {
-        return "Line: " + (Lexer.lineCount - 1) + "\tIdentifier: " + _word.lexeme + "\t Type: " + _type.lexeme + "\n";
+        return "Identifier: " + _word.lexeme + "\t TYPE: " + _type.lexeme + "\n";
     }
 
     public String getName(){

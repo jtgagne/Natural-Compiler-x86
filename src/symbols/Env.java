@@ -1,5 +1,8 @@
 package symbols;
-import java.util.*; import lexer.*; import inter.*;
+import java.util.*;
+
+import information.Printer;
+import lexer.*; import inter.*;
 
 /**
  * Class used to store the variables of a natural program
@@ -16,7 +19,7 @@ public class Env {
 	public Env(Env n) {
 		table = new Hashtable();
 		prev = n;
-		System.out.printf("New environment scope instantiated\n");
+		Printer.printEnvInfo();
 	}
 
 	public void put(Token w, Id i) { table.put(w, i); }

@@ -1,6 +1,8 @@
 package parser;
 import java.io.*;
 import java.util.ArrayList;
+
+import information.Printer;
 import lexer.*;
 import symbols.*;
 import inter.*;
@@ -14,21 +16,15 @@ import inter.*;
  */
 public class Parser {
 
-    /** lexical analyzer for this parser */
-    private Lexer lex;
-
-    /** lookahead  */
-    private Token look;
-
-    /** current or top symbol table */
-    Env top = null;
-
-    /** storage used for declarations */
-    int used = 0;
+    private Lexer lex;          //Lexer to read in tokens
+    private Token look;         //Next token from the Lexer
+    Env top = null;             //Current or top symbol table
+    int used = 0;               //Storage used for declarations
 
     private ArrayList<Stmt> _assignments = null;    //For assignments that occur during declaration
     private int _assignmentNum = 0;
-
+    private int _count = 0;
+    private String _line;
 
     /**
     * Sets the lexer (from the input parameter) and calls move to get the first token
@@ -53,7 +49,10 @@ public class Parser {
      * @throws IOException Error scanning in token from lexer.
      */
     private void move() throws IOException {
-        look = Lexer.getInstance().scan();
+        look = lex.scan();
+        if(look.tag != Tag.END){
+            Printer.printToken(look);
+        }
     }
 
 
@@ -62,7 +61,7 @@ public class Parser {
      * @param s the string with more details about the error
      */
    void error(String s) {
-       throw new Error("near line "+Lexer.lineCount +": "+s);
+       throw new Error("near line " + Lexer.lineCount  +": " + s);
    }
 
     /**
@@ -135,37 +134,21 @@ public class Parser {
 
             /** call type() */
             Type p = type();
+            Id id = null;
 
             Token tok = look;
+            if(check(Tag.ID)){
+                /*Create node in syntax tree*/
+                id = new Id((Word)tok, p, used);
+                top.put( tok, id );
+                used = used + p.width;
+            }
+
             match(Tag.ID);
-
-            /*Create node in syntax tree*/
-            Id id = new Id((Word)tok, p, used);
-            top.put( tok, id );
-            used = used + p.width;
-
 
             if(check(Tag.ASSIGNMENT) || check(Tag.INCREASE) || check(Tag.DECREASE)){
                 move();
                 Stmt stmt;
-
-                /*if(p.equals(Type.Char)){
-                    match('\'');
-                    tok = look;
-                    Word word = (Word) tok;
-                    match(Tag.ID);
-                    if(word.lexeme.length() != 1){
-                        error("cannot assign a non-character value to a char variable");
-                    }
-                    Char character = new Char(word.lexeme.charAt(0));
-                    Expr expr = new Expr(character, Type.Char);
-                    stmt = new Set(id, expr);
-                    match('\'');
-                }
-
-                else{
-                    stmt = new Set(id, bool());
-                }*/
                 stmt = new Set(id,bool());
                 _assignments.add(stmt);             //Add an assignment node to the ArrayList
             }
