@@ -20,4 +20,9 @@ public class Num extends Token {
     public String toString() {
         return "NUM: value is " + value + " and tag is " + tag;
     }
+
+    @Override
+    public boolean isNum() {
+        return true;
+    }
 }

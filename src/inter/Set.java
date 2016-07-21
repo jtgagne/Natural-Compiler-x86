@@ -1,4 +1,5 @@
 package inter;
+import information.Printer;
 import semantics.TypeCasting;
 import symbols.*;
 
@@ -24,11 +25,13 @@ public class Set extends Stmt {
 
       if ( check(id.type, expr.type) == null ) 
           error("type error");
+
+      Printer.writeAssignment(this);
    }
 
 
    public String toString(){
-      return "Assignment: " + id.toString() + " = " + expr.toString();
+      return "Assign: (" + id.type.lexeme + ") " + id._word.lexeme + " = (" + expr.type.lexeme + ") " + expr.getValue();
    }
 
    public Type check(Type p1, Type p2) {

@@ -49,4 +49,6 @@ public class Token {
         return false;
     }
     public boolean isChar(){ return false; }
+    public boolean isNum(){ return false; }
+    public boolean isReal() { return false; }
 }

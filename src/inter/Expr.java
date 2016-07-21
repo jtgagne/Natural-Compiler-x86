@@ -15,6 +15,36 @@ public class Expr extends Node {
     public Token op;
     public Type type;
 
+    public String getType(){
+        return type.lexeme;
+    }
+
+    public String getValue(){
+        if(op.isChar()){
+            Char c = (Char) op;
+            String str = "";
+            str += c.value;
+            return str;
+        } else if(op.isWord()){
+            Word word = (Word) op;
+            return word.lexeme;
+        } else if(op.isType()){
+            Type type = (Type) op;
+            return type.lexeme;
+        } else if(op.isPhrase()){
+            Phrase phrase = (Phrase) op;
+            return phrase.getLexeme();
+        } else if(op.isNum()){
+            Num num = (Num) op;
+            return String.valueOf(num.value);
+        } else if(op.isReal()){
+            Real real = (Real) op;
+            return String.valueOf(real.value);
+        }
+
+        return op.toString();
+    }
+
     public Expr(Token tok, Type p) {
         op = tok;
         type = p;

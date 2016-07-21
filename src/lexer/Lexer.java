@@ -186,7 +186,7 @@ public class Lexer {
         }
 
         if(isPrintReady){
-            Printer.printLexerLine(_line, lineCount);
+            Printer.writeLexerLine(_line, lineCount);
             isPrintReady = false;
             lineCount++;
         }

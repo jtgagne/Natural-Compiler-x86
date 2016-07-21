@@ -51,7 +51,7 @@ public class Parser {
     private void move() throws IOException {
         look = lex.scan();
         if(look.tag != Tag.END){
-            Printer.printToken(look);
+            Printer.writeToken(look);
         }
     }
 

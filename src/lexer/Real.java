@@ -21,4 +21,9 @@ public class Real extends Token {
     public String toString() {
         return "REAL: value is " + value + " and tag is " + tag;
     }
+
+    @Override
+    public boolean isReal() {
+        return true;
+    }
 }

@@ -19,7 +19,7 @@ public class Env {
 	public Env(Env n) {
 		table = new Hashtable();
 		prev = n;
-		Printer.printEnvInfo();
+		Printer.writeEnvInfo();
 	}
 
 	public void put(Token w, Id i) { table.put(w, i); }

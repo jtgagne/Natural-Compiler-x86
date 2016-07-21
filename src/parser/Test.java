@@ -4,7 +4,6 @@ import information.Printer;
 import lexer.Lexer;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -37,15 +36,15 @@ public class Test {
         for(File file: testFiles){
             String filePath = file.getPath();                               // Get the path of the first file to be evaluated
 
-            if(!filePath.contains("1")) continue;                     // Make sure it is a .nat file
+            if(!filePath.contains(EXTENSION)) continue;                     // Make sure it is a .nat file
 
             String contents[] = filePath.split("/");                        // State the name of the file being evaluated
             String fileName = contents[contents.length-1];
 
             Printer.setFileName(fileName);                                  //Update the file to write to
 
-            Printer.printFilePath(filePath);
-            Printer.printFileName(fileName);
+            Printer.writeFilePath(filePath);
+            Printer.writeFileName(fileName);
 
             Lexer.getInstance().openReader(filePath);                       // Open the first file
 
@@ -54,7 +53,7 @@ public class Test {
                 parser.runParser();
 
             } catch (Error e){
-                Printer.printRuntimeError(fileName, e.toString());
+                Printer.writeRuntimeError(fileName, e.toString());
             }
 
             Lexer.getInstance().closeReader();
