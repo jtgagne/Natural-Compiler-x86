@@ -1,6 +1,8 @@
 # Compiler-Design
 Compiler for Natural. Semester project in Compiler Design at Wentworth Institute of Technology Summer 2016.
 
+To see parser output, read the ABOUT.md file located under the src/output/ directory.
+
 # Testing the Parser
 1. Locate the Test.java file in the parser package.
 2. Run the main method from that class.
