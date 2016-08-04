@@ -1,0 +1,9 @@
+boolean isNaturalWorking
+for(int a is 3; a less than 6; a increase by 1){
+    isNaturalWorking is true
+}
+
+int b is 3
+for(int a is 5; a greater than or equal to 0; a decrease by 1){
+    b increase by 2
+}

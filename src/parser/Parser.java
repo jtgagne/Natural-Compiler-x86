@@ -97,6 +97,11 @@ public class Parser {
         }catch (Exception e){
             System.err.printf("Null");
         }
+        int begin = s.newlabel();
+        int after = s.newlabel();
+        s.emitlabel(begin);
+        s.gen(begin, after);
+        s.emitlabel(after);
         top = savedEnv;
     }
 

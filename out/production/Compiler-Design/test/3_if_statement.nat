@@ -1,0 +1,54 @@
+boolean isOfAge is true
+boolean isRecentlyOfAge is true
+int values := isRecentlyOfAge + isOfAge
+values := values * isRecentlyOfAge
+
+int age is 21
+char c := 'a'
+age := c
+long manyYears := age
+age := manyYears
+int values
+
+if(age equals 21){
+    isOfAge is true
+}else{
+    isOfAge := false
+}
+
+if(isOfAge and age less than 22){
+    isRecentlyOfAge is true
+} else {
+    isRecentlyOfAge is false
+}
+
+int birthDay is 2
+int birthMonth is 5
+int birthYear is 1995
+int currentDay is 7
+int currentMonth is 7
+int currentYear is 2016
+boolean isBirthDay
+
+#Check if it is the person's birthday
+if(birthMonth equals currentMonth and birthDay equals currentDay){
+    isBirthDay is true
+}else{
+    isBirthDay is false
+}
+
+#Check is the person is of age to drink
+if(((currentYear - birthYear) greater than 21)){
+    isOfAge is true
+}
+else if(birthMonth less than currentMonth and ((currentYear - birthYear) equals 21)){
+    isOfAge is true
+}
+else if(birthMonth equals currentMonth and ((currentYear - birthYear) equals 21)){
+    if(birthDay less than or equal to currentDay){
+        isOfAge is true
+    }
+}
+else {
+    isOfAge := false
+}
