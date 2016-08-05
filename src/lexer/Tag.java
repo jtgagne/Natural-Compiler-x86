@@ -85,6 +85,9 @@ public class Tag {
         CHAR        = 294,
         BOOL        = 295;
 
+    public static final int
+        PRINT       = 296;
+
 
     public static boolean isDataType(int tag){
         return (tag == Tag.INT ||

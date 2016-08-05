@@ -68,6 +68,22 @@ public class Lexer {
         _lexer = null;
     }
 
+    public String readPrintContent() throws IOException{
+
+        StringBuilder sb = new StringBuilder();
+
+        readch();
+
+        do{
+            sb.append(peek);
+            readch();
+        }
+        while (peek != '"');
+
+        readch();
+
+        return sb.toString();
+    }
 
     // ******************************************************
     // Read from a file to be evaluated by the lexer. Read by lineCount
@@ -207,6 +223,8 @@ public class Lexer {
         // OPERATOR
         // ******************************************************
         switch( peek ) {
+            case '"':
+                return new Print(readPrintContent());
             case '-':
                 if(!readch(' '))return Word.minus; else return new Token('-');
             case '&':

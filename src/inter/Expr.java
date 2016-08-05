@@ -40,6 +40,9 @@ public class Expr extends Node {
         } else if(op.isReal()){
             Real real = (Real) op;
             return String.valueOf(real.value);
+        } else if (op.isPrint()){
+            Print print = (Print) op;
+            return String.valueOf(print.value);
         }
 
         return op.toString();

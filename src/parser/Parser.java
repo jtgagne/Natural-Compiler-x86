@@ -237,91 +237,98 @@ public class Parser {
 
       switch( look.tag ) {
 
-      case Tag.IF:
-          move();
-          match('(');
-          x = bool();
-          match(')');
-          s1 = stmt();
-          if( look.tag != Tag.ELSE )
-              return new If(x, s1);
-          match(Tag.ELSE);
-          s2 = stmt();
+          case Tag.IF:
+              move();
+              match('(');
+              x = bool();
+              match(')');
+              s1 = stmt();
+              if( look.tag != Tag.ELSE )
+                  return new If(x, s1);
+              match(Tag.ELSE);
+              s2 = stmt();
+             return new Else(x, s1, s2);    // return an Else node
 
-         return new Else(x, s1, s2);    // return an Else node
+          case Tag.PRINT:
+              move();
+              match('(');                              //Match open paren
+              Print print = (Print) look;
+              match(Tag.PRINT);
+              match(')');
+              return new PrintNode(print);
 
-      case Tag.WHILE:
-         While whilenode = new While();
-         savedStmt = Stmt.Enclosing;
-         Stmt.Enclosing = whilenode;
-         move();
-         match('(');
-         x = bool();
-         match(')');
-         s1 = stmt();
-         whilenode.init(x, s1);
-         Stmt.Enclosing = savedStmt;    // reset Stmt.Enclosing
-         return whilenode;              // Return a While node
+          case Tag.WHILE:
+             While whilenode = new While();
+             savedStmt = Stmt.Enclosing;
+             Stmt.Enclosing = whilenode;
+             move();
+             match('(');
+             x = bool();
+             match(')');
+             s1 = stmt();
+             whilenode.init(x, s1);
+             Stmt.Enclosing = savedStmt;    // reset Stmt.Enclosing
+             return whilenode;              // Return a While node
 
-      case Tag.FOR:
-          For fornode = new For();
-          savedStmt = Stmt.Enclosing;
-          Stmt.Enclosing = fornode;
-          move();
-          match('(');
-          Env savedEnv = top;
-          top = new Env(top);
-          if(check(')')){
-              condition = new Expr(new Token(Tag.TRUE), Type.Bool);
+          case Tag.FOR:
+              For fornode = new For();
+              savedStmt = Stmt.Enclosing;
+              Stmt.Enclosing = fornode;
+              move();
+              match('(');
+              Env savedEnv = top;
+              top = new Env(top);
+              if(check(')')){
+                  condition = new Expr(new Token(Tag.TRUE), Type.Bool);
+                  loopThrough = stmt();
+                  fornode.init(condition, assignment, update, loopThrough);
+                  return fornode;
+              }
+              decls();
+              if(_assignments.size() == 1){
+                  assignment = _assignments.get(0);
+                  _assignments.clear();
+              }else{
+                  assignment = assign();
+              }
+              match(';');
+              condition = bool();
+              match(';');
+              update = assign();
+              match(')');
               loopThrough = stmt();
               fornode.init(condition, assignment, update, loopThrough);
+              top = savedEnv;
+              Stmt.Enclosing = savedStmt;
               return fornode;
-          }
-          decls();
-          if(_assignments.size() == 1){
-              assignment = _assignments.get(0);
-              _assignments.clear();
-          }else{
-              assignment = assign();
-          }
-          match(';');
-          condition = bool();
-          match(';');
-          update = assign();
-          match(')');
-          loopThrough = stmt();
-          fornode.init(condition, assignment, update, loopThrough);
-          top = savedEnv;
-          Stmt.Enclosing = savedStmt;
-          return fornode;
 
-      case Tag.DO:
-         Do donode = new Do();
-         savedStmt = Stmt.Enclosing;
-         Stmt.Enclosing = donode;
-         move();
-         s1 = stmt();
-         match(Tag.WHILE);
-         match('(');
-         x = bool();
-         match(')');
-         donode.init(s1, x);
-         Stmt.Enclosing = savedStmt;    // reset Stmt.Enclosing
-         return donode;                 // Return a Do node
+          case Tag.DO:
+             Do donode = new Do();
+             savedStmt = Stmt.Enclosing;
+             Stmt.Enclosing = donode;
+             move();
+             s1 = stmt();
+             match(Tag.WHILE);
+             match('(');
+             x = bool();
+             match(')');
+             donode.init(s1, x);
+             Stmt.Enclosing = savedStmt;    // reset Stmt.Enclosing
+             return donode;                 // Return a Do node
 
-      case Tag.BREAK:
-         match(Tag.BREAK);
-         if(!check(';')){
-             error("missing semicolon after break statement");
-         }
-          move();
-         return new Break();
+          case Tag.BREAK:
+             match(Tag.BREAK);
+             if(!check(';')){
+                 error("missing semicolon after break statement");
+             }
+              move();
+             return new Break();
 
-      case '{':
-         return block();
+          case '{':
+             return block();
 
-      default:
-         return assign();               // Return either a Set or SetElem Node
+          default:
+             return assign();               // Return either a Set or SetElem Node
       }
    }
 

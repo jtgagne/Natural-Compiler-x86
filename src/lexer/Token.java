@@ -51,4 +51,5 @@ public class Token {
     public boolean isChar(){ return false; }
     public boolean isNum(){ return false; }
     public boolean isReal() { return false; }
+    public boolean isPrint(){ return false; }
 }
