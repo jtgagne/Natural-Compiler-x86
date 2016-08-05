@@ -98,10 +98,12 @@ public class Parser {
             System.err.printf("Null");
         }
         int begin = s.newlabel();
-        int after = s.newlabel();
         s.emitlabel(begin);
-        s.gen(begin, after);
-        s.emitlabel(after);
+        s.gen(begin, begin);
+
+        //int after = s.newlabel();
+        //s.emitlabel(after);
+
         top = savedEnv;
     }
 
