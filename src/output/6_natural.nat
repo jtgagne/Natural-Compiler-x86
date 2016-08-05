@@ -1,5 +1,5 @@
-Path: /Users/farrerz/Compiler-Design/src/test/E6_natural.nat
-Evaluating: E6_natural.nat
+Path: /Users/gagnej3/Documents/eclipse/Compiler-Design/src/test/6_natural.nat
+Evaluating: 6_natural.nat
 
 
 Lexer line 1: int a is 10
@@ -299,13 +299,14 @@ Lexer line 46:     r :=0
 	Token: WORD: Lexeme is ':=' and tag is 285
 	Token: NUM: value is 0 and tag is 268
 
-Lexer line 47: }while(a is 3)
+Lexer line 47: }while(a == 3)
 	Token: TOKEN: tag is }
 	Assign: (int) r = (int) 0
 	Token: WORD: Lexeme is 'while' and tag is 264
 	Token: TOKEN: tag is (
 	Token: WORD: Lexeme is 'a' and tag is 286
-	Token: WORD: Lexeme is 'is' and tag is 285
+	Token: WORD: Lexeme is '==' and tag is 270
+	Token: NUM: value is 3 and tag is 268
+	Token: TOKEN: tag is )
 
-ERROR IN FILE: E6_natural.nat:
-java.lang.Error: near line 47: syntax error
+Lexer line 48: null
