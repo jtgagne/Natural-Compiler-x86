@@ -22,18 +22,16 @@ public class Printer {
     private static PrintWriter _writer;
     private static StringBuilder _builder;
 
-    public static void setOutput(String outputLocation){
-        mOutputDirectory = outputLocation;
-    }
-
-    public static void setFileName(String fileName){
+    public static void setFile(String fileName, String fileDirectory){
         try{
             mFileName = fileName;
+            mOutputDirectory = fileDirectory;
             String path = mOutputDirectory + "/" + mFileName;
             mFile = new File(path);
             _writer = new PrintWriter(mFile);
             _builder = new StringBuilder();
-
+            writeFilePath(fileDirectory);
+            writeFileName(fileName);
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -42,7 +40,6 @@ public class Printer {
     public static void close(){
         _writer.close();
     }
-
 
     public static void writeFilePath(String filePath) throws Exception{
         _writer.printf("Path: %s\n", filePath);

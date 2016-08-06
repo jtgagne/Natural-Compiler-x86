@@ -1,5 +1,6 @@
 package parser;
 
+import code_generation.AssemblyFile;
 import information.Printer;
 import lexer.Lexer;
 
@@ -25,28 +26,28 @@ public class Test {
 
         Path currentRelativePath = Paths.get("");                           // Get the path to the project directory
         String path = currentRelativePath.toAbsolutePath().toString();      // Convert the path to a string
-        Printer.setOutput(path + "/src/output");
 
-        path += "/src/test";                                                // Add the extension to the test files directory
-        File folder = new File(path);                                       // Reference the test directory
+        String inputPath = path + "/src/test";                              // Add the extension to the test files directory
+        String outputAsmPath = path + "/src/generated_assembly";
+        String outputPrintPath = path + "/src/output";
+        File folder = new File(inputPath);                                  // Reference the test directory
         File[] testFiles = folder.listFiles();                              // Create an array of all files in the test directory.
 
         assert testFiles!=null;
 
         for(File file: testFiles){
-            String filePath = file.getPath();                               // Get the path of the first file to be evaluated
+            String filePath = file.getPath();                         // Get the path of the first file to be evaluated
 
             if(!filePath.contains("7")) continue;                     // Make sure it is a .nat file
 
-            String contents[] = filePath.split("/");                        // State the name of the file being evaluated
+            String contents[] = filePath.split("/");                  // State the name of the file being evaluated
             String fileName = contents[contents.length-1];
 
-            Printer.setFileName(fileName);                                  //Update the file to write to
+            AssemblyFile assemblyFile = new AssemblyFile(fileName, outputAsmPath);   //New Assembly File with the name of the file being evaluated
 
-            Printer.writeFilePath(filePath);
-            Printer.writeFileName(fileName);
+            Printer.setFile(fileName, outputPrintPath);          //Update the file to write to
 
-            Lexer.getInstance().openReader(filePath);                       // Open the first file
+            Lexer.getInstance().openReader(filePath);                 // Open the first file
 
             try{
                 Parser parser = new Parser();
@@ -57,6 +58,7 @@ public class Test {
             }
 
             Lexer.getInstance().closeReader();
+            assemblyFile.generateAsmFile();
             Printer.close();
         }
 

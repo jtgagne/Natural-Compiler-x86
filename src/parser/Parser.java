@@ -99,7 +99,7 @@ public class Parser {
         }
         int begin = s.newlabel();
         s.emitlabel(begin);
-        s.gen(begin, begin);
+        s.gen(begin, begin);        //was: s.gen(begin, after);
 
         //int after = s.newlabel();
         //s.emitlabel(after);

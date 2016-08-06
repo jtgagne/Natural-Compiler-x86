@@ -23,7 +23,14 @@ public class Node {
    }
 
    static int labels = 0;
+   static int printLabel = 0;
+   public int newPrintLabel(){ return ++printLabel;}
    public int newlabel() { return ++labels; }
-   public void emitlabel(int i) { System.out.print("L" + i + ":"); }
-   public void emit(String s) { System.out.println("\t" + s); }
+
+   public void emitlabel(int i) {
+      //System.out.print("L" + i + ":");
+   }
+   public void emit(String s) {
+      System.out.println(s);
+   }
 }
