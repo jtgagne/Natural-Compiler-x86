@@ -62,8 +62,6 @@ public class AssemblyFile {
      * Write all the string builder objects to the new .asm file
      */
     public void generateAsmFile(){
-        //li	$v0,10		# Code for syscall: exit
-                //syscall
         mMain.append("\tli $v0, 10\t#Code for syscall:exit\n");
         mMain.append("\tsyscall\n\n");
         _writer.write(mHeader.toString());
@@ -71,5 +69,4 @@ public class AssemblyFile {
         _writer.write(mData.toString());
         _writer.close();
     }
-
 }

@@ -121,7 +121,6 @@ public class Parser {
        top = new Env(top);
 
        decls();
-        //move();
        Stmt s = stmts();
 
        match('}');

@@ -20,7 +20,6 @@ public class Printer {
     private static String mFileName;
     private static File mFile;
     private static PrintWriter _writer;
-    private static StringBuilder _builder;
 
     public static void setFile(String fileName, String fileDirectory){
         try{
@@ -29,7 +28,6 @@ public class Printer {
             String path = mOutputDirectory + "/" + mFileName;
             mFile = new File(path);
             _writer = new PrintWriter(mFile);
-            _builder = new StringBuilder();
             writeFilePath(fileDirectory);
             writeFileName(fileName);
         } catch (Exception e){

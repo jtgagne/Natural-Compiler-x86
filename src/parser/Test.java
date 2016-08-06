@@ -18,10 +18,6 @@ import java.nio.file.Paths;
  */
 public class Test {
 
-    private static final String EXTENSION = ".nat";
-    private static final String IF = "if_statement";
-    private static boolean _eof = false;
-
     public static void main(String[] args) throws Exception{
 
         Path currentRelativePath = Paths.get("");                           // Get the path to the project directory
