@@ -3,6 +3,14 @@ Compiler for Natural. Semester project in Compiler Design at Wentworth Institute
 
 To see parser output, read the ABOUT.md file located under the src/output/ directory.
 
+# Updates
+Added IO to the language:
+```java 
+  int a
+  input("Enter an integer value for a: ", a)
+  print("\na = ", a)
+```
+
 # Testing the Parser
 1. Locate the Test.java file in the parser package.
 2. Run the main method from that class.
