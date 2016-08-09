@@ -23,7 +23,6 @@ public class Id extends Expr {
         _word = id;
         _type = p;
         Printer.writeIdentifier(this);
-        AssemblyFile.addData(toAsmData());
     }
 
 	public String toString() {
@@ -60,6 +59,8 @@ public class Id extends Expr {
                 return ".double";
             case "char":
                 return ".byte";
+            case "boolean":
+                return ".asciiz";
         }
 
         return "IDENTIFER ERROR";

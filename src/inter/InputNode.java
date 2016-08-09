@@ -48,69 +48,64 @@ public class InputNode extends Stmt {
     }
 
     /**
-     * Generate the assembly code to store the message as a pointer
-     * @return the assembly code
+     * Generate the assembly code to be added to the main
+     * @return the assembly code to complete the action
      */
+    @Override
+    public String toAsmMain() {
+        return String.format("%s %s", mPrompt.toAsmMain(), genInputAsm());
+    }
+
     @Override
     public String toAsmData() {
         return mPrompt.toAsmData();
     }
 
     /**
-     * Generate the assembly code to be added to the main
-     * @return the assembly code to complete the action
-     */
-    @Override
-    public String toAsmMain() {
-        return String.format("%s" +                                 //Print the input prompt
-                "\t%s\t\t#System call to read in %s\n" +            //Get system call code to Read value
-                "\tsyscall\n\n" +                                   //Run syscall to get the input
-                "\t%s\t\t#Store the input in variable: '%s'\n\n",   //Store the value in a variable
-                mPrompt.toAsmMain(),
-                getSysCode(),
-                mType.lexeme,
-                getAssignment(),
-                mIdentifier.getName());
-    }
-
-    /**
      * Generates the input ASM line based on the data type to be stored in
      * @return appropriate assembly code
      */
-    private String getSysCode(){
+    private String genInputAsm(){
         switch (mType.lexeme){
             case "int":
-                return String.format("li\t $v0, 5");  //System call for reading int
+                return String.format(
+                        "\tli\t $v0, 5\t\t#System call to read in %s\n" +
+                        "\tsyscall\n\n" +
+                        "\tsw\t $v0, %s\t\t#Store the input in variable: '%s'\n",
+                        mType.lexeme, mIdentifier.getName(), mIdentifier.getName());  //System call for reading int
             case "long":
-                return String.format("li\t $v0, 5");  //System call for reading int
+                return String.format(
+                        "\tli\t $v0, 5\t\t#System call to read in %s\n" +
+                        "\tsyscall\n\n" +
+                        "\tsw\t $v0, %s\t\t#Store the input in variable: '%s'\n",
+                        mType.lexeme, mIdentifier.getName(), mIdentifier.getName());  //System call for reading int
             case "float":
-                return String.format("li\t $v0, 6");  //System call for reading float
+                return String.format(
+                        "\tli\t $v0, 6\t\t#System call to read in %s\n" +
+                        "\tsyscall\n\n" +
+                        "\ts.d\t $f0, %s\t\t#Store the input in variable: '%s'\n",
+                        mType.lexeme, mIdentifier.getName(), mIdentifier.getName());  //System call for reading float
             case "double":
-                return String.format("li\t $v0, 7");  //System call for reading double
+                return String.format(
+                        "\tli\t $v0, 7\t\t#System call to read in %s\n" +
+                        "\tsyscall\n\n" +
+                        "\ts.d\t $f0, %s\t\t#Store the input in variable: '%s'\n",
+                        mType.lexeme, mIdentifier.getName(), mIdentifier.getName());  //System call for reading double
             case "char":
-                return String.format("li\t $v0, 12"); //System call for reading char
+                return String.format(
+                        "\tli\t $v0, 12\t\t#System call to read in %s\n" +
+                        "\tsyscall\n\n" +
+                        "\tsb\t $v0, %s\t\t#Store the input in variable: '%s'\n",
+                        mType.lexeme, mIdentifier.getName(), mIdentifier.getName()); //System call for reading char
+            case "boolean":
+                return String.format(
+                        "\tli\t $v0, 8\t\t#System call to read in %s\n" +
+                        "\tla\t $a0, %s\n" +
+                        "\tli\t $a1, 6\t\t#Allow for up to 5 chars\n" +
+                        "\tsyscall\n\n" +
+                        "\tla\t $a0, %s\t\t#Store the input in variable: '%s'\n",
+                        mType.lexeme, mIdentifier.getName(), mIdentifier.getName(), mIdentifier.getName());  //System call to read String.
         }
-        return "TYPE ERROR: InputNode\n";
-    }
-
-    /**
-     * Generate the assembly assignment statement
-     * @return the assembly code for the variable assignment.
-     */
-    private String getAssignment(){
-        switch (mType.lexeme){
-            case "int":
-                return String.format("sw\t $v0, %s", mIdentifier.getName());  //Store the value in the appropriate var name
-            case "long":
-                return String.format("sw\t $v0, %s", mIdentifier.getName());  //Store the value in the appropriate var name
-            case "float":
-                return String.format("s.d\t $f0, %s", mIdentifier.getName());  //Store the value in the appropriate var name
-            case "double":
-                return String.format("s.d\t $f0, %s", mIdentifier.getName());  //Store the value in the appropriate var name
-            case "char":
-                return String.format("sb\t $v0, %s", mIdentifier.getName()); //System call for reading char
-        }
-
         return "TYPE ERROR: InputNode\n";
     }
 }

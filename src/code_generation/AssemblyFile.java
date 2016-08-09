@@ -31,7 +31,6 @@ public class AssemblyFile {
         addToHeader("\n\t.text\n\n");
         addToHeader("\n\t.globl main\n\n");
         addToMain("main:\n\n");
-        addData("\t.data\n\n");
         setFile(mFileName);
     }
 
@@ -49,6 +48,11 @@ public class AssemblyFile {
     public static void addData(String data){
         if(data == null) return;
         mData.append(data);
+    }
+
+    public static void addDataToFront(String data){
+        if(data == null) return;
+        mData.insert(0, data);
     }
 
     public static void addToMain(String data){

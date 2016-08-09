@@ -31,7 +31,6 @@ public class Type extends Word {
     // Constants
     // **********************************************************
     public static final Type
-            Void    = new Type( "void", Tag.NULL, 0),
             Int     = new Type( "int",   Tag.INT, 4 ),
             Long    = new Type( "long", Tag.LONG, 8),
             Float   = new Type( "float", Tag.FLOAT, 8 ),

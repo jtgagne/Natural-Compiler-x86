@@ -3,20 +3,17 @@ double d
 float f
 char c
 long l
+boolean isWorking
 
+input("Enter a value (true | false) for isWorking: ", isWorking)
+print("\nisWorking = ", isWorking)
 input("Enter a char value for c: ", c)
-print("\nc = \'")
-print(c)
-print("\'")
+print("\nc = ", c)
 input("\nEnter a long value for l: ", l)
-print("l = ")
-print(l)
+print("l = ", l)
 input("\nEnter a float value for f: ", f)
-print("f = ")
-print(f)
+print("f = ", f)
 input("\nEnter an integer value for i: ", i)
-print("i = ")
-print(i)
+print("i = ", i)
 input("\nEnter a double value for d: ", d)
-print("d = ")
-print(d)
+print("d = ", d)

@@ -2,6 +2,7 @@ package parser;
 import java.io.*;
 import java.util.ArrayList;
 
+import code_generation.AssemblyFile;
 import information.Printer;
 import lexer.*;
 import symbols.*;
@@ -98,6 +99,7 @@ public class Parser {
             System.err.printf("Null");
         }
         int begin = s.newlabel();
+
         s.emitlabel(begin);
         s.gen(begin, begin);        //was: s.gen(begin, after);
 
@@ -105,6 +107,9 @@ public class Parser {
         //s.emitlabel(after);
 
         top = savedEnv;
+        assert top != null;
+        top.generateAsmData();                          //Add all variables in top to the data section
+        AssemblyFile.addDataToFront("\n\t.data\n\n");   //Add '.data' to the beginning of the data string builder
     }
 
 
@@ -257,10 +262,17 @@ public class Parser {
               if(check(Tag.ID)){                       //If a print tag was not found, check for an identifier.
                   Id id = top.get(look);
                   match(Tag.ID);
-                  printNode.setPrintIdentifier(id);
-              }else{
+                  printNode.setIdentifier(id);
+              }
+              else{
                   Print print = (Print) look;
                   match(Tag.PRINT);
+                  if(check(',')){                      //Allow for inclusion of a single variable in a print statement
+                      move();
+                      Id id = top.get(look);
+                      match(Tag.ID);
+                      printNode.setIdentifier(id);
+                  }
                   printNode.setPrintToken(print);
               }
               match(')');                              //Check for open paren.
