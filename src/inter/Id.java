@@ -1,4 +1,5 @@
 package inter;
+import code_generation.AssemblyFile;
 import information.Printer;
 import lexer.*;
 import symbols.*;
@@ -22,6 +23,7 @@ public class Id extends Expr {
         _word = id;
         _type = p;
         Printer.writeIdentifier(this);
+        AssemblyFile.addData(toAsmData());
     }
 
 	public String toString() {
@@ -31,8 +33,36 @@ public class Id extends Expr {
     public String getName(){
         return _word.lexeme;
     }
-    public String getType(){
+
+    public String getType() {
         return _type.lexeme;
+    }
+
+    @Override
+    public Expr gen() {
+        return super.gen();
+    }
+
+    @Override
+    public String toAsmData() {
+        return String.format("%s:\t%s\n", _word.lexeme, getAsmDataType());
+    }
+
+    private String getAsmDataType(){
+        switch (type.lexeme){
+            case "int":
+                return ".word";
+            case "long":
+                return ".word";
+            case "float":
+                return ".float";
+            case "double":
+                return ".double";
+            case "char":
+                return ".byte";
+        }
+
+        return "IDENTIFER ERROR";
     }
 }
 

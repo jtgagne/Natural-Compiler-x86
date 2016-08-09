@@ -18,7 +18,7 @@ public class AssemblyFile {
     private static PrintWriter _writer;
 
     /**
-     * Creates a new assembly file with the same name as the input file
+     * Creates a new assembly file with the same name as the input_files file
      * @param fileName name of the file
      */
     public AssemblyFile(String fileName, String outputPath){
@@ -47,6 +47,7 @@ public class AssemblyFile {
     }
 
     public static void addData(String data){
+        if(data == null) return;
         mData.append(data);
     }
 
@@ -62,7 +63,7 @@ public class AssemblyFile {
      * Write all the string builder objects to the new .asm file
      */
     public void generateAsmFile(){
-        mMain.append("\tli $v0, 10\t#Code for syscall:exit\n");
+        mMain.append("\tli $v0, 10\t\t#Load system call to exit\n");
         mMain.append("\tsyscall\n\n");
         _writer.write(mHeader.toString());
         _writer.write(mMain.toString());

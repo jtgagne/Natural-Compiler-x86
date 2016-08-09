@@ -33,4 +33,21 @@ public class Node {
    public void emit(String s) {
       System.out.println(s);
    }
+
+   /**
+    * Formatted string of content to be appended to the data section of an assembly file
+    * @return
+     */
+   public String toAsmData(){
+      return null;
+   }
+
+   /**
+    * Formatted string of the content to be appended to the main function of an assembly file
+    * @return
+     */
+   public String toAsmMain(){
+      return null;
+   }
+
 }

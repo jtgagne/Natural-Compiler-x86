@@ -7,8 +7,8 @@ import lexer.Token;
 import java.io.*;
 
 /**
- * Class for writing parser information to files in the output directory. Each file is named with the same name as the
- * file that the output was produced from.
+ * Class for writing parser information to files in the intermediate_output directory. Each file is named with the same name as the
+ * file that the intermediate_output was produced from.
  * Justin Gagne and Zack Farrer
  * Professor Assiter
  * Wentworth Institute of Technology

@@ -86,7 +86,8 @@ public class Tag {
         BOOL        = 295;
 
     public static final int
-        PRINT       = 296;
+        PRINT       = 296,
+        INPUT       = 297;
 
 
     public static boolean isDataType(int tag){

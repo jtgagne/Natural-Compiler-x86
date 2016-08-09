@@ -68,6 +68,7 @@ public class Word extends Token {
         decrease    = new Word( "decrease", Tag.DECREASE, Tag.INITIALIZER),
         by          = new Word( "by", Tag.NULL, Tag.TERMINAL),
         print       = new Word( "print", Tag.PRINT),
+        input       = new Word( "input", Tag.INPUT),
         error       = new Word( "ERROR", Tag.ERROR);
 
     /**
@@ -106,6 +107,7 @@ public class Word extends Token {
         words.put(increase.lexeme, increase);
         words.put(decrease.lexeme, decrease);
         words.put(print.lexeme, print);
+        words.put(input.lexeme, input);
         words.put(by.lexeme, by);
     }
 

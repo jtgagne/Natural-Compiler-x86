@@ -1,5 +1,5 @@
-Path: /Users/gagnej3/Documents/eclipse/Compiler-Design/src/test/4_while_statement.nat
-Evaluating: 4_while_statement.nat
+Path: /Users/gagnej3/Documents/eclipse/Compiler-Design/src/input_files/E4_while_statement.nat
+Evaluating: E4_while_statement.nat
 
 
 Lexer line 1: int i is 1
@@ -138,11 +138,13 @@ Lexer line 21:     }
 	Token: TOKEN: tag is }
 	Assign: (int) i = (int) 1
 
-Lexer line 22: }while(isSameValue)
+Lexer line 22: }while(isSameValue or)
 	Token: TOKEN: tag is }
 	Token: WORD: Lexeme is 'while' and tag is 264
 	Token: TOKEN: tag is (
 	Token: WORD: Lexeme is 'isSameValue' and tag is 286
+	Token: WORD: Lexeme is 'or' and tag is 258
 	Token: TOKEN: tag is )
 
-Lexer line 23: null
+ERROR IN FILE: E4_while_statement.nat:
+java.lang.Error: near line 22: syntax error

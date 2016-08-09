@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * Just a file to test the parser
+ * Just a file to input_files the parser
  * Created on 6/14/16.
  * Justin Gagne and Zack Farrer
  * Professor Assiter
@@ -23,11 +23,11 @@ public class Test {
         Path currentRelativePath = Paths.get("");                           // Get the path to the project directory
         String path = currentRelativePath.toAbsolutePath().toString();      // Convert the path to a string
 
-        String inputPath = path + "/src/test";                              // Add the extension to the test files directory
-        String outputAsmPath = path + "/src/generated_assembly";
-        String outputPrintPath = path + "/src/output";
-        File folder = new File(inputPath);                                  // Reference the test directory
-        File[] testFiles = folder.listFiles();                              // Create an array of all files in the test directory.
+        String inputPath = path + "/src/input_files";                              // Add the extension to the input_files files directory
+        String outputAsmPath = path + "/src/output";
+        String outputPrintPath = path + "/src/intermediate_output";
+        File folder = new File(inputPath);                                  // Reference the input_files directory
+        File[] testFiles = folder.listFiles();                              // Create an array of all files in the input_files directory.
 
         assert testFiles!=null;
 

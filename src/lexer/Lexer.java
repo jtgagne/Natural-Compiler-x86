@@ -30,8 +30,8 @@ public class Lexer {
 
     private static boolean lastLine = false;           // Used to know if the line being read is the final line in the program
     private static boolean hasNextLine = true;          // Check if the file has more lines to be scanned
-    private static boolean isMakingPhrase = false;      // Track if a _phrase has been input appropriately
-    private static boolean isMultiLineComment = false;  // Ignore input while true.
+    private static boolean isMakingPhrase = false;      // Track if a _phrase has been input_files appropriately
+    private static boolean isMultiLineComment = false;  // Ignore input_files while true.
     private static ArrayList<String> _identifiers;
     private boolean isPrintReady = false;
 
@@ -41,7 +41,7 @@ public class Lexer {
         Word.reserveWords(words);       //Reserve control statements, logical statements etc.
         Type.reserveTypes(words);       //Reserve data types.
         Phrase.reservePhrases(phrases); //Reserve the phrases.
-        _phrase = new ArrayList<>();    //Initialize the input array to keep track of potential phrases
+        _phrase = new ArrayList<>();    //Initialize the input_files array to keep track of potential phrases
     }
 
     public static Lexer getInstance(){
@@ -131,24 +131,10 @@ public class Lexer {
         }
     }
 
-    public int getLineCount(){
-        return lineCount;
-    }
-
     public String getLine(){
         return _line;
     }
 
-    public boolean hasNext(){
-        return hasNextLine;
-    }
-
-    public boolean isLastLine() {
-        return lastLine;
-    }
-    // ******************************************************
-    //
-    // ******************************************************
     boolean readch(char c) throws IOException {
         readch();
         if( peek != c ) {

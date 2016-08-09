@@ -27,7 +27,7 @@ public class Parser {
     private String _line;
 
     /**
-    * Sets the lexer (from the input parameter) and calls move to get the first token
+    * Sets the lexer (from the input_files parameter) and calls move to get the first token
     * @see Lexer
     * @throws IOException Compiler errors
     */
@@ -251,12 +251,32 @@ public class Parser {
              return new Else(x, s1, s2);    // return an Else node
 
           case Tag.PRINT:
+              PrintNode printNode = new PrintNode();
               move();
               match('(');                              //Match open paren
-              Print print = (Print) look;
-              match(Tag.PRINT);
+              if(check(Tag.ID)){                       //If a print tag was not found, check for an identifier.
+                  Id id = top.get(look);
+                  match(Tag.ID);
+                  printNode.setPrintIdentifier(id);
+              }else{
+                  Print print = (Print) look;
+                  match(Tag.PRINT);
+                  printNode.setPrintToken(print);
+              }
+              match(')');                              //Check for open paren.
+              return printNode;
+
+
+          case  Tag.INPUT:
+              move();
+              match('(');
+              Print prompt = (Print) look;
+              match(Tag.PRINT);                 //prompt string to be printed to the user
+              match(',');
+              Id id = top.get(look);
+              match(Tag.ID);
               match(')');
-              return new PrintNode(print);
+              return new InputNode(prompt, id);
 
           case Tag.WHILE:
              While whilenode = new While();
