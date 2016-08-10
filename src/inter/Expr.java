@@ -14,6 +14,7 @@ public class Expr extends Node {
 
     public Token op;
     public Type type;
+    public String ERROR;
 
     public String getType(){
         return type.lexeme;
@@ -82,9 +83,20 @@ public class Expr extends Node {
     }
 
     @Override
-    public String toString()
-    {
-       return op.toString();
+    public String toString() {
+        return op.toString();
+    }
+
+    public Type getExprType(){
+        return type;
+    }
+
+    public Token getOp(){
+        return op;
+    }
+
+    public boolean isConstant(){
+        return false;
     }
 
 }

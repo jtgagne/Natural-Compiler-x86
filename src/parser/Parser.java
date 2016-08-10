@@ -398,8 +398,8 @@ public class Parser {
           move();                                       // Get next token
           Token num = look;                             // Access current token which should be a number
           match(Tag.NUM);                               // Match for a whole number after an increase by tag
-          Expr variable = new Expr(id.op, id.type);     // New expression containing the previously found variable
-          Expr number = new Expr(num, Type.Int);        // New expression containing the number that was found
+          Id variable = id;     // New expression containing the previously found variable
+          Constant number = new Constant(num, Type.Int);        // New expression containing the number that was found
           Arith arith = new Arith(operator, variable, number);           // New Arithmetic node: variable addition number
           stmt = new Set(id, arith);                    // id = id + number
       }
@@ -574,6 +574,11 @@ public class Parser {
                 return n;
 
             case Tag.BASIC:
+                n = new Constant(look, Type.Char);
+                move();
+                return n;
+
+            case Tag.CHAR:
                 n = new Constant(look, Type.Char);
                 move();
                 return n;

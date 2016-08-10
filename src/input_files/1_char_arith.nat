@@ -1,0 +1,18 @@
+char c := 'c'
+char o := 'o'
+char m := 'm'
+char p := 'p'
+print("c = ", c)
+print("\no = ", o)
+print("\nm = ", m)
+print("\np = ", p)
+print("\nPrinted together:\n")
+print(c)
+print(o)
+print(m)
+print(p)
+print("\n\nChars can be treated as ints:\n")
+int a := c + o
+print("\nc + o = ", a)
+int b := c - o
+print("\nc - o = ", b)

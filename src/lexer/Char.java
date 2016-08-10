@@ -11,13 +11,13 @@ public class Char extends Token{
     public final char value;
 
     public Char(char c){
-        super(Tag.BASIC);
+        super(Tag.CHAR);
         value = c;
     }
 
     @Override
     public String toString() {
-        return "BASIC: value is " + value + " and tag is " + tag;
+        return "CHAR: value is " + value + " and tag is " + tag;
     }
 
     @Override

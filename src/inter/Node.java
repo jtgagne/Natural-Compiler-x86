@@ -1,6 +1,10 @@
 package inter;
 
+import code_generation.ASMGen;
 import lexer.Lexer;
+import lexer.Token;
+import symbols.Env;
+import symbols.Type;
 
 /**
  * The base node class
@@ -50,4 +54,35 @@ public class Node {
       return null;
    }
 
+   public boolean isIdentifier(Token id){
+      return Env.getCurrent().get(id) != null;
+   }
+
+   public String loadVar(Type type, String register, String identifier, String error){
+      return ASMGen.loadVar(type, register, identifier, error);
+   }
+
+   public String getLoadType(Type type, String error){
+      return ASMGen.getLoadType(type, error);
+   }
+
+   public String getStoreType(Type type, String error){
+      return ASMGen.getStoreType(type, error);
+   }
+
+   public String store(){
+      return null;
+   }
+
+   public String load(String ... identifier){
+      return null;
+   }
+
+   public String getResultRegister(){
+      return null;
+   }
+
+   public static void resetPrintLabel(){
+      printLabel = 0;
+   }
 }

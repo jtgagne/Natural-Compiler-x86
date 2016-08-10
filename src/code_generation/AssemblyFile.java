@@ -12,6 +12,8 @@ public class AssemblyFile {
     private static StringBuilder mHeader;
     private static StringBuilder mMain;
     private static StringBuilder mData;
+    private static StringBuilder mVariables;
+    private static StringBuilder mStrings;
     private static String mOutputDirectory;
     private static String mFileName;
     private static File mFile;
@@ -28,13 +30,15 @@ public class AssemblyFile {
         mHeader = new StringBuilder();
         mMain = new StringBuilder();
         mData = new StringBuilder();
+        mVariables = new StringBuilder();
+        mStrings = new StringBuilder();
         addToHeader("\n\t.text\n\n");
         addToHeader("\n\t.globl main\n\n");
         addToMain("main:\n\n");
         setFile(mFileName);
     }
 
-    private void setFile( String fileName){
+    private void setFile( String fileName ){
         try{
             mFileName = fileName;
             String path = mOutputDirectory + "/" + mFileName;
@@ -45,10 +49,33 @@ public class AssemblyFile {
         }
     }
 
-    public static void addData(String data){
+    /**
+     * Only to be used for the data header
+     * @param data the string to be added
+     */
+    private static void addData(String data){
         if(data == null) return;
         mData.append(data);
     }
+
+    /**
+     * Add all variables to be listed in the global variables section
+     * @param variable assembly variable declaration
+     */
+    public static void addVariables(String variable){
+        if(variable == null) return;
+        mVariables.append(variable);
+    }
+
+    /**
+     * Add all string messages to be listed in the global variables section
+     * @param message a message to be displayed
+     */
+    public static void addStrings(String message){
+        if(message == null) return;
+        mStrings.append(message);
+    }
+
 
     public static void addDataToFront(String data){
         if(data == null) return;
@@ -72,6 +99,13 @@ public class AssemblyFile {
         _writer.write(mHeader.toString());
         _writer.write(mMain.toString());
         _writer.write(mData.toString());
+        _writer.write(mVariables.toString());
+        _writer.write(mStrings.toString());
         _writer.close();
+        mHeader = null;
+        mMain = null;
+        mData = null;
+        mVariables = null;
+        mStrings = null;
     }
 }

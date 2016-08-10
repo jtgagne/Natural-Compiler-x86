@@ -62,7 +62,7 @@ Lexer line 10: print("\nc = ", c)
 	Token: TOKEN: tag is (
 	Token: OUTPUT: value is '\nc = ' and tag is 296
 	Token: TOKEN: tag is ,
-	Token: 	Token: WORD: Lexeme is 'c' and tag is 286
+	Token: WORD: Lexeme is 'c' and tag is 286
 	Token: TOKEN: tag is )
 
 Lexer line 11: input("\nEnter a long value for l: ", l)

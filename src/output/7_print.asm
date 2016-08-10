@@ -11,9 +11,11 @@ main:
 	syscall
 
  	li	 $v0, 8		#System call to read in boolean
+	la	 $a0, isWorking
+	li	 $a1, 6		#Allow for up to 5 chars
 	syscall
 
-	sw	 $a0, isWorking		#Store the input in variable: 'isWorking'
+	la	 $a0, isWorking		#Store the input in variable: 'isWorking'
 	li	 $v0,4		#Load the system call to print a string
 	la	 $a0, msg2		#Load the String to be printed
 	syscall
@@ -70,7 +72,7 @@ main:
 	syscall
 
 	li	 $v0, 2		#Load system call to print float
-	l.d	$f12, f		#Load the float from f12 to f
+	l.s	 $f12, f		#Load the float from f12 to f
 	syscall
 
 
@@ -114,19 +116,12 @@ main:
 
 	.data
 
-isWorking:	.asciiz
-l:	.word
-c:	.byte
-f:	.float
-d:	.double
-i:	.word
+isWorking:	.asciiz	0,0,0
+l:	.word	0,0,0
+c:	.byte	0,0,0
+i:	.word	0,0,0
+msg1:	.asciiz "Enter a value (true | false) for isWorking: "
 msg2:	.asciiz "\nisWorking = "
-msg4:	.asciiz "\nc = \'"
-msg6:	.asciiz "l = "
-msg8:	.asciiz "f = "
-msg10:	.asciiz "i = "
-msg12:	.asciiz "d = "
-ing = "
 msg3:	.asciiz "Enter a char value for c: "
 msg4:	.asciiz "\nc = "
 msg5:	.asciiz "\nEnter a long value for l: "

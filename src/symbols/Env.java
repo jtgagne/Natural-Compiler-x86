@@ -17,12 +17,22 @@ public class Env {
 	private Hashtable table;
 	protected Env prev;
 	private ArrayList<Token> mKeys;		//ArrayList of keys for generating global Assembly vars
+	private static Env current;
+	public static int USED = 0;
+	public Env(){
+
+	}
 
 	public Env(Env n) {
 		table = new Hashtable();
 		prev = n;
 		Printer.writeEnvInfo();
 		mKeys = new ArrayList<>();
+		current = this;
+	}
+
+	public static Env getCurrent(){
+		return current;
 	}
 
 	public void put(Token w, Id i) {
@@ -34,7 +44,9 @@ public class Env {
 		try{
 			for(Token token: mKeys){
 				Id id = (Id) table.get(token);			//Get the identifier corresponding to the token
-				AssemblyFile.addDataToFront(id.toAsmData());	//Add the identifier to the data section
+				if(!id.type.isFloatingPoint() && !id.type.isChar()){
+					AssemblyFile.addDataToFront(id.toAsmData());	//Add the identifier to the data section
+				}
 			}
 		}catch (Exception e){
 			System.out.printf("ERROR GENERATING .data in Env.java");

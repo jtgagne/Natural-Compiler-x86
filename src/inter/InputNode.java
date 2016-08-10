@@ -43,7 +43,7 @@ public class InputNode extends Stmt {
     public void gen(int b, int a) {
         super.gen(b, a);
         emit(this.toAsmMain());
-        AssemblyFile.addData(this.toAsmData());
+        AssemblyFile.addStrings(this.toAsmData());
         AssemblyFile.addToMain(this.toAsmMain());
     }
 

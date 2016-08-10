@@ -1,0 +1,8 @@
+float f1 is 12.4
+float f2 := 33.4
+float sum := f1 + f2
+print("f1 is ", f1)
+print("\nf2 is ", f2)
+print("\nsum is ", sum)
+float difference is f2 - f1
+print("\ndifference is ", difference)

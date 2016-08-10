@@ -34,7 +34,7 @@ public class TypeCasting {
             } else if (expr.type.equals(Type.Double)){
                 Warnings.floatingToWhole("double", "int");   //Casting long to int may result in data loss
             }
-            expr = new Expr(token, Type.Int);
+            expr.type = Type.Int;
         }
 
         //Assigning a type to a long value.
@@ -44,7 +44,7 @@ public class TypeCasting {
             } else if (expr.type.equals(Type.Double)){
                 Warnings.floatingToWhole("double", "long");  //Casting long to int may result in data loss
             }
-            expr = new Expr(token, Type.Long);
+            expr.type = Type.Long;
         }
 
         //Assigning a type to a double value.

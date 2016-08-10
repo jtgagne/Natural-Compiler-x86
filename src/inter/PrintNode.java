@@ -1,6 +1,7 @@
 package inter;
 import code_generation.AssemblyFile;
 import lexer.Print;
+import symbols.Env;
 
 
 /**
@@ -16,7 +17,6 @@ public class PrintNode extends Stmt {
     private Print mPrintVal;
     private Id mIdentifier;
     private int msgNumber = -1;
-    private String DEFAULT;
 
     public PrintNode(){
         mIdentifier = null;
@@ -52,9 +52,9 @@ public class PrintNode extends Stmt {
     @Override
     public void gen(int b, int a) {
         super.gen(b, a);
-        //emit(this.toAsmMain());
-        AssemblyFile.addData(this.toAsmData());
+        AssemblyFile.addStrings(this.toAsmData());
         AssemblyFile.addToMain(this.toAsmMain());
+        //Env.getCurrent().USED += mPrintVal.value.length();
     }
 
     /**
@@ -114,7 +114,7 @@ public class PrintNode extends Stmt {
             case "float":
                 return String.format(
                         "\tli\t $v0, 2\t\t#Load system call to print float\n" +
-                        "\tl.d\t$f12, %s\t\t#Load the float from f12 to %s\n" +
+                        "\tl.s\t $f12, %s\t\t#Load the float from f12 to %s\n" +
                         "\tsyscall\n\n",
                         mIdentifier.getName(), mIdentifier.getName());
             case "double":
@@ -127,8 +127,7 @@ public class PrintNode extends Stmt {
                 return String.format(
                         "\tli\t $v0, 11\t\t#System call for printing a char\n" +
                         "\tlb\t $a0, %s\t\t#Load the char to a0\n" +
-                        "\tsyscall\n\n",
-                        mIdentifier.getName());
+                        "\tsyscall\n\n", mIdentifier.getName());
             case "boolean":
                 return String.format(
                         "\tli\t $v0, 4\t\t#System call for printing a boolean\n" +

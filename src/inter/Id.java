@@ -1,5 +1,5 @@
 package inter;
-import code_generation.AssemblyFile;
+import code_generation.Registers;
 import information.Printer;
 import lexer.*;
 import symbols.*;
@@ -15,18 +15,19 @@ public class Id extends Expr {
 
     public int offset;     // relative address
     public final Word _word;
-    public Type _type;
+    public Type mType;
+    private String register;    //Output register
 
     public Id(Word id, Type p, int b){
         super(id, p); 
         offset = b;
         _word = id;
-        _type = p;
+        mType = p;
         Printer.writeIdentifier(this);
     }
 
 	public String toString() {
-        return "Identifier: " + _word.lexeme + "\t TYPE: " + _type.lexeme;
+        return "Identifier: " + _word.lexeme + "\t TYPE: " + mType.lexeme;
     }
 
     public String getName(){
@@ -34,7 +35,7 @@ public class Id extends Expr {
     }
 
     public String getType() {
-        return _type.lexeme;
+        return mType.lexeme;
     }
 
     @Override
@@ -44,10 +45,16 @@ public class Id extends Expr {
 
     @Override
     public String toAsmData() {
-        return String.format("%s:\t%s\n", _word.lexeme, getAsmDataType());
+        if(mType == Type.Char) return null;
+        return String.format("%s:\t%s\t0,0,0\n", _word.lexeme, genAsmDataType());
     }
 
-    private String getAsmDataType(){
+    @Override
+    public String toAsmMain() {
+        return getAsmLoad();
+    }
+
+    public String genAsmDataType(){
         switch (type.lexeme){
             case "int":
                 return ".word";
@@ -62,8 +69,44 @@ public class Id extends Expr {
             case "boolean":
                 return ".asciiz";
         }
-
         return "IDENTIFER ERROR";
+    }
+
+    public String getAsmLoad(){
+        if(mType == Type.Float){
+            register = Registers.getFloatingPointReg();
+        } else if (mType == Type.Double){
+            register = Registers.getDoubleReg();
+        } else{
+            register = Registers.getTempReg();    //Set the output register
+        }
+
+        switch (mType.lexeme){
+            case "int":
+                return String.format(
+                        "\tlw\t %s, %s\n", register, _word.lexeme); //Load int into temp register
+            case "long":
+                 return String.format(
+                         "\tlw\t %s, %s\n", register, _word.lexeme); //Load int into temp register
+            case "float":
+                return String.format(
+                        "\tl.s\t %s, %s\n", register, _word.lexeme); //Load float into temp register
+            case "double":
+                return String.format(
+                        "\tl.d\t %s, %s\n", register, _word.lexeme); //Load double into temp register
+            case "char":
+                return String.format(
+                        "\tlb\t %s, %s\n", register, _word.lexeme); //Load char into temp register
+            case "boolean":
+                return String.format(
+                        "\tld\t %s, %s\n", register, _word.lexeme); //Load boolean into temp register
+        }
+        return "IDENTIFER ERROR: Loading data type asm code";
+    }
+
+    @Override
+    public String getResultRegister() {
+        return register;
     }
 }
 

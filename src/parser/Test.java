@@ -1,7 +1,9 @@
 package parser;
 
 import code_generation.AssemblyFile;
+import code_generation.Registers;
 import information.Printer;
+import inter.Node;
 import lexer.Lexer;
 
 import java.io.File;
@@ -34,7 +36,7 @@ public class Test {
         for(File file: testFiles){
             String filePath = file.getPath();                         // Get the path of the first file to be evaluated
 
-            if(!filePath.contains("7")) continue;                     // Make sure it is a .nat file
+            if(!filePath.contains("1_char")) continue;                     // Make sure it is a .nat file
 
             String contents[] = filePath.split("/");                  // State the name of the file being evaluated
             String fileName = contents[contents.length-1];
@@ -55,6 +57,8 @@ public class Test {
 
             Lexer.getInstance().closeReader();
             assemblyFile.generateAsmFile();
+            Registers.clearAllRegs();
+            Node.resetPrintLabel();
             Printer.close();
         }
 
