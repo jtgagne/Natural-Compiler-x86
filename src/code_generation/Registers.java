@@ -18,7 +18,6 @@ public class Registers {
     private static boolean[] floatingPoint = {false,false,false,false,
             false,false,false,false,false,false,false,false,false,false};
 
-    public static String currentTemp;
 
     public static String getFunctionCallReg(){
         for(int i = 0; i < functionCalls.length; i++){

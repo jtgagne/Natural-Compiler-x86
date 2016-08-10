@@ -20,11 +20,20 @@ main:
 	la	 $a0, msg2		#Load the String to be printed
 	syscall
 
-	li	 $v0, 4		#System call for printing a boolean
-	la	 $a0, isWorking		#Load the boolean to a0
+	lb	 $t0, isWorking		#Load the value to be compared
+	beqz	 $t0, L8		#Goto L8 if greater than 0
+
+L7:	li	 $v0, 4
+	la 	$a0, BOOL_TRUE_STR
 	syscall
+	j	 L9
 
+L8:	li	 $v0, 4
+	la 	 $a0, BOOL_FALSE_STR
+	syscall
+	j	 L9
 
+L9:
 	li	 $v0,4		#Load the system call to print a string
 	la	 $a0, msg3		#Load the String to be printed
 	syscall
@@ -88,8 +97,8 @@ main:
 	la	 $a0, msg10		#Load the String to be printed
 	syscall
 
-	li	 $v0, 1		#Load system call for to print integer
-	ld	 $a0, i		#Load the integer into a0
+	li	 $v0, 1		#Load system call to print long
+	ld	 $a0, i		#Load the long into a0
 	syscall
 
 
@@ -116,10 +125,16 @@ main:
 
 	.data
 
-isWorking:	.asciiz	0,0,0
+isWorking:	.byte	0,0,0
 l:	.word	0,0,0
 c:	.byte	0,0,0
+f:	.float	0,0,0
+d:	.double	0,0,0
 i:	.word	0,0,0
+BOOL_TRUE:	.byte	1
+BOOL_FALSE:	.byte	0
+BOOL_TRUE_STR:	.asciiz	"true"
+BOOL_FALSE_STR:	.asciiz	"false"
 msg1:	.asciiz "Enter a value (true | false) for isWorking: "
 msg2:	.asciiz "\nisWorking = "
 msg3:	.asciiz "Enter a char value for c: "

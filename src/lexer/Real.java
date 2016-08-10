@@ -1,5 +1,8 @@
 package lexer;
 
+import code_generation.Registers;
+import symbols.Type;
+
 /**
  * Object to be used for storing real number values
  * Created on 6/5/16.
@@ -10,9 +13,10 @@ package lexer;
  */
 public class Real extends Token {
     public final float value;
+    private String constantId;
+    private Type mType;
 
-    public Real(float v)
-    {
+    public Real(float v) {
         super(Tag.REAL);
         value = v;
     }
@@ -23,7 +27,40 @@ public class Real extends Token {
     }
 
     @Override
+    public String toAsmConstant() {
+        return genConstantString();
+    }
+
+    private String genConstantString(){
+
+        switch (mType.lexeme){
+            case "double":
+                return String.format("%s:\t.double\t%f\n", this.constantId, value);
+            case "float":
+                return String.format("%s:\t.float\t%f\n", this.constantId, value);
+        }
+
+        return "ERROR REAL: Generating a constant\n";
+    }
+
+    @Override
+    public String getConstantId() {
+        return this.constantId;
+    }
+
+    @Override
     public boolean isReal() {
         return true;
     }
+
+    @Override
+    public void setType(Type t){
+        mType = t;
+    }
+
+    @Override
+    public void setConstantId(String constantId){
+        this.constantId = constantId;
+    }
+
 }

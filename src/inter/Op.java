@@ -1,4 +1,5 @@
 package inter;
+import code_generation.Registers;
 import lexer.*; import symbols.*;
 
 /**
@@ -8,21 +9,18 @@ import lexer.*; import symbols.*;
  * Wentworth Institute of Technology
  * Compiler Design - Summer 2016
  */
-public class Op extends Expr 
-{
-   public Op(Token tok, Type p)  
-   { 
-       super(tok, p); 
-   }
+public class Op extends Expr {
 
-   @Override
-   public Expr reduce() 
-   {
-      Expr x = gen();
-      Temp t = new Temp(type);
-      emit( t.toString() + " = " + x.toString() );
-      return t;
-   }
+    public Op(Token tok, Type p) {
+        super(tok, p);
+    }
 
+    @Override
+    public Expr reduce() {
+        Expr x = gen();
+        Temp t = new Temp(type);
+        emit( t.toString() + " = " + x.toString() );
+        return t;
+    }
 
 }

@@ -14,6 +14,7 @@ public class AssemblyFile {
     private static StringBuilder mData;
     private static StringBuilder mVariables;
     private static StringBuilder mStrings;
+    private static StringBuilder mConstants;
     private static String mOutputDirectory;
     private static String mFileName;
     private static File mFile;
@@ -32,6 +33,7 @@ public class AssemblyFile {
         mData = new StringBuilder();
         mVariables = new StringBuilder();
         mStrings = new StringBuilder();
+        mConstants = new StringBuilder();
         addToHeader("\n\t.text\n\n");
         addToHeader("\n\t.globl main\n\n");
         addToMain("main:\n\n");
@@ -82,6 +84,11 @@ public class AssemblyFile {
         mData.insert(0, data);
     }
 
+    public static void addConstant(String constant){
+        if(constant == null) return;
+        mConstants.append(constant);
+    }
+
     public static void addToMain(String data){
         mMain.append(data);
     }
@@ -96,16 +103,23 @@ public class AssemblyFile {
     public void generateAsmFile(){
         mMain.append("\tli $v0, 10\t\t#Load system call to exit\n");
         mMain.append("\tsyscall\n\n");
+        mConstants.append(ASMGen.genBooleanTrue());
+        mConstants.append(ASMGen.genBooleanFalse());
+        mConstants.append(ASMGen.genBooleanTrueStr());
+        mConstants.append(ASMGen.genBooleanFalseStr());
         _writer.write(mHeader.toString());
         _writer.write(mMain.toString());
         _writer.write(mData.toString());
         _writer.write(mVariables.toString());
+        _writer.write(mConstants.toString());
         _writer.write(mStrings.toString());
         _writer.close();
         mHeader = null;
         mMain = null;
         mData = null;
         mVariables = null;
+        mConstants = null;
         mStrings = null;
+        ASMGen.resetConstantCount();
     }
 }

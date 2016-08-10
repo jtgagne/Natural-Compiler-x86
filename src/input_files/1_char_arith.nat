@@ -13,6 +13,6 @@ print(m)
 print(p)
 print("\n\nChars can be treated as ints:\n")
 int a := c + o
-print("\nc + o = ", a)
+print("\nc + o + m = ", a)
 int b := c - o
 print("\nc - o = ", b)

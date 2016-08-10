@@ -1,9 +1,11 @@
 package inter;
+import code_generation.ASMGen;
 import code_generation.AssemblyFile;
 import code_generation.Registers;
 import information.Printer;
 import lexer.Char;
 import lexer.Real;
+import lexer.Word;
 import semantics.TypeCasting;
 import symbols.*;
 
@@ -52,88 +54,61 @@ public class Set extends Stmt {
       else return null;
    }
 
+   /**
+    * Add the generated code to the AssemblyFile object that will be used to generate the file
+    * @param b starting point (used for loops)
+    * @param a ending point (used for loops)
+     */
    @Override
    public void gen(int b, int a) {
       AssemblyFile.addToMain(this.toAsmMain());
       AssemblyFile.addVariables(this.toAsmData());
+      AssemblyFile.addConstant(this.toAsmConstants());
       emit( id.toString() + " = " + expr.gen().toString() );
    }
 
+   /**
+    * get the generated assembly assignment and clear all registers
+    * @return the assembly code to be added to the main function
+     */
    @Override
    public String toAsmMain() {
-      String code = genAssignment();
-      Registers.clearAllRegs();
+      String code = genAssignment();   //Generate assembly
+      Registers.clearAllRegs();        //Clear the used registers
       return code;
+   }
+
+   @Override
+   public String toAsmConstants() {
+      return expr.toAsmConstants();
    }
 
    /**
     * For any floating point values, they need to be declared initially as a global variable (MIPS problem)
     * To account for this, any floating point variables are added to the data section from here.
-    * @return
+    * @return line to be added to the data section of the assembly file
      */
    @Override
    public String toAsmData() {
-      if(expr.isConstant()){
-         if(expr.type.isFloatingPoint()){
-            Real real = (Real) expr.op;
-            return String.format("%s:\t%s\t%f\n", id.getName(), id.genAsmDataType(), real.value);
-         } else if(expr.type == Type.Char){
-            Char character = (Char) expr.op;
-            return String.format("%s:\t%s\t\'%s\'\n", id.getName(), id.genAsmDataType(), character.value);
-         }
-      } else if(id.type.isFloatingPoint()){
-         return String.format("%s:\t%s\t 0,0,0\n", id.getName(), id.genAsmDataType());
-      }
-      return super.toAsmData();
+      return expr.toAsmData();
    }
 
    /**
-    * Assign:
+    * Generate assembly code to assign a variable to a register value
     * id = expr
-    * @return
+    * @return generated assembly
      */
    private String genAssignment(){
       StringBuilder sb = new StringBuilder();
 
-      if(expr.isConstant()){
-         Constant constant = (Constant) expr;
-         sb.append(constant.load(id.getName()));
-      }else{
-         sb.append(expr.toAsmMain());                  //Generate the code for the expression
-      }
-      String savedReg = expr.getResultRegister();   //Get the register of the saved operation
-      sb.append(String.format("\t%s\t %s, %s\t\t", this.genStoreVariable(), savedReg, id.getName()));
-      sb.append(String.format("#Store the value at the address of %s\n\n", id.getName()));
+      sb.append(expr.toAsmMain());
+
+      //Get the register of the saved operation
+      String savedReg = expr.getResultRegister();
+
+      sb.append(ASMGen.storeVar(id, savedReg));
 
       return sb.toString();
    }
 
-   private String genStoreVariable(){
-      Type type = id.type;
-      switch (type.lexeme){
-         case "int":
-            return "sw";
-         case "long":
-            return "sw";
-         case "float":
-            return "s.s";
-         case "double":
-            return "s.d";
-         case "char":
-            return "sb";
-         case "boolean":
-            return "la";
-      }
-      return ERROR;
-   }
-
-   @Override
-   public String getStoreType(Type type, String error) {
-      return super.getStoreType(type, error);
-   }
-
-   @Override
-   public String getLoadType(Type type, String error) {
-      return super.getLoadType(type, error);
-   }
 }

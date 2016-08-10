@@ -1,5 +1,7 @@
 package lexer;
 
+import symbols.Type;
+
 /**
  * Stores a token read in by the lexer
  * Created on 6/5/16.
@@ -11,6 +13,7 @@ package lexer;
 public class Token {
     public final int tag;
     public final int tag2;
+    private static int immediate = 0;
 
     public Token(int t) {
         tag = t;
@@ -37,6 +40,41 @@ public class Token {
         else{
             return "TOKEN: tag is " + (char) tag + " TOKEN: tag2 is " + (char)tag2;
         }
+    }
+
+    public void setRegister(String register){}
+
+    public int genImm(){
+        return ++immediate;
+    }
+
+    public String toAsmMain(){
+        return null;
+    }
+
+    public String toAsmData(){
+        return null;
+    }
+
+    public String toAsmConstant(){
+        return null;
+    }
+
+    public String getRegister(){
+        return null;
+    }
+
+
+    public String getConstantId() {
+        return null;
+    }
+
+    public void setType(Type t){
+
+    }
+
+    public void setConstantId(String constantId){
+
     }
 
     public boolean isWord(){

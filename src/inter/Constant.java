@@ -1,4 +1,6 @@
 package inter;
+import code_generation.ASMGen;
+import code_generation.AssemblyFile;
 import code_generation.Registers;
 import lexer.*;
 import symbols.*;
@@ -16,6 +18,7 @@ public class Constant extends Expr {
    private String ERROR = "ERROR CONSTANT: error generating asm\n\n";
    private Type mType;
    private Token mToken;
+   private String constantId;     //Constant identifier
 
 
    public static final Constant
@@ -28,6 +31,15 @@ public class Constant extends Expr {
       mToken = tok;
    }
 
+   @Override
+   public String toAsmConstants() {
+      mToken.setType(this.type);
+      if(mToken.getConstantId() == null){
+         mToken.setConstantId(ASMGen.genConstantName());
+      }
+      return mToken.toAsmConstant();
+   }
+
    public void setType(Type type) {
       mType = type;
    }
@@ -37,6 +49,10 @@ public class Constant extends Expr {
    }
 
 
+   /**
+    * Check if this Expr-Node contains a constant value
+    * @return true
+     */
    @Override
    public boolean isConstant() {
       return true;
@@ -54,65 +70,72 @@ public class Constant extends Expr {
    }
 
    @Override
-   public String load(String ...identifiers) {
-      String identifier = identifiers[0];
-      if(mType == Type.Float || mType == Type.Double){  return loadFloatingPoint(identifier); }
-
-      else if(mType == Type.Char){ return loadChar(identifier); }
-
-      return loadImmediate();
+   public Expr gen() {
+      return super.gen();
    }
 
+
+   /**
+    * Generate the Assembly code to be added to the main
+    * @return assembly code
+     */
    @Override
    public String toAsmMain() {
-      return loadImmediate();
+      mToken.setType(type);
+      if(mToken.tag == Tag.TRUE){
+         mToken.setConstantId("BOOL_TRUE");
+      }else if(mToken.tag == Tag.FALSE){
+         mToken.setConstantId("BOOL_FALSE");
+      } else if(mToken.getConstantId() == null){
+         mToken.setConstantId(ASMGen.genConstantName());
+      }
+      constantId = mToken.getConstantId();
+
+      return load(constantId);
    }
 
-   private String loadFloatingPoint(String identifier){
+   /**
+    * Assembly code to load a floating point into a register
+    * @param identifier name of the variable
+    * @return assembly code to load number into register
+     */
+   private String load(String identifier){
+      Token token = op;
+      Num num;
 
       StringBuilder sb = new StringBuilder();
       switch (type.lexeme){
          case "float":
-            register = Registers.getFloatingPointReg();
-            sb.append(String.format("\tla\t $a0, %s\t\t #Load an immediate value to register\n",identifier));
-            sb.append(String.format("\tl.s\t %s, 0($a0)\t\t #Load the value at the address\n", register));
-            return sb.toString();
+               register = Registers.getFloatingPointReg();
+               sb.append(String.format("\tla\t $a0, %s\t\t #Load an immediate value to register\n",identifier));
+               sb.append(String.format("\tl.s\t %s, 0($a0)\t\t #Load the value at the address\n", register));
+               return sb.toString();
          case "double":
-            register = Registers.getDoubleReg();   //Take up two registers
-            sb.append(String.format("\tla\t $a0, %s\t\t #Load an immediate value to register\n",identifier));
-            sb.append(String.format("\tl.d\t %s, 0($a0)\t\t #Load the value at the address\n", register));
-            return sb.toString();
-      }
-      return ERROR;
-   }
-
-   private String loadImmediate() {
-      Token token = op;
-      Num num;
-      register = Registers.getTempReg();
-
-      switch (mType.lexeme){
+               register = Registers.getDoubleReg();   //Take up two registers
+               sb.append(String.format("\tla\t $a0, %s\t\t #Load an immediate value to register\n",identifier));
+               sb.append(String.format("\tl.d\t %s, 0($a0)\t\t #Load the value at the address\n", register));
+               return sb.toString();
+         case "char":
+               String tempReg = Registers.getTempReg();
+               register = Registers.getTempReg();
+               sb = new StringBuilder();
+               sb.append(String.format("\tla\t %s, %s\t\t\n", tempReg, identifier));
+               sb.append(String.format("\tlb\t %s, 0(%s)\t\t#Load an immediate value to register\n", register, tempReg));
+               return sb.toString();
          case "int":
-            num = (Num) token;
-            return String.format(
-                    "\tli\t %s, %d\t\t#Load an immediate value into the register\n", register, num.value); //Load int into temp register
+               register = Registers.getTempReg();
+               num = (Num) token;
+               return String.format("\tli\t %s, %d\t\t#Load an immediate value into the register\n", register, num.value); //Load int into temp register
          case "long":
-            num = (Num) token;
-            return String.format(
-                    "\tli\t %s, %s\t\t#Load an immediate value into the register\n", register, num.value); //Load int into temp register
+               register = Registers.getTempReg();
+               num = (Num) token;
+               return String.format("\tli\t %s, %s\t\t#Load an immediate value into the register\n", register, num.value); //Load int into temp register
+         case "boolean":
+               register = Registers.getTempReg();
+               mToken.setRegister(register);
+               return String.format("\tlb\t %s, %s\t\t#Load a boolean value\n", register, identifier);
       }
       return ERROR;
-   }
-
-   private String loadChar(String identifier){
-
-      String tempReg = Registers.getTempReg();
-      register = Registers.getTempReg();
-
-      StringBuilder sb = new StringBuilder();
-      sb.append(String.format("\tla\t %s, %s\t\t\n", tempReg, identifier));
-      sb.append(String.format("\tlb\t %s, 0(%s)\t\t#Load an immediate value to register\n", register, tempReg));
-      return sb.toString();
    }
 
    @Override

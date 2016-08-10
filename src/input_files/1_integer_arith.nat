@@ -10,3 +10,8 @@ print("\nvar1 + var2 = ", sum)
 print("\nvar2 - var1 = ", difference)
 int bigNum := 1022034
 print("\nbigNum = ", bigNum)
+int f1 is 5
+f1 is f1*f1*f1
+print("\nf1*f1*f1 = ", f1)
+int f2 is f1/5
+print("\nf2 = f1 / 5 = ", f2)

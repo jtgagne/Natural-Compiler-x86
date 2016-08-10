@@ -6,21 +6,21 @@
 
 main:
 
-	la	 $t0, c		
+	la	 $t0, CONST1		
 	lb	 $t1, 0($t0)		#Load an immediate value to register
-	sb	 $t1, c		#Store the value at the address of c
+	sb	 $t1, c
 
-	la	 $t0, o		
+	la	 $t0, CONST2		
 	lb	 $t1, 0($t0)		#Load an immediate value to register
-	sb	 $t1, o		#Store the value at the address of o
+	sb	 $t1, o
 
-	la	 $t0, m		
+	la	 $t0, CONST3		
 	lb	 $t1, 0($t0)		#Load an immediate value to register
-	sb	 $t1, m		#Store the value at the address of m
+	sb	 $t1, m
 
-	la	 $t0, p		
+	la	 $t0, CONST4		
 	lb	 $t1, 0($t0)		#Load an immediate value to register
-	sb	 $t1, p		#Store the value at the address of p
+	sb	 $t1, p
 
 	li	 $v0,4		#Load the system call to print a string
 	la	 $a0, msg1		#Load the String to be printed
@@ -86,14 +86,14 @@ main:
 	lb	 $t1, o
 	add	 $t2, $t0, $t1		#add the two registers
 
-	sw	 $t2, a		#Store the value at the address of a
+	sw	 $t2, a
 
 	li	 $v0,4		#Load the system call to print a string
 	la	 $a0, msg7		#Load the String to be printed
 	syscall
 
-	li	 $v0, 1		#Load system call for to print integer
-	ld	 $a0, a		#Load the integer into a0
+	li	 $v0, 1		#Load system call to print long
+	ld	 $a0, a		#Load the long into a0
 	syscall
 
 
@@ -101,14 +101,14 @@ main:
 	lb	 $t1, o
 	sub	 $t2, $t0, $t1		#subtract the two registers
 
-	sw	 $t2, b		#Store the value at the address of b
+	sw	 $t2, b
 
 	li	 $v0,4		#Load the system call to print a string
 	la	 $a0, msg8		#Load the String to be printed
 	syscall
 
-	li	 $v0, 1		#Load system call for to print integer
-	ld	 $a0, b		#Load the integer into a0
+	li	 $v0, 1		#Load system call to print long
+	ld	 $a0, b		#Load the long into a0
 	syscall
 
 
@@ -120,15 +120,23 @@ main:
 
 b:	.word	0,0,0
 a:	.word	0,0,0
-c:	.byte	'c'
-o:	.byte	'o'
-m:	.byte	'm'
-p:	.byte	'p'
+p:	.byte	0,0,0
+m:	.byte	0,0,0
+o:	.byte	0,0,0
+c:	.byte	0,0,0
+CONST1:	.byte	'c'
+CONST2:	.byte	'o'
+CONST3:	.byte	'm'
+CONST4:	.byte	'p'
+BOOL_TRUE:	.byte	1
+BOOL_FALSE:	.byte	0
+BOOL_TRUE_STR:	.asciiz	"true"
+BOOL_FALSE_STR:	.asciiz	"false"
 msg1:	.asciiz "c = "
 msg2:	.asciiz "\no = "
 msg3:	.asciiz "\nm = "
 msg4:	.asciiz "\np = "
 msg5:	.asciiz "\nPrinted together:\n"
 msg6:	.asciiz "\n\nChars can be treated as ints:\n"
-msg7:	.asciiz "\nc + o = "
+msg7:	.asciiz "\nc + o + m = "
 msg8:	.asciiz "\nc - o = "

@@ -1,0 +1,10 @@
+boolean isWorking is true
+boolean amHappy is true
+print("value of isWorking: ", isWorking)
+print("\nvalue of amHappy: ", amHappy)
+int sum is isWorking + amHappy
+print("\nsum = isWorking + isSick = ", sum)
+sum is sum + 1
+print("\nsum = sum + 1 = ", sum)
+int product := sum * isWorking
+print("\nproduct = sum * isWorking = ", product)

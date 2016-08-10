@@ -1,5 +1,8 @@
 package lexer;
 
+import code_generation.ASMGen;
+import symbols.Type;
+
 import java.util.Hashtable;
 
 /**
@@ -12,6 +15,8 @@ import java.util.Hashtable;
  */
 public class Word extends Token {
     public String lexeme = "";
+    private String constantId;
+    private String register;
 
     @Override
     public boolean isWord() {
@@ -27,6 +32,31 @@ public class Word extends Token {
     public Word(String s, int tag1, int tag2) {
         super(tag1, tag2);
         lexeme = s;
+    }
+
+    @Override
+    public String toAsmConstant() {
+        return super.toAsmConstant();
+    }
+
+    @Override
+    public String getRegister() {
+        return register;
+    }
+
+    @Override
+    public void setRegister(String register) {
+        this.register = register;
+    }
+
+    @Override
+    public void setConstantId(String constantId) {
+        this.constantId = constantId;
+    }
+
+    @Override
+    public String getConstantId() {
+        return constantId;
     }
 
     @Override

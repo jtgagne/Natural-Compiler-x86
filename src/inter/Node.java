@@ -54,20 +54,20 @@ public class Node {
       return null;
    }
 
+   public String toAsmConstants(){
+      return null;
+   }
+
    public boolean isIdentifier(Token id){
       return Env.getCurrent().get(id) != null;
    }
 
-   public String loadVar(Type type, String register, String identifier, String error){
-      return ASMGen.loadVar(type, register, identifier, error);
-   }
-
    public String getLoadType(Type type, String error){
-      return ASMGen.getLoadType(type, error);
+      return ASMGen.getLoadType(type);
    }
 
    public String getStoreType(Type type, String error){
-      return ASMGen.getStoreType(type, error);
+      return ASMGen.getStoreType(type);
    }
 
    public String store(){

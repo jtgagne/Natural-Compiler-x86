@@ -103,6 +103,7 @@ public class Type extends Word {
                 tag == Tag.BOOL;
     }
 
+
     public boolean isFloatingPoint(){
         return this == Type.Float || this == Type.Double;
     }

@@ -1,4 +1,5 @@
 package inter;
+import code_generation.ASMGen;
 import code_generation.Registers;
 import lexer.*;
 import symbols.*;
@@ -39,83 +40,106 @@ public class Arith extends Op {
 
    @Override
    public Expr gen() {
-      return new Arith(op, expr1.reduce(), expr2.reduce());
+       return new Arith(op, expr1.reduce(), expr2.reduce());
    }
 
    @Override
    public String toString() {
-      return expr1.toString()+" "+op.toString()+" "+expr2.toString();
-   }
-
-   @Override
-   public String toAsmMain() {
-      String code = genAsm();
-      Registers.clearAllRegs();
-      return code;
-   }
-
-   private String genAsm(){
-      StringBuilder sb = new StringBuilder();
-
-      sb.append(genLoadString(expr1));    //Load the first expression to the first register
-      reg1 = expr1.getResultRegister();
-      sb.append(genLoadString(expr2));
-      reg2 = expr2.getResultRegister();
-
-      //The result register
-      if(expr1.type == Type.Double || expr2.type == Type.Double){
-         reg3 = Registers.getDoubleReg();
-      } else if(expr1.type == Type.Float){
-         reg3 = Registers.getFloatingPointReg();
-      } else{
-         reg3 = Registers.getTempReg();
-      }
-      sb.append(getOperationString(reg3, reg1, reg2));
-
-      return sb.toString();
-   }
-
-   @Override
-   public String getResultRegister() {
-      return reg3;
-   }
-
-   private String getOperationString(String saveReg, String reg1, String reg2){
-      Token token = this.getOp();
-      switch (token.tag){
-         case '+':
-            if(type == Type.Float){
-               return String.format("\tadd.s\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
-            }else if(type == Type.Double){
-               return String.format("\tadd.d\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
-            }
-            return String.format("\tadd\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
-         case '-':
-            if(type == Type.Float){
-               return String.format("\tsub.s\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
-            }else if(type == Type.Double){
-               return String.format("\tsub.d\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
-            }
-            return String.format("\tsub\t %s, %s, %s\t\t#subtract the two registers\n\n", saveReg, reg1, reg2);
-      }
-      return "ERROR ARITH: generating operand\n";
+       return expr1.toString()+" "+op.toString()+" "+expr2.toString();
    }
 
    /**
-    * Method to generate the assembly load for an identifier or constant
-    * @param expr the expression
-    * @return the formatted string
+    * Generate Assembly, clear the registers used
+    * @return assembly code for the operation
      */
-   private String genLoadString(Expr expr){
+   @Override
+   public String toAsmMain() {
+       StringBuilder sb = new StringBuilder();
+       sb.append(expr1.toAsmMain());    //Load the first expression to the first register
+       reg1 = expr1.getResultRegister();
+       sb.append(expr2.toAsmMain());
+       reg2 = expr2.getResultRegister();
 
-      //If the expression is an identifier
-      if(expr.isIdentifier(expr.getOp())){
-         Id id = Env.getCurrent().get(expr.getOp());              //Get the identifier from symbol table
-         return String.format("%s", id.toAsmMain());  //Return the formatted string
-      } else{
-         return String.format("%s", expr.load(null));  //Generate the code to load a constant
-      }
+       //The result register
+       if(expr1.type == Type.Double || expr2.type == Type.Double){
+           reg3 = Registers.getDoubleReg();
+       } else if(expr1.type == Type.Float){
+           reg3 = Registers.getFloatingPointReg();
+       } else{
+           reg3 = Registers.getTempReg();
+       }
+       sb.append(ASMGen.genMath(this, reg3, reg1, reg2));  //Generate Assembly for a mathematical operation
+
+       return sb.toString();
    }
 
+    @Override
+    public String toAsmData() {
+        return super.toAsmData();
+    }
+
+    @Override
+    public String toAsmConstants() {
+        StringBuilder sb = new StringBuilder();
+        if(expr1.toAsmConstants() != null){
+            sb.append(expr1.toAsmConstants());
+        }
+        if(expr2.toAsmConstants() != null){
+            sb.append(expr2.toAsmConstants());
+        }
+        return sb.toString();
+    }
+
+    /**
+    * @return the name of the register the result of an operation is stored in
+    */
+   @Override
+   public String getResultRegister() {
+       return reg3;
+   }
+
+
+    /**
+     * Set the types of registers to be used and generate assembly for this operation
+     * @return assembly code for the arithmetic
+     */
+    private String genAsm(){
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(genLoadString(expr1));    //Load the first expression to the first register
+        reg1 = expr1.getResultRegister();
+        sb.append(genLoadString(expr2));
+        reg2 = expr2.getResultRegister();
+
+        //The result register
+        if(expr1.type == Type.Double || expr2.type == Type.Double){
+            reg3 = Registers.getDoubleReg();
+        } else if(expr1.type == Type.Float){
+            reg3 = Registers.getFloatingPointReg();
+        } else{
+            reg3 = Registers.getTempReg();
+        }
+
+        sb.append(ASMGen.genMath(this, reg3, reg1, reg2));  //Generate Assembly for a mathematical operation
+
+        return sb.toString();
+    }
+
+
+    /**
+     * Method to generate the assembly load for an identifier or constant
+     * @param expr the expression
+     * @return the formatted string
+     */
+    private String genLoadString(Expr expr){
+
+        //If the expression is an identifier
+        if(expr.isIdentifier(expr.getOp())){
+            Id id = Env.getCurrent().get(expr.getOp());     //Get the identifier from symbol table
+            return String.format("%s", id.toAsmMain());     //Return the formatted string
+        } else{
+            return String.format("%s", expr.toAsmMain());    //Generate the code to load a constant
+        }
+    }
 
 }

@@ -1,4 +1,5 @@
 package inter;
+import code_generation.ASMGen;
 import code_generation.Registers;
 import information.Printer;
 import lexer.*;
@@ -43,36 +44,31 @@ public class Id extends Expr {
         return super.gen();
     }
 
+    /**
+     * Generate a line to be used as a global variable
+     * @return
+     */
     @Override
     public String toAsmData() {
-        if(mType == Type.Char) return null;
-        return String.format("%s:\t%s\t0,0,0\n", _word.lexeme, genAsmDataType());
+        String data = ASMGen.toData(this, "0,0,0"); //Gen the data declaration with default initial value
+        return data == null ? "ERROR ID: generating data" : data;
     }
 
+    /**
+     * Get the assembly to load an identifier
+     * @return assembly
+     */
     @Override
     public String toAsmMain() {
         return getAsmLoad();
     }
 
-    public String genAsmDataType(){
-        switch (type.lexeme){
-            case "int":
-                return ".word";
-            case "long":
-                return ".word";
-            case "float":
-                return ".float";
-            case "double":
-                return ".double";
-            case "char":
-                return ".byte";
-            case "boolean":
-                return ".asciiz";
-        }
-        return "IDENTIFER ERROR";
-    }
-
+    /**
+     * Generate assembly to load a variable
+     * @return assembly
+     */
     public String getAsmLoad(){
+        //Set the appropriate register value before generating assembly
         if(mType == Type.Float){
             register = Registers.getFloatingPointReg();
         } else if (mType == Type.Double){
@@ -81,27 +77,9 @@ public class Id extends Expr {
             register = Registers.getTempReg();    //Set the output register
         }
 
-        switch (mType.lexeme){
-            case "int":
-                return String.format(
-                        "\tlw\t %s, %s\n", register, _word.lexeme); //Load int into temp register
-            case "long":
-                 return String.format(
-                         "\tlw\t %s, %s\n", register, _word.lexeme); //Load int into temp register
-            case "float":
-                return String.format(
-                        "\tl.s\t %s, %s\n", register, _word.lexeme); //Load float into temp register
-            case "double":
-                return String.format(
-                        "\tl.d\t %s, %s\n", register, _word.lexeme); //Load double into temp register
-            case "char":
-                return String.format(
-                        "\tlb\t %s, %s\n", register, _word.lexeme); //Load char into temp register
-            case "boolean":
-                return String.format(
-                        "\tld\t %s, %s\n", register, _word.lexeme); //Load boolean into temp register
-        }
-        return "IDENTIFER ERROR: Loading data type asm code";
+        String code = ASMGen.loadVar(this, register);
+
+        return  code == null ? "IDENTIFER ERROR: Loading data type asm code" : code;
     }
 
     @Override

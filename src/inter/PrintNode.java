@@ -1,11 +1,11 @@
 package inter;
+import code_generation.ASMGen;
 import code_generation.AssemblyFile;
+import code_generation.Registers;
 import lexer.Print;
-import symbols.Env;
-
 
 /**
- * Node to contain content to be printed to the console
+ * Node used to generate print statements
  * Created by gagnej3 on 8/4/16.
  * Justin Gagne and Zack Farrer
  * Professor Assiter
@@ -54,7 +54,6 @@ public class PrintNode extends Stmt {
         super.gen(b, a);
         AssemblyFile.addStrings(this.toAsmData());
         AssemblyFile.addToMain(this.toAsmMain());
-        //Env.getCurrent().USED += mPrintVal.value.length();
     }
 
     /**
@@ -75,13 +74,13 @@ public class PrintNode extends Stmt {
      */
     @Override
     public String toAsmMain(){
+
         if(mIdentifier != null && mPrintVal != null){
             return String.format(
                 "\tli\t $v0,4\t\t#Load the system call to print a string\n" +
                 "\tla\t $a0, msg%d\t\t#Load the String to be printed\n" +
                 "\tsyscall\n\n" +
-                "%s\n",
-                msgNumber, genPrintAsm());
+                "%s\n", msgNumber, genPrintAsm());
         }
         else if(mIdentifier != null){
             return genPrintAsm();
@@ -98,13 +97,15 @@ public class PrintNode extends Stmt {
      * @return the assembly code for the variable assignment.
      */
     private String genPrintAsm(){
+        StringBuilder sb = new StringBuilder();
+
         switch (mIdentifier.type.lexeme){
             case "int":
-                return String.format(
+                 sb.append(String.format(
                         "\tli\t $v0, 1\t\t#Load system call for to print integer\n" +
                         "\tld\t $a0, %s\t\t#Load the integer into a0\n" +
                         "\tsyscall\n\n",
-                        mIdentifier.getName());  //Store the value in the appropriate var name
+                        mIdentifier.getName()));  //Store the value in the appropriate var name
             case "long":
                 return String.format(
                         "\tli\t $v0, 1\t\t#Load system call to print long\n" +
@@ -129,11 +130,16 @@ public class PrintNode extends Stmt {
                         "\tlb\t $a0, %s\t\t#Load the char to a0\n" +
                         "\tsyscall\n\n", mIdentifier.getName());
             case "boolean":
-                return String.format(
-                        "\tli\t $v0, 4\t\t#System call for printing a boolean\n" +
-                        "\tla\t $a0, %s\t\t#Load the boolean to a0\n" +
-                        "\tsyscall\n\n",
-                        mIdentifier.getName());
+                String label1 = ASMGen.genLabel();
+                String label2 = ASMGen.genLabel();
+                String label3 = ASMGen.genLabel();
+                String register = Registers.getTempReg();
+                sb.append(String.format(
+                        "\tlb\t %s, %s\t\t#Load the value to be compared\n" +
+                        "\tbeqz\t %s, %s\t\t#Goto %s if greater than 0\n\n"
+                         , register, mIdentifier.getName(), register, label2, label2));
+                sb.append(ASMGen.genBooleanPrint(label1, label2, label3));
+                return sb.toString();
         }
 
         return "TYPE ERROR: PrintNode\n";
