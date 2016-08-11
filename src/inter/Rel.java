@@ -17,12 +17,16 @@ public class Rel extends Logical {
    //public Expr expr2;
    //protected Token mToken;
    //protected Type mType;
-   //protected String register;
+   //protected String mRegister;
 
    public Rel(Token tok, Expr x1, Expr x2) {
       super(tok, x1, x2);
    }
 
+   @Override
+   public boolean isRel() {
+      return true;
+   }
 
    @Override
    public Type check(Type p1, Type p2) {
@@ -86,7 +90,7 @@ public class Rel extends Logical {
       sb.append(expr2.toAsmMain());
       register2 = expr2.getResultRegister();
 
-      sb.append(ASMGen.genLogical(register1, register2, null, this.mToken));
+      sb.append(ASMGen.genLogical(register1, register2, this.mToken));
 
       return sb.toString();
    }

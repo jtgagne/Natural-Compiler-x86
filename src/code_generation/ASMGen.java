@@ -9,7 +9,7 @@ import symbols.Env;
 import symbols.Type;
 
 /**
- * Static use to get various useful strings
+ * Static use to get various assembly strings
  * Created by gagnej3 on 8/9/16.
  */
 public class ASMGen {
@@ -48,14 +48,23 @@ public class ASMGen {
         return sb.toString();
     }
 
-    public static String genLogical(String reg1, String reg2, String label, Token op){
+    public static String genLogical(String reg1, String reg2, Token op){
 
         Stmt s = Stmt.Enclosing;
-        label = s.getLabelAfter();
+        String label = s.getLabelAfter();
 
         switch (op.tag){
+
             case Tag.LESS:
-                return String.format("\tbgt\t %s, %s, %s\n\n", reg1, reg2, label);
+                return String.format("\tbgt\t %s, %s, %s\n\n", reg1, reg2, label);  //Goto next label if reg2 > reg1
+
+            //True: reg1 > reg2, False: reg1 <= beg2
+            case Tag.GREATER:
+                return String.format("\tble\t %s, %s, %s\n\n", reg1, reg2, label);
+
+            //True: reg1 >= reg2, False: reg1 < beg2, branch if less than
+            case Tag.GE:
+                return String.format("\tblt\t %s, %s, %s\n\n", reg1, reg2, label);
 
         }
         return null;

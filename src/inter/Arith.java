@@ -41,6 +41,11 @@ public class Arith extends Op {
    }
 
     @Override
+    public boolean isArith() {
+        return true;
+    }
+
+    @Override
     public Expr gen() {
         return new Arith(mToken, expr1.reduce(), expr2.reduce());
     }
@@ -61,8 +66,8 @@ public class Arith extends Op {
        sb.append(expr1.toAsmMain());    //Load the first expression
        sb.append(expr2.toAsmMain());    //Load the second expression
 
-       reg1 = expr1.getRegister();
-       reg2 = expr2.getRegister();
+       reg1 = expr1.getResultRegister();
+       reg2 = expr2.getResultRegister();
 
        //The result register (member variable of Expr)
        if(expr1.mType == Type.Double || expr2.mType == Type.Double){

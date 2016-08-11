@@ -7,5 +7,15 @@ if(var1 less than var2){
 }
 
 if(isGood){
-    print("Praise the lord")
+    print("\n\nWe outchea")
+}
+
+if(var1 greater than var2){
+    print("This should not print")
+}
+
+int var3 is var1
+
+if(var1 greater than or equal to var3){
+    print("\nvar1 equals var3")
 }

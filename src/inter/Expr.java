@@ -22,7 +22,8 @@ public class Expr extends Node {
         mType = type;
     }
 
-    public String getRegister(){
+    @Override
+    public String getResultRegister() {
         return mRegister;
     }
 
@@ -38,10 +39,20 @@ public class Expr extends Node {
         this.mType = type;
     }
 
+    /**
+     * Only overridden by Constant and Id class. Generate Assembly to load the value into a register
+     * Sets the mRegister value of the node which can be obtained using the getResultRegister() method
+     * on the object
+     * @return Assembly code to load the value
+     */
     public String load(){
         return null;
     }
 
+    /**
+     * Return the name of an Identifier or Constant
+     * @return
+     */
     public String getName(){
         return null;
     }
@@ -54,6 +65,11 @@ public class Expr extends Node {
        return this;
     }
 
+    /**
+     * Add assembly code to the main function and print the labels
+     * @param t start label
+     * @param f end label
+     */
     public void jumping(int t, int f) {
        emitjumps(this.toAsmMain(), t, f);
     }
@@ -70,8 +86,13 @@ public class Expr extends Node {
         }
 
         else if( f != 0 ){
-            emit("L" + f + ":");
+            //emit("L" + f + ":");
         }
+    }
+
+    @Override
+    public String toAsmMain() {
+        return super.toAsmMain();
     }
 
     @Override

@@ -14,9 +14,7 @@ public class If extends Stmt {
 
     Expr expr;  //Boolean expression
     Stmt stmt;  //Block of code
-
     private int label;
-    private String labelAfter;
 
     public If(Expr x, Stmt s) {
         expr = x;
@@ -29,7 +27,7 @@ public class If extends Stmt {
 
     @Override
     public boolean isIf() {
-        return super.isIf();
+        return true;
     }
 
     @Override
@@ -39,25 +37,22 @@ public class If extends Stmt {
 
     @Override
     public void gen(int b, int a) {
-        //AssemblyFile.addToMain(this.toAsmMain());
 
-        labelAfter = String.format("L%d", a);
-        Stmt.labelAfter = labelAfter;
         label = newlabel();     // label for the code for stmt
 
         expr.jumping(0, a);     // fall through on true, goto a on false
 
-        if(expr.isIdentifier()){
+        setAfter(a);
+
+        if(expr.isConstant() || expr.isIdentifier()){
             emit(genBoolCompare());
-            stmt.gen(label, a);
-            emit(stmt.toAsmMain());
+        }else{
+            emit(expr.toAsmMain());
         }
 
-        else{
-            emit(expr.toAsmMain());
-            emit(stmt.toAsmMain());
-            stmt.gen(label, a);
-        }
+        emit(stmt.toAsmMain());
+        stmt.gen(label, a);
+        //stmt.gen(0, 0);
 
         AssemblyFile.addVariables(this.toAsmData());
         AssemblyFile.addConstant(this.toAsmConstants());
@@ -65,18 +60,7 @@ public class If extends Stmt {
 
     @Override
     public String toAsmMain() {
-
-      /*StringBuilder sb = new StringBuilder();
-      String s2 = expr.toAsmMain();
-      String s1 = stmt.toAsmMain();
-      if (s2 != null)
-         sb.append(s2);
-      if (s1 != null)
-         sb.append(s1);*/
-        //return sb.toString();
-        //return super.toAsmMain();
-        //return super.toAsmMain();
-        return genBoolCompare();
+        return super.toAsmMain();
     }
 
     @Override
@@ -100,8 +84,8 @@ public class If extends Stmt {
     }
 
     private String genBoolCompare(){
-        String register = Registers.getTempReg();
-        String load = expr.toAsmMain();
+        String register = Registers.getTempReg();   //Get a temp reg to compare the values
+        String load = expr.load();
         String s1 = String.format("\tlb\t %s, BOOL_TRUE\n", register);
         String s2 = String.format("\tbne\t %s, %s, %s\n\n", register, expr.mRegister, stmt.getLabelAfter());
         return  load + s1 + s2;

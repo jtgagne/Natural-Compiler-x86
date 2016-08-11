@@ -9,9 +9,9 @@ import code_generation.AssemblyFile;
  * Wentworth Institute of Technology
  * Compiler Design - Summer 2016
  */
-public class Stmt extends Node 
-{
-    static int after = 0;                   // saves label after
+public class Stmt extends Node {
+
+    public static int after = 0;                   // saves label after
 
     public Stmt() {
 
@@ -25,6 +25,10 @@ public class Stmt extends Node
     public void gen(int b, int a) {
        after = a;
    }
+
+    public void setAfter(int a){
+        after = a;
+    }
 
     public String getLabelAfter(){
         return String.format("L%d", after);

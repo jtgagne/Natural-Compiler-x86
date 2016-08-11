@@ -34,6 +34,10 @@ public class Set extends Stmt {
 
     }
 
+    @Override
+    public boolean isSet() {
+        return true;
+    }
 
     public String toString(){
         return "Assign: (" + mIdentifier.getTypeStr() + ") " + mIdentifier.getName() +

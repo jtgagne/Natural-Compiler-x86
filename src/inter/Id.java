@@ -34,6 +34,11 @@ public class Id extends Expr {
         return "Identifier: " + mWord.lexeme + "\t TYPE: " + mType.lexeme;
     }
 
+    @Override
+    public boolean isIdentifier() {
+        return true;
+    }
+
     /**
      * Return the variable's name
      * @return name
@@ -82,10 +87,9 @@ public class Id extends Expr {
     }
 
     @Override
-    public String getRegister() {
-        return super.getRegister();
+    public String getResultRegister() {
+        return super.getResultRegister();
     }
-
 }
 
 

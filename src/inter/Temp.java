@@ -21,7 +21,12 @@ public class Temp extends Expr
        number = ++count; 
    }
 
-   @Override
+    @Override
+    public boolean isTemp() {
+        return true;
+    }
+
+    @Override
    public String toString() {
        //return "t" + number;
        return Registers.getTempReg();

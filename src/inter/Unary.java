@@ -25,7 +25,11 @@ public class Unary extends Op {
         if (mType == null ){
             error("type error");
         }
+    }
 
+    @Override
+    public boolean isUnary() {
+        return true;
     }
 
     @Override
