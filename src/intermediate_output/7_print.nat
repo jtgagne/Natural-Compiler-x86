@@ -6,50 +6,24 @@ Lexer line 1: int i
 	Token: TYPE: Lexeme is int tag is 290 Width is 4
 	New environment instantiated.
 	Token: WORD: Lexeme is 'i' and tag is 286
-	Identifier: i	 TYPE: int
 
 Lexer line 2: double d
 	Token: TYPE: Lexeme is double tag is 293 Width is 16
 	Token: WORD: Lexeme is 'd' and tag is 286
-	Identifier: d	 TYPE: double
 
 Lexer line 3: float f
 	Token: TYPE: Lexeme is float tag is 292 Width is 8
 	Token: WORD: Lexeme is 'f' and tag is 286
-	Identifier: f	 TYPE: float
 
 Lexer line 4: char c
 	Token: TYPE: Lexeme is char tag is 294 Width is 1
 	Token: WORD: Lexeme is 'c' and tag is 286
-	Identifier: c	 TYPE: char
 
 Lexer line 5: long l
 	Token: TYPE: Lexeme is long tag is 291 Width is 8
 	Token: WORD: Lexeme is 'l' and tag is 286
-	Identifier: l	 TYPE: long
 
-Lexer line 6: boolean isWorking
-	Token: TYPE: Lexeme is boolean tag is 295 Width is 1
-	Token: WORD: Lexeme is 'isWorking' and tag is 286
-	Identifier: isWorking	 TYPE: boolean
-
-Lexer line 7: input("Enter a value (true | false) for isWorking: ", isWorking)
-	Token: WORD: Lexeme is 'input' and tag is 297
-	Token: TOKEN: tag is (
-	Token: OUTPUT: value is 'Enter a value (true | false) for isWorking: ' and tag is 296
-	Token: TOKEN: tag is ,
-	Token: WORD: Lexeme is 'isWorking' and tag is 286
-	Token: TOKEN: tag is )
-
-Lexer line 8: print("\nisWorking = ", isWorking)
-	Token: WORD: Lexeme is 'print' and tag is 296
-	Token: TOKEN: tag is (
-	Token: OUTPUT: value is '\nisWorking = ' and tag is 296
-	Token: TOKEN: tag is ,
-	Token: WORD: Lexeme is 'isWorking' and tag is 286
-	Token: TOKEN: tag is )
-
-Lexer line 9: input("Enter a char value for c: ", c)
+Lexer line 6: input("Enter a char value for c: ", c)
 	Token: WORD: Lexeme is 'input' and tag is 297
 	Token: TOKEN: tag is (
 	Token: OUTPUT: value is 'Enter a char value for c: ' and tag is 296
@@ -57,23 +31,29 @@ Lexer line 9: input("Enter a char value for c: ", c)
 	Token: WORD: Lexeme is 'c' and tag is 286
 	Token: TOKEN: tag is )
 
-Lexer line 10: print("\nc = ", c)
+Lexer line 7: print("\nc = \'", c)
 	Token: WORD: Lexeme is 'print' and tag is 296
 	Token: TOKEN: tag is (
-	Token: OUTPUT: value is '\nc = ' and tag is 296
+	Token: OUTPUT: value is '\nc = \'' and tag is 296
 	Token: TOKEN: tag is ,
 	Token: WORD: Lexeme is 'c' and tag is 286
 	Token: TOKEN: tag is )
 
-Lexer line 11: input("\nEnter a long value for l: ", l)
+Lexer line 8: print("\'")
+	Token: WORD: Lexeme is 'print' and tag is 296
+	Token: TOKEN: tag is (
+	Token: OUTPUT: value is '\'' and tag is 296
+	Token: TOKEN: tag is )
+
+Lexer line 9: input("\n\nEnter a long value for l: ", l)
 	Token: WORD: Lexeme is 'input' and tag is 297
 	Token: TOKEN: tag is (
-	Token: OUTPUT: value is '\nEnter a long value for l: ' and tag is 296
+	Token: OUTPUT: value is '\n\nEnter a long value for l: ' and tag is 296
 	Token: TOKEN: tag is ,
 	Token: WORD: Lexeme is 'l' and tag is 286
 	Token: TOKEN: tag is )
 
-Lexer line 12: print("l = ", l)
+Lexer line 10: print("l = ", l)
 	Token: WORD: Lexeme is 'print' and tag is 296
 	Token: TOKEN: tag is (
 	Token: OUTPUT: value is 'l = ' and tag is 296
@@ -81,15 +61,15 @@ Lexer line 12: print("l = ", l)
 	Token: WORD: Lexeme is 'l' and tag is 286
 	Token: TOKEN: tag is )
 
-Lexer line 13: input("\nEnter a float value for f: ", f)
+Lexer line 11: input("\n\nEnter a float value for f: ", f)
 	Token: WORD: Lexeme is 'input' and tag is 297
 	Token: TOKEN: tag is (
-	Token: OUTPUT: value is '\nEnter a float value for f: ' and tag is 296
+	Token: OUTPUT: value is '\n\nEnter a float value for f: ' and tag is 296
 	Token: TOKEN: tag is ,
 	Token: WORD: Lexeme is 'f' and tag is 286
 	Token: TOKEN: tag is )
 
-Lexer line 14: print("f = ", f)
+Lexer line 12: print("f = ", f)
 	Token: WORD: Lexeme is 'print' and tag is 296
 	Token: TOKEN: tag is (
 	Token: OUTPUT: value is 'f = ' and tag is 296
@@ -97,15 +77,15 @@ Lexer line 14: print("f = ", f)
 	Token: WORD: Lexeme is 'f' and tag is 286
 	Token: TOKEN: tag is )
 
-Lexer line 15: input("\nEnter an integer value for i: ", i)
+Lexer line 13: input("\n\nEnter an integer value for i: ", i)
 	Token: WORD: Lexeme is 'input' and tag is 297
 	Token: TOKEN: tag is (
-	Token: OUTPUT: value is '\nEnter an integer value for i: ' and tag is 296
+	Token: OUTPUT: value is '\n\nEnter an integer value for i: ' and tag is 296
 	Token: TOKEN: tag is ,
 	Token: WORD: Lexeme is 'i' and tag is 286
 	Token: TOKEN: tag is )
 
-Lexer line 16: print("i = ", i)
+Lexer line 14: print("i = ", i)
 	Token: WORD: Lexeme is 'print' and tag is 296
 	Token: TOKEN: tag is (
 	Token: OUTPUT: value is 'i = ' and tag is 296
@@ -113,15 +93,15 @@ Lexer line 16: print("i = ", i)
 	Token: WORD: Lexeme is 'i' and tag is 286
 	Token: TOKEN: tag is )
 
-Lexer line 17: input("\nEnter a double value for d: ", d)
+Lexer line 15: input("\n\nEnter a double value for d: ", d)
 	Token: WORD: Lexeme is 'input' and tag is 297
 	Token: TOKEN: tag is (
-	Token: OUTPUT: value is '\nEnter a double value for d: ' and tag is 296
+	Token: OUTPUT: value is '\n\nEnter a double value for d: ' and tag is 296
 	Token: TOKEN: tag is ,
 	Token: WORD: Lexeme is 'd' and tag is 286
 	Token: TOKEN: tag is )
 
-Lexer line 18: print("d = ", d)
+Lexer line 16: print("d = ", d)
 	Token: WORD: Lexeme is 'print' and tag is 296
 	Token: TOKEN: tag is (
 	Token: OUTPUT: value is 'd = ' and tag is 296
@@ -129,4 +109,4 @@ Lexer line 18: print("d = ", d)
 	Token: WORD: Lexeme is 'd' and tag is 286
 	Token: TOKEN: tag is )
 
-Lexer line 19: null
+Lexer line 17: null

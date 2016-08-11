@@ -13,17 +13,20 @@ public class While extends Stmt
     Expr expr;
     Stmt stmt;
 
-   public While() 
-   { 
+   public While() {
        expr = null; 
        stmt = null;
    }
 
-   public void init(Expr x, Stmt s) 
-   {
+    @Override
+    public boolean isWhile() {
+        return true;
+    }
+
+    public void init(Expr x, Stmt s) {
         expr = x;  
         stmt = s;
-        if( expr.type != Type.Bool ) 
+        if( expr.mType != Type.Bool )
             expr.error("boolean required in while");
    }
    
@@ -32,8 +35,8 @@ public class While extends Stmt
         after = a;                                // save label a
         expr.jumping(0, a);
         int label = newlabel();                   // label for stmt
-        emitlabel(label); 
+        emit(genLabel(label));
         stmt.gen(label, b);
-        emit("goto L" + b);
+        emit("L" + b);
    }
 }

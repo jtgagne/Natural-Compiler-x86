@@ -1,17 +1,7 @@
 int var1 is 1
 int var2 is 2
-var1 increase by 1
-var2 decrease by 1
-int sum := var1 + var2
-int difference := var2 - var1
-print("var1 = ", var1)
-print("\nvar2 = ", var2)
-print("\nvar1 + var2 = ", sum)
-print("\nvar2 - var1 = ", difference)
-int bigNum := 1022034
-print("\nbigNum = ", bigNum)
-int f1 is 5
-f1 is f1*f1*f1
-print("\nf1*f1*f1 = ", f1)
-int f2 is f1/5
-print("\nf2 = f1 / 5 = ", f2)
+print("var1 is ", var1)
+print("\nvar2 is ", var2)
+int sum is var1 + var2
+print("\nThe sum of var1 + var2 is ")
+print(sum)

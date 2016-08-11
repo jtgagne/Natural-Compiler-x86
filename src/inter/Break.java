@@ -9,16 +9,24 @@ package inter;
  */
 public class Break extends Stmt {
 
-   Stmt stmt;
+    Stmt stmt;
 
-   public Break() {
-      if( Stmt.Enclosing == Stmt.Null ) 
-          error("unenclosed break");
-      stmt = Stmt.Enclosing;
-   }
+    public Break() {
 
-   @Override
-   public void gen(int b, int a) {
-      emit( "goto L" + stmt.after);
-   }
+        if(Stmt.Enclosing == Stmt.Null) {
+            error("unenclosed break");
+        }
+
+        stmt = Stmt.Enclosing;
+    }
+
+    @Override
+    public boolean isBreak() {
+        return true;
+    }
+
+    @Override
+    public void gen(int b, int a) {
+        emit( "L" + stmt.after + ":");
+    }
 }

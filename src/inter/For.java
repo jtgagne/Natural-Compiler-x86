@@ -8,21 +8,24 @@ import symbols.*;
  * Wentworth Institute of Technology
  * Compiler Design - Summer 2016
  */
-public class For extends Stmt
-{
+public class For extends Stmt {
+
     Expr breakCondition;
     Stmt assignment;
     Stmt updateCondition;
     Stmt loopContent;
 
-    public For()
-    {
+    public For() {
         assignment = null;
         breakCondition = null;
         updateCondition = null;
         loopContent = null;
     }
 
+    @Override
+    public boolean isFor() {
+        return true;
+    }
 
     /**
      *
@@ -36,17 +39,16 @@ public class For extends Stmt
         breakCondition = condition;
         updateCondition = update;
         loopContent = loop;
-        if( breakCondition.type != Type.Bool )
+        if( breakCondition.mType != Type.Bool )
             breakCondition.error("boolean required in while");
     }
 
     @Override
-    public void gen(int b, int a)
-    {
+    public void gen(int b, int a) {
         after = a;                                // save label a
         breakCondition.jumping(0, a);
         int label = newlabel();                   // label for stmt
-        emitlabel(label);
+        emit(genLabel(label));
         loopContent.gen(label, b);
         emit("goto L" + b);
     }

@@ -1,0 +1,11 @@
+int var1 is 5
+int var2 is 10
+boolean isGood is true
+
+if(var1 less than var2){
+    print("var1 is less than var2")
+}
+
+if(isGood){
+    print("Praise the lord")
+}

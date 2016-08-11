@@ -6,16 +6,20 @@
 
 main:
 
-	la	 $a0, CONST1		 #Load an immediate value to register
+L1:	la	 $a0, CONST1		 #Load an immediate value to register
 	l.d	 $f0, 0($a0)		 #Load the value at the address
 	s.d	 $f0, d1
 
-	la	 $a0, CONST2		 #Load an immediate value to register
+L3:	la	 $a0, CONST2		 #Load an immediate value to register
 	l.d	 $f0, 0($a0)		 #Load the value at the address
 	s.d	 $f0, d2
 
-	li	 $v0,4		#Load the system call to print a string
+L4:	li	 $v0,4		#Load the system call to print a string
 	la	 $a0, msg1		#Load the String to be printed
+	syscall
+
+L5:	li	 $v0,4		#Load the system call to print a string
+	la	 $a0, msg2		#Load the String to be printed
 	syscall
 
 	li	 $v0, 3 		#Load system call to print double
@@ -23,8 +27,8 @@ main:
 	syscall
 
 
-	li	 $v0,4		#Load the system call to print a string
-	la	 $a0, msg2		#Load the String to be printed
+L6:	li	 $v0,4		#Load the system call to print a string
+	la	 $a0, msg3		#Load the String to be printed
 	syscall
 
 	li	 $v0, 3 		#Load system call to print double
@@ -32,14 +36,14 @@ main:
 	syscall
 
 
-	l.d	 $f0, d1
+L7:	l.d	 $f0, d1
 	l.d	 $f2, d2
 	add.d	 $f4, $f0, $f2		#add the two registers
 
 	s.d	 $f4, sum
 
-	li	 $v0,4		#Load the system call to print a string
-	la	 $a0, msg3		#Load the String to be printed
+L8:	li	 $v0,4		#Load the system call to print a string
+	la	 $a0, msg4		#Load the String to be printed
 	syscall
 
 	li	 $v0, 3 		#Load system call to print double
@@ -47,14 +51,14 @@ main:
 	syscall
 
 
-	l.d	 $f0, d2
+L9:	l.d	 $f0, d2
 	l.d	 $f2, d1
 	sub.d	 $f4, $f0, $f2		#add the two registers
 
 	s.d	 $f4, difference
 
-	li	 $v0,4		#Load the system call to print a string
-	la	 $a0, msg4		#Load the String to be printed
+L10:	li	 $v0,4		#Load the system call to print a string
+	la	 $a0, msg5		#Load the String to be printed
 	syscall
 
 	li	 $v0, 3 		#Load system call to print double
@@ -62,7 +66,7 @@ main:
 	syscall
 
 
-	li $v0, 10		#Load system call to exit
+L2:	li $v0, 10		#Load system call to exit
 	syscall
 
 
@@ -78,7 +82,8 @@ BOOL_TRUE:	.byte	1
 BOOL_FALSE:	.byte	0
 BOOL_TRUE_STR:	.asciiz	"true"
 BOOL_FALSE_STR:	.asciiz	"false"
-msg1:	.asciiz "d1 is "
-msg2:	.asciiz "\nd2 is "
-msg3:	.asciiz "\nd1 + d2 = "
-msg4:	.asciiz "\nd1 - d2 = "
+msg1:	.asciiz "Sample program to test arithmetic with doubles:\n\n"
+msg2:	.asciiz "d1 is "
+msg3:	.asciiz "\nd2 is "
+msg4:	.asciiz "\nd1 + d2 = "
+msg5:	.asciiz "\nd1 - d2 = "

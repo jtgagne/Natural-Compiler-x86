@@ -2,6 +2,7 @@ package inter;
 
 import code_generation.AssemblyFile;
 import lexer.Print;
+import lexer.Token;
 import symbols.Type;
 
 /**
@@ -13,13 +14,19 @@ import symbols.Type;
  * Compiler Design - Summer 2016
  */
 public class InputNode extends Stmt {
-    private Print mPrint;
-    private PrintNode mPrompt;
-    private Id mIdentifier;
-    private Type mType;
+
+    private Token mPrint;           //Should be a Print-Token
+    private PrintNode mPrompt;      //Print node to display a prompt
+    private Expr mExpr;             //Should be identifier or a Constant
+    private Type mType;             //The type of expression
 
     public InputNode(){
 
+    }
+
+    @Override
+    public boolean isInputNode() {
+        return true;
     }
 
     /**
@@ -29,9 +36,10 @@ public class InputNode extends Stmt {
      */
     public InputNode(Print prompt, Id identifier){
         mPrint = prompt;
-        mIdentifier = identifier;
-        mType = mIdentifier.type;
-        mPrompt = new PrintNode(mPrint);
+        mExpr = identifier;
+        mType = mExpr.mType;
+        assert mPrint.isPrint();
+        mPrompt = new PrintNode((Print) mPrint);
     }
 
     @Override
@@ -44,7 +52,6 @@ public class InputNode extends Stmt {
         super.gen(b, a);
         emit(this.toAsmMain());
         AssemblyFile.addStrings(this.toAsmData());
-        AssemblyFile.addToMain(this.toAsmMain());
     }
 
     /**
@@ -72,31 +79,31 @@ public class InputNode extends Stmt {
                         "\tli\t $v0, 5\t\t#System call to read in %s\n" +
                         "\tsyscall\n\n" +
                         "\tsw\t $v0, %s\t\t#Store the input in variable: '%s'\n",
-                        mType.lexeme, mIdentifier.getName(), mIdentifier.getName());  //System call for reading int
+                        mType.lexeme, mExpr.getName(), mExpr.getName());  //System call for reading int
             case "long":
                 return String.format(
                         "\tli\t $v0, 5\t\t#System call to read in %s\n" +
                         "\tsyscall\n\n" +
                         "\tsw\t $v0, %s\t\t#Store the input in variable: '%s'\n",
-                        mType.lexeme, mIdentifier.getName(), mIdentifier.getName());  //System call for reading int
+                        mType.lexeme, mExpr.getName(), mExpr.getName());  //System call for reading int
             case "float":
                 return String.format(
                         "\tli\t $v0, 6\t\t#System call to read in %s\n" +
                         "\tsyscall\n\n" +
                         "\ts.d\t $f0, %s\t\t#Store the input in variable: '%s'\n",
-                        mType.lexeme, mIdentifier.getName(), mIdentifier.getName());  //System call for reading float
+                        mType.lexeme, mExpr.getName(), mExpr.getName());  //System call for reading float
             case "double":
                 return String.format(
                         "\tli\t $v0, 7\t\t#System call to read in %s\n" +
                         "\tsyscall\n\n" +
                         "\ts.d\t $f0, %s\t\t#Store the input in variable: '%s'\n",
-                        mType.lexeme, mIdentifier.getName(), mIdentifier.getName());  //System call for reading double
+                        mType.lexeme, mExpr.getName(), mExpr.getName());  //System call for reading double
             case "char":
                 return String.format(
                         "\tli\t $v0, 12\t\t#System call to read in %s\n" +
                         "\tsyscall\n\n" +
                         "\tsb\t $v0, %s\t\t#Store the input in variable: '%s'\n",
-                        mType.lexeme, mIdentifier.getName(), mIdentifier.getName()); //System call for reading char
+                        mType.lexeme, mExpr.getName(), mExpr.getName()); //System call for reading char
             case "boolean":
                 return String.format(
                         "\tli\t $v0, 8\t\t#System call to read in %s\n" +
@@ -104,7 +111,7 @@ public class InputNode extends Stmt {
                         "\tli\t $a1, 6\t\t#Allow for up to 5 chars\n" +
                         "\tsyscall\n\n" +
                         "\tla\t $a0, %s\t\t#Store the input in variable: '%s'\n",
-                        mType.lexeme, mIdentifier.getName(), mIdentifier.getName(), mIdentifier.getName());  //System call to read String.
+                        mType.lexeme, mExpr.getName(), mExpr.getName(), mExpr.getName());  //System call to read String.
         }
         return "TYPE ERROR: InputNode\n";
     }

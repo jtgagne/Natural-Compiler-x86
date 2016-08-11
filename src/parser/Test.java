@@ -58,7 +58,7 @@ public class Test {
             Lexer.getInstance().closeReader();
             assemblyFile.generateAsmFile();
             Registers.clearAllRegs();
-            Node.resetPrintLabel();
+            Node.resetLabels();
             Printer.close();
         }
 

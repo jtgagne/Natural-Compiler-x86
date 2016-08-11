@@ -1,7 +1,6 @@
 package semantics;
 
 import inter.Expr;
-import inter.Id;
 import lexer.Token;
 import symbols.Type;
 
@@ -19,46 +18,46 @@ public class TypeCasting {
      * Handle the various casting types
      */
     public static Expr updateAssignmentTypes(Expr id, Expr expr){
-        Token token = expr.op;
+        Token token = expr.getToken();
 
-        if(id.type.equals(expr.type)){
+        if(id.getType().equals(expr.getType())){
             return expr;
         }
 
         //Cast an expression type to int
-        if(id.type.equals(Type.Int)){
-            if(expr.type.equals(Type.Long)){
+        if(id.getType().equals(Type.Int)){
+            if(expr.getType().equals(Type.Long)){
                 Warnings.narrowing("long", "int");           //Casting long to int may result in data loss
-            } else if (expr.type.equals(Type.Float)){
+            } else if (expr.getType().equals(Type.Float)){
                 Warnings.floatingToWhole("float", "int");    //Casting long to int may result in data loss
-            } else if (expr.type.equals(Type.Double)){
+            } else if (expr.getType().equals(Type.Double)){
                 Warnings.floatingToWhole("double", "int");   //Casting long to int may result in data loss
             }
-            expr.type = Type.Int;
+            expr.setType(Type.Int);
         }
 
         //Assigning a type to a long value.
-        else if(id.type.equals(Type.Long)){
-            if (expr.type.equals(Type.Float)){
+        else if(id.getType().equals(Type.Long)){
+            if (expr.getType().equals(Type.Float)){
                 Warnings.floatingToWhole("float", "long");  //Casting long to int may result in data loss
-            } else if (expr.type.equals(Type.Double)){
+            } else if (expr.getType().equals(Type.Double)){
                 Warnings.floatingToWhole("double", "long");  //Casting long to int may result in data loss
             }
-            expr.type = Type.Long;
+            expr.setType(Type.Long);
         }
 
         //Assigning a type to a double value.
-        else if(id.type.equals(Type.Double)){
+        else if(id.getType().equals(Type.Double)){
             expr = new Expr(token, Type.Double);
         }
 
         //Assigning a type to a float value.
-        else if(id.type.equals(Type.Float)){
-            if(expr.type.equals(Type.Int)){
+        else if(id.getType().equals(Type.Float)){
+            if(expr.getType().equals(Type.Int)){
                 Warnings.floatingToWhole("int", "float");          //Casting long to int may result in data loss
-            } else if (expr.type.equals(Type.Double)){
+            } else if (expr.getType().equals(Type.Double)){
                 Warnings.narrowing("double", "float");        //Casting long to int may result in data loss
-            } else if (expr.type.equals(Type.Long)){
+            } else if (expr.getType().equals(Type.Long)){
                 Warnings.floatingToWhole("long", "float");  //Casting long to int may result in data loss
                 Warnings.narrowing("long", "float");        //Casting long to int may result in data loss
             }
@@ -66,14 +65,14 @@ public class TypeCasting {
         }
 
         //Assigning a type to a char value.
-        else if(id.type.equals(Type.Char)){
-            if (expr.type.equals(Type.Float)){
+        else if(id.getType().equals(Type.Char)){
+            if (expr.getType().equals(Type.Float)){
                 Warnings.incompatibleTypes("float", "char");        //Casting long to int may result in data loss
                 return null;
-            } else if (expr.type.equals(Type.Double)){
+            } else if (expr.getType().equals(Type.Double)){
                 Warnings.incompatibleTypes("double", "char");           //Casting long to int may result in data loss
                 return null;
-            } else if (expr.type.equals(Type.Bool)){
+            } else if (expr.getType().equals(Type.Bool)){
                 Warnings.incompatibleTypes("boolean", "char");        //Casting long to int may result in data loss
                 return null;
             }
@@ -81,11 +80,10 @@ public class TypeCasting {
         }
 
         //Assigning a type to a boolean value.
-        else if(id.type.equals(Type.Bool) && !expr.type.equals(Type.Bool)){
-            Warnings.incompatibleTypes(expr.type.toString(), "boolean");
+        else if(id.getType().equals(Type.Bool) && !expr.getType().equals(Type.Bool)){
+            Warnings.incompatibleTypes(expr.getType().toString(), "boolean");
 
         }
-
         return expr;
     }
 }

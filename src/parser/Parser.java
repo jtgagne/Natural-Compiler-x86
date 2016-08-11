@@ -99,12 +99,10 @@ public class Parser {
             System.err.printf("Null");
         }
         int begin = s.newlabel();
-
-        s.emitlabel(begin);
-        s.gen(begin, begin);        //was: s.gen(begin, after);
-
-        //int after = s.newlabel();
-        //s.emitlabel(after);
+        int after = s.newlabel();
+        s.emit(String.format("%s:",s.genLabel(begin)));
+        s.gen(begin, after);        //was: s.gen(begin, after);
+        s.emit(String.format("%s:", s.genLabel(after)));
 
         top = savedEnv;
         assert top != null;
@@ -606,10 +604,8 @@ public class Parser {
             case Tag.ID:
                 String s = look.toString();
                 Id id = top.get(look);                   // Lookup in symbol table
-
                 if( id == null )                         // Not found...
                     error(s + " undeclared");
-
                 move();
                 return id;              // Return Id node
 

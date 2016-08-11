@@ -6,55 +6,55 @@
 
 main:
 
-	lb	 $t0, BOOL_TRUE		#Load a boolean value
+L1:	lb	 $t0, BOOL_TRUE		#Load a boolean value
 	sb	 $t0, isWorking
 
-	lb	 $t0, BOOL_TRUE		#Load a boolean value
+L3:	lb	 $t0, BOOL_TRUE		#Load a boolean value
 	sb	 $t0, amHappy
 
-	li	 $v0,4		#Load the system call to print a string
+L4:	li	 $v0,4		#Load the system call to print a string
 	la	 $a0, msg1		#Load the String to be printed
 	syscall
 
 	lb	 $t0, isWorking		#Load the value to be compared
-	beqz	 $t0, L2		#Goto L2 if greater than 0
+	beqz	 $t0, L7		#Goto L7 if greater than 0
 
-L1:	li	 $v0, 4
+L6:	li	 $v0, 4
 	la 	$a0, BOOL_TRUE_STR
 	syscall
-	j	 L3
+	j	 L8
 
-L2:	li	 $v0, 4
+L7:	li	 $v0, 4
 	la 	 $a0, BOOL_FALSE_STR
 	syscall
-	j	 L3
+	j	 L8
 
-L3:
-	li	 $v0,4		#Load the system call to print a string
+L8:
+L5:	li	 $v0,4		#Load the system call to print a string
 	la	 $a0, msg2		#Load the String to be printed
 	syscall
 
 	lb	 $t1, amHappy		#Load the value to be compared
-	beqz	 $t1, L5		#Goto L5 if greater than 0
+	beqz	 $t1, L11		#Goto L11 if greater than 0
 
-L4:	li	 $v0, 4
+L10:	li	 $v0, 4
 	la 	$a0, BOOL_TRUE_STR
 	syscall
-	j	 L6
+	j	 L12
 
-L5:	li	 $v0, 4
+L11:	li	 $v0, 4
 	la 	 $a0, BOOL_FALSE_STR
 	syscall
-	j	 L6
+	j	 L12
 
-L6:
-	lb	 $t2, isWorking
+L12:
+L9:	lb	 $t2, isWorking
 	lb	 $t3, amHappy
 	add	 $t4, $t2, $t3		#add the two registers
 
 	sw	 $t4, sum
 
-	li	 $v0,4		#Load the system call to print a string
+L13:	li	 $v0,4		#Load the system call to print a string
 	la	 $a0, msg3		#Load the String to be printed
 	syscall
 
@@ -63,13 +63,13 @@ L6:
 	syscall
 
 
-	lw	 $t0, sum
+L14:	lw	 $t0, sum
 	li	 $t1, 1		#Load an immediate value into the register
 	add	 $t2, $t0, $t1		#add the two registers
 
 	sw	 $t2, sum
 
-	li	 $v0,4		#Load the system call to print a string
+L15:	li	 $v0,4		#Load the system call to print a string
 	la	 $a0, msg4		#Load the String to be printed
 	syscall
 
@@ -78,13 +78,13 @@ L6:
 	syscall
 
 
-	lw	 $t0, sum
+L16:	lw	 $t0, sum
 	lb	 $t1, isWorking
 	mul	 $t2, $t0, $t1		#add the two registers
 
 	sw	 $t2, product
 
-	li	 $v0,4		#Load the system call to print a string
+L17:	li	 $v0,4		#Load the system call to print a string
 	la	 $a0, msg5		#Load the String to be printed
 	syscall
 
@@ -93,7 +93,7 @@ L6:
 	syscall
 
 
-	li $v0, 10		#Load system call to exit
+L2:	li $v0, 10		#Load system call to exit
 	syscall
 
 

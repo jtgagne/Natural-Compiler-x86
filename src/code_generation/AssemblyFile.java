@@ -1,5 +1,8 @@
 package code_generation;
 
+import inter.Node;
+import inter.Stmt;
+
 import java.io.File;
 import java.io.PrintWriter;
 
@@ -101,6 +104,7 @@ public class AssemblyFile {
      * Write all the string builder objects to the new .asm file
      */
     public void generateAsmFile(){
+        String endLabel = Stmt.labelAfter;
         mMain.append("\tli $v0, 10\t\t#Load system call to exit\n");
         mMain.append("\tsyscall\n\n");
         mConstants.append(ASMGen.genBooleanTrue());
@@ -120,6 +124,8 @@ public class AssemblyFile {
         mVariables = null;
         mConstants = null;
         mStrings = null;
+        Node.resetLabels();
         ASMGen.resetConstantCount();
+        ASMGen.resetLabelCount();
     }
 }

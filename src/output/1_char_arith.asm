@@ -6,23 +6,23 @@
 
 main:
 
-	la	 $t0, CONST1		
+L1:	la	 $t0, CONST1		
 	lb	 $t1, 0($t0)		#Load an immediate value to register
 	sb	 $t1, c
 
-	la	 $t0, CONST2		
+L3:	la	 $t0, CONST2		
 	lb	 $t1, 0($t0)		#Load an immediate value to register
 	sb	 $t1, o
 
-	la	 $t0, CONST3		
+L4:	la	 $t0, CONST3		
 	lb	 $t1, 0($t0)		#Load an immediate value to register
 	sb	 $t1, m
 
-	la	 $t0, CONST4		
+L5:	la	 $t0, CONST4		
 	lb	 $t1, 0($t0)		#Load an immediate value to register
 	sb	 $t1, p
 
-	li	 $v0,4		#Load the system call to print a string
+L6:	li	 $v0,4		#Load the system call to print a string
 	la	 $a0, msg1		#Load the String to be printed
 	syscall
 
@@ -31,7 +31,7 @@ main:
 	syscall
 
 
-	li	 $v0,4		#Load the system call to print a string
+L7:	li	 $v0,4		#Load the system call to print a string
 	la	 $a0, msg2		#Load the String to be printed
 	syscall
 
@@ -40,7 +40,7 @@ main:
 	syscall
 
 
-	li	 $v0,4		#Load the system call to print a string
+L8:	li	 $v0,4		#Load the system call to print a string
 	la	 $a0, msg3		#Load the String to be printed
 	syscall
 
@@ -49,7 +49,7 @@ main:
 	syscall
 
 
-	li	 $v0,4		#Load the system call to print a string
+L9:	li	 $v0,4		#Load the system call to print a string
 	la	 $a0, msg4		#Load the String to be printed
 	syscall
 
@@ -58,37 +58,37 @@ main:
 	syscall
 
 
-	li	 $v0,4		#Load the system call to print a string
+L10:	li	 $v0,4		#Load the system call to print a string
 	la	 $a0, msg5		#Load the String to be printed
 	syscall
 
-	li	 $v0, 11		#System call for printing a char
+L11:	li	 $v0, 11		#System call for printing a char
 	lb	 $a0, c		#Load the char to a0
 	syscall
 
-	li	 $v0, 11		#System call for printing a char
+L12:	li	 $v0, 11		#System call for printing a char
 	lb	 $a0, o		#Load the char to a0
 	syscall
 
-	li	 $v0, 11		#System call for printing a char
+L13:	li	 $v0, 11		#System call for printing a char
 	lb	 $a0, m		#Load the char to a0
 	syscall
 
-	li	 $v0, 11		#System call for printing a char
+L14:	li	 $v0, 11		#System call for printing a char
 	lb	 $a0, p		#Load the char to a0
 	syscall
 
-	li	 $v0,4		#Load the system call to print a string
+L15:	li	 $v0,4		#Load the system call to print a string
 	la	 $a0, msg6		#Load the String to be printed
 	syscall
 
-	lb	 $t0, c
+L16:	lb	 $t0, c
 	lb	 $t1, o
 	add	 $t2, $t0, $t1		#add the two registers
 
 	sw	 $t2, a
 
-	li	 $v0,4		#Load the system call to print a string
+L17:	li	 $v0,4		#Load the system call to print a string
 	la	 $a0, msg7		#Load the String to be printed
 	syscall
 
@@ -97,13 +97,13 @@ main:
 	syscall
 
 
-	lb	 $t0, c
+L18:	lb	 $t0, c
 	lb	 $t1, o
 	sub	 $t2, $t0, $t1		#subtract the two registers
 
 	sw	 $t2, b
 
-	li	 $v0,4		#Load the system call to print a string
+L19:	li	 $v0,4		#Load the system call to print a string
 	la	 $a0, msg8		#Load the String to be printed
 	syscall
 
@@ -112,7 +112,7 @@ main:
 	syscall
 
 
-	li $v0, 10		#Load system call to exit
+L2:	li $v0, 10		#Load system call to exit
 	syscall
 
 

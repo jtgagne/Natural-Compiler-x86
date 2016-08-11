@@ -1,6 +1,7 @@
 package inter;
 
 import code_generation.ASMGen;
+import code_generation.AssemblyFile;
 import lexer.Lexer;
 import lexer.Token;
 import symbols.Env;
@@ -15,74 +16,60 @@ import symbols.Type;
  */
 public class Node {
 
-   int lexline = 0;
+    private static int labels = 0;
+    private static int msg = 0;
 
-   Node() {
-      lexline = Lexer.lineCount;
-   }
+    int lexline = 0;
 
-   void error(String s) 
-   { 
-       throw new Error("near line "+lexline+": "+s);
-   }
+    Node() {
+        lexline = Lexer.lineCount;
+    }
 
-   static int labels = 0;
-   static int printLabel = 0;
-   public int newPrintLabel(){ return ++printLabel;}
-   public int newlabel() { return ++labels; }
+    public static void resetLabels(){
+        labels = 0;
+        msg = 0;
+    }
 
-   public void emitlabel(int i) {
-      //System.out.print("L" + i + ":");
-   }
-   public void emit(String s) {
-      System.out.println(s);
-   }
+    public String genMessage(){
+        return String.format("msg%d", ++msg);
+    }
 
-   /**
-    * Formatted string of content to be appended to the data section of an assembly file
-    * @return
-     */
-   public String toAsmData(){
-      return null;
-   }
+    void error(String s) {
+        throw new Error("near line "+lexline+": "+s);
+    }
 
-   /**
-    * Formatted string of the content to be appended to the main function of an assembly file
-    * @return
-     */
-   public String toAsmMain(){
-      return null;
-   }
+    public int newlabel() {
+        return ++labels;
+    }
 
-   public String toAsmConstants(){
-      return null;
-   }
+    public String genLabel(){
+        return String.format("L%d", ++labels);
+    }
 
-   public boolean isIdentifier(Token id){
-      return Env.getCurrent().get(id) != null;
-   }
+    public String genLabel(int labelNumber){
+        return String.format("L%d", labelNumber);
+    }
 
-   public String getLoadType(Type type, String error){
-      return ASMGen.getLoadType(type);
-   }
+    public void emit(String s) {
+        if(s != null){
+            AssemblyFile.addToMain(s);
+        }
+    }
 
-   public String getStoreType(Type type, String error){
-      return ASMGen.getStoreType(type);
-   }
+    public String toAsmData(){
+        return null;
+    }
 
-   public String store(){
-      return null;
-   }
+    public String toAsmMain(){
+        return null;
+    }
 
-   public String load(String ... identifier){
-      return null;
-   }
+    public String toAsmConstants(){
+        return null;
+    }
 
-   public String getResultRegister(){
-      return null;
-   }
+    public String getResultRegister(){
+        return null;
+    }
 
-   public static void resetPrintLabel(){
-      printLabel = 0;
-   }
 }

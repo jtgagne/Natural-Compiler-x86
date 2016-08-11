@@ -14,78 +14,78 @@ import symbols.*;
  */
 public class Id extends Expr {
 
-    public int offset;     // relative address
-    public final Word _word;
-    public Type mType;
-    private String register;    //Output register
+    public int mOffset;            //relative address
+    private final Word mWord;
 
-    public Id(Word id, Type p, int b){
-        super(id, p); 
-        offset = b;
-        _word = id;
-        mType = p;
-        Printer.writeIdentifier(this);
+    //Member variables inherited from Expr:
+    //Member variables for an expression
+    //protected Token mToken;
+    //protected Type mType;
+    //protected String register;
+
+    public Id(Word identifier, Type type, int offset){
+        super(identifier, type);                        //Expr(Token tok, Type type)
+        mOffset = offset;
+        mWord = identifier;
+        mType = type;
     }
 
-	public String toString() {
-        return "Identifier: " + _word.lexeme + "\t TYPE: " + mType.lexeme;
+    public String toString() {
+        return "Identifier: " + mWord.lexeme + "\t TYPE: " + mType.lexeme;
     }
 
+    /**
+     * Return the variable's name
+     * @return name
+     */
     public String getName(){
-        return _word.lexeme;
+        return mWord.lexeme;
     }
 
-    public String getType() {
+    public String getTypeStr() {
         return mType.lexeme;
     }
 
     @Override
-    public Expr gen() {
-        return super.gen();
+    public void jumping(int t, int f) {
+        super.jumping(t, f);
     }
 
     /**
-     * Generate a line to be used as a global variable
-     * @return
+     * @return line to be used as a global variable --> add to .data in assembly file.
      */
     @Override
     public String toAsmData() {
-        String data = ASMGen.toData(this, "0,0,0"); //Gen the data declaration with default initial value
-        return data == null ? "ERROR ID: generating data" : data;
+        return ASMGen.toData(this, "0,0,0"); //Gen the data declaration with default initial value
     }
 
-    /**
-     * Get the assembly to load an identifier
-     * @return assembly
-     */
     @Override
     public String toAsmMain() {
-        return getAsmLoad();
+        return load();
     }
 
     /**
-     * Generate assembly to load a variable
-     * @return assembly
+     * Load this identifier into memory
+     * @return assembly code
      */
-    public String getAsmLoad(){
+    @Override
+    public String load() {
         //Set the appropriate register value before generating assembly
         if(mType == Type.Float){
-            register = Registers.getFloatingPointReg();
+            mRegister = Registers.getFloatingPointReg();
         } else if (mType == Type.Double){
-            register = Registers.getDoubleReg();
+            mRegister = Registers.getDoubleReg();
         } else{
-            register = Registers.getTempReg();    //Set the output register
+            mRegister = Registers.getTempReg();    //Set the output register
         }
-
-        String code = ASMGen.loadVar(this, register);
-
-        return  code == null ? "IDENTIFER ERROR: Loading data type asm code" : code;
+        return ASMGen.loadVar(this, mRegister);
     }
 
     @Override
-    public String getResultRegister() {
-        return register;
+    public String getRegister() {
+        return super.getRegister();
     }
+
 }
 
 

@@ -1,14 +1,12 @@
 package code_generation;
 
-import inter.Expr;
 import inter.Id;
 import inter.Op;
+import inter.Stmt;
+import lexer.Tag;
 import lexer.Token;
 import symbols.Env;
 import symbols.Type;
-
-import java.util.HashMap;
-import java.util.Hashtable;
 
 /**
  * Static use to get various useful strings
@@ -48,6 +46,19 @@ public class ASMGen {
         sb.append(L2);
         sb.append(L3);
         return sb.toString();
+    }
+
+    public static String genLogical(String reg1, String reg2, String label, Token op){
+
+        Stmt s = Stmt.Enclosing;
+        label = s.getLabelAfter();
+
+        switch (op.tag){
+            case Tag.LESS:
+                return String.format("\tbgt\t %s, %s, %s\n\n", reg1, reg2, label);
+
+        }
+        return null;
     }
 
     public static void resetConstantCount(){
@@ -118,10 +129,11 @@ public class ASMGen {
      * @return data string declaration
      */
     public static String toData(Id identifier, String initialValue){
-        Type type = identifier.type;
+        Type type = identifier.getType();
         String name = identifier.getName();
-        Token token = identifier.getOp();
+        Token token = identifier.getToken();
 
+        //Check if the value has already been added to the data section
         if(Env.declaredVars.get(token) != null){
             return null;
         }
@@ -153,7 +165,7 @@ public class ASMGen {
      * @return the assembly code
      */
     public static String loadVar(Id identifier, String register){
-        Type type = identifier.type;
+        Type type = identifier.getType();
 
         switch (type.lexeme){
             case "int":
@@ -185,7 +197,7 @@ public class ASMGen {
      * @return the assembly code
      */
     public static String storeVar(Id identifier, String register){
-        Type type = identifier.type;
+        Type type = identifier.getType();
 
         switch (type.lexeme){
             case "int":
@@ -220,8 +232,8 @@ public class ASMGen {
      * @return assembly code for the operation
      */
     public static String genMath(Op operation, String saveReg, String reg1, String reg2){
-        Token token = operation.getOp();
-        Type type = operation.type;
+        Token token = operation.getToken();
+        Type type = operation.getType();
 
         switch (token.tag){
 

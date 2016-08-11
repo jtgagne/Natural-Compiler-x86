@@ -2,6 +2,7 @@ package inter;
 import code_generation.ASMGen;
 import code_generation.AssemblyFile;
 import code_generation.Registers;
+import com.sun.org.apache.regexp.internal.RE;
 import lexer.Print;
 
 /**
@@ -16,11 +17,16 @@ public class PrintNode extends Stmt {
 
     private Print mPrintVal;
     private Id mIdentifier;
-    private int msgNumber = -1;
+    private String mMessage;
 
     public PrintNode(){
         mIdentifier = null;
         mPrintVal = null;
+    }
+
+    @Override
+    public boolean isPrintNode() {
+        return true;
     }
 
     /**
@@ -29,7 +35,7 @@ public class PrintNode extends Stmt {
      */
     public PrintNode(Print print) {
         mPrintVal = print;
-        msgNumber = newPrintLabel();       //Set the print label
+        mMessage = genMessage();       //Set the print label
     }
 
     /**
@@ -42,7 +48,7 @@ public class PrintNode extends Stmt {
 
     public void setPrintToken(Print print){
         mPrintVal = print;
-        msgNumber = newPrintLabel();       //Set the print label
+        mMessage = genMessage();       //Set the print label
     }
 
     public void setIdentifier(Id identifier){
@@ -56,6 +62,11 @@ public class PrintNode extends Stmt {
         AssemblyFile.addToMain(this.toAsmMain());
     }
 
+    @Override
+    public String toAsmConstants() {
+        return super.toAsmConstants();
+    }
+
     /**
      * Logs the variables of the print value in the data section of an assembly file.
      * @return the string variable to be pointed to.
@@ -63,7 +74,7 @@ public class PrintNode extends Stmt {
     @Override
     public String toAsmData(){
         if(mPrintVal != null){
-            return String.format("msg%d:\t.asciiz \"%s\"\n", msgNumber, mPrintVal.value);
+            return String.format("%s:\t.asciiz \"%s\"\n", mMessage, mPrintVal.value);
         }
         return null;
     }
@@ -78,9 +89,9 @@ public class PrintNode extends Stmt {
         if(mIdentifier != null && mPrintVal != null){
             return String.format(
                 "\tli\t $v0,4\t\t#Load the system call to print a string\n" +
-                "\tla\t $a0, msg%d\t\t#Load the String to be printed\n" +
+                "\tla\t $a0, %s\t\t#Load the String to be printed\n" +
                 "\tsyscall\n\n" +
-                "%s\n", msgNumber, genPrintAsm());
+                "%s\n", mMessage, genPrintAsm());
         }
         else if(mIdentifier != null){
             return genPrintAsm();
@@ -88,8 +99,8 @@ public class PrintNode extends Stmt {
 
         return String.format(
             "\tli\t $v0,4\t\t#Load the system call to print a string\n" +
-            "\tla\t $a0, msg%d\t\t#Load the String to be printed\n" +
-            "\tsyscall\n\n",msgNumber);
+            "\tla\t $a0, %s\t\t#Load the String to be printed\n" +
+            "\tsyscall\n\n", mMessage);
     }
 
     /**
@@ -99,7 +110,7 @@ public class PrintNode extends Stmt {
     private String genPrintAsm(){
         StringBuilder sb = new StringBuilder();
 
-        switch (mIdentifier.type.lexeme){
+        switch (mIdentifier.getTypeStr()){
             case "int":
                  sb.append(String.format(
                         "\tli\t $v0, 1\t\t#Load system call for to print integer\n" +
@@ -130,9 +141,9 @@ public class PrintNode extends Stmt {
                         "\tlb\t $a0, %s\t\t#Load the char to a0\n" +
                         "\tsyscall\n\n", mIdentifier.getName());
             case "boolean":
-                String label1 = ASMGen.genLabel();
-                String label2 = ASMGen.genLabel();
-                String label3 = ASMGen.genLabel();
+                String label1 = genLabel();
+                String label2 = genLabel();
+                String label3 = genLabel();
                 String register = Registers.getTempReg();
                 sb.append(String.format(
                         "\tlb\t %s, %s\t\t#Load the value to be compared\n" +

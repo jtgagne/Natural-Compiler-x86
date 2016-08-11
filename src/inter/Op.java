@@ -1,5 +1,4 @@
 package inter;
-import code_generation.Registers;
 import lexer.*; import symbols.*;
 
 /**
@@ -11,16 +10,29 @@ import lexer.*; import symbols.*;
  */
 public class Op extends Expr {
 
+    //Member variables inherited from Expr:
+    //protected Token mToken;
+    //protected Type mType;
+    //protected String register;
+
     public Op(Token tok, Type p) {
-        super(tok, p);
+        super(tok, p);      //Expr(Token tok, Type type)
+    }
+
+    /**
+     * This node should be identified as an Op-node
+     * @return true
+     */
+    @Override
+    public boolean isOp() {
+        return true;
     }
 
     @Override
     public Expr reduce() {
         Expr x = gen();
-        Temp t = new Temp(type);
-        emit( t.toString() + " = " + x.toString() );
+        Temp t = new Temp(mType);
+        emit( t.toAsmMain()  + x.toAsmMain() );
         return t;
     }
-
 }

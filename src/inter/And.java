@@ -10,16 +10,29 @@ import lexer.Token;
  */
 public class And extends Logical {
 
-    public And(Token tok, Expr x1, Expr x2)
-   { 
-       super(tok, x1, x2); 
-   }
+    //Member variables inherited from Logical:
+    //public Expr expr1;
+    //public Expr expr2;
+    //protected Token mToken;
+    //protected Type mType;
+    //protected String register;
 
-   @Override
-   public void jumping(int t, int f) {
-      int label = f != 0 ? f : newlabel();
-      expr1.jumping(0, label);
-      expr2.jumping(t,f);
-      if( f == 0 ) emitlabel(label);
-   }
+    public And(Token tok, Expr x1, Expr x2) {
+        super(tok, x1, x2);
+    }
+
+    @Override
+    public boolean isAnd() {
+        return true;
+    }
+
+    @Override
+    public void jumping(int t, int f) {
+        int label = f != 0 ? f : newlabel();
+        expr1.jumping(0, label);
+        expr2.jumping(t,f);
+        if( f == 0 ){
+            emit(genLabel(label));
+        }
+    }
 }
