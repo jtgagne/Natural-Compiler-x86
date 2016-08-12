@@ -1,4 +1,5 @@
 package inter;
+import code_generation.ASMGen;
 import lexer.*;
 
 /**
@@ -30,12 +31,60 @@ public class Not extends Logical {
         return true;
     }
 
+    /*
     @Override
     public void jumping(int t, int f) {
-        expr2.jumping(f, t); }
+        expr2.jumping(f, t); }*/
 
     @Override
     public String toString() {
         return mToken.toString()+" "+expr2.toString();
+    }
+
+    @Override
+    public String toAsmMain() {
+        return genNotExpr();
+    }
+
+    @Override
+    public String toAsmData() {
+        StringBuilder sb = new StringBuilder();
+        String s1 = expr1.toAsmData();
+        //String s2 = expr2.toAsmData();
+
+        if (s1 != null) sb.append(s1);
+        //if (s2 != null) sb.append(s2);
+
+        return sb.toString();
+    }
+
+    @Override
+    public String toAsmConstants() {
+        StringBuilder sb = new StringBuilder();
+        String s1 = expr1.toAsmConstants();
+        //String s2 = expr2.toAsmConstants();
+
+        if (s1 != null) sb.append(s1);
+        //if (s2 != null) sb.append(s2);
+
+        return sb.toString();
+    }
+
+    /**
+     * Generate the expression to 'AND' two expressions
+     * @return the formatted expression.
+     */
+    private String genNotExpr(){
+        String register1;
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(expr1.toAsmMain());
+        register1 = expr1.getResultRegister();
+
+        sb.append(ASMGen.genNotExpr(register1));
+
+        mRegister = ASMGen.getSavedRegister();
+
+        return sb.toString();
     }
 }

@@ -18,6 +18,7 @@ public class Rel extends Logical {
    //protected Token mToken;
    //protected Type mType;
    //protected String mRegister;
+   private Type mRelationalType;
 
    public Rel(Token tok, Expr x1, Expr x2) {
       super(tok, x1, x2);
@@ -30,9 +31,11 @@ public class Rel extends Logical {
 
    @Override
    public Type check(Type p1, Type p2) {
-      if( p1 == p2 )
+      if( p1 == p2 ){
+         mRelationalType = p1;
          return Type.Bool;
-      else return null;
+      }
+      return null;
    }
 
 
@@ -46,9 +49,7 @@ public class Rel extends Logical {
 
    @Override
    public String toAsmMain() {
-      String code = genOperation();
-      Registers.clearAllTempRegs();
-      return code;
+      return genOperation();
    }
 
    @Override
@@ -90,7 +91,9 @@ public class Rel extends Logical {
       sb.append(expr2.toAsmMain());
       register2 = expr2.getResultRegister();
 
-      sb.append(ASMGen.genLogical(register1, register2, this.mToken));
+      sb.append(ASMGen.genRelationalComparison(register1, register2, this.mToken, mRelationalType));
+
+      mRegister = ASMGen.getSavedRegister();
 
       return sb.toString();
    }

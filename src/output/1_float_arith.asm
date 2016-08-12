@@ -7,25 +7,25 @@
 main:
 
 L1:	la	 $a0, CONST1		 #Load an immediate value to register
-	l.s	 $f0, 0($a0)		 #Load the value at the address
-	s.s	 $f0, f1
+	l.s	 $f2, 0($a0)		 #Load the value at the address
+	s.s	 $f2, f1
 
 L3:	la	 $a0, CONST2		 #Load an immediate value to register
-	l.s	 $f0, 0($a0)		 #Load the value at the address
-	s.s	 $f0, f2
+	l.s	 $f2, 0($a0)		 #Load the value at the address
+	s.s	 $f2, f2
 
 L4:	la	 $a0, CONST3		 #Load an immediate value to register
-	l.s	 $f0, 0($a0)		 #Load the value at the address
-	s.s	 $f0, f3
+	l.s	 $f2, 0($a0)		 #Load the value at the address
+	s.s	 $f2, f3
 
-L5:	l.s	 $f0, f1
-	l.s	 $f1, f2
-	add.s	 $f2, $f0, $f1		#add the two registers
-
-	l.s	 $f3, f3
+L5:	l.s	 $f2, f1
+	l.s	 $f3, f2
 	add.s	 $f4, $f2, $f3		#add the two registers
 
-	s.s	 $f4, sum
+	l.s	 $f5, f3
+	add.s	 $f6, $f4, $f5		#add the two registers
+
+	s.s	 $f6, sum
 
 L6:	li	 $v0,4		#Load the system call to print a string
 	la	 $a0, msg1		#Load the String to be printed
@@ -63,11 +63,11 @@ L9:	li	 $v0,4		#Load the system call to print a string
 	syscall
 
 
-L10:	l.s	 $f0, f2
-	l.s	 $f1, f1
-	sub.s	 $f2, $f0, $f1		#add the two registers
+L10:	l.s	 $f2, f2
+	l.s	 $f3, f1
+	sub.s	 $f4, $f2, $f3		#add the two registers
 
-	s.s	 $f2, difference
+	s.s	 $f4, difference
 
 L11:	li	 $v0,4		#Load the system call to print a string
 	la	 $a0, msg5		#Load the String to be printed
@@ -79,8 +79,8 @@ L11:	li	 $v0,4		#Load the system call to print a string
 
 
 L12:	la	 $a0, CONST4		 #Load an immediate value to register
-	l.s	 $f0, 0($a0)		 #Load the value at the address
-	s.s	 $f0, v1
+	l.s	 $f2, 0($a0)		 #Load the value at the address
+	s.s	 $f2, v1
 
 L13:	li	 $v0,4		#Load the system call to print a string
 	la	 $a0, msg6		#Load the String to be printed
@@ -91,14 +91,14 @@ L13:	li	 $v0,4		#Load the system call to print a string
 	syscall
 
 
-L14:	l.s	 $f0, v1
-	l.s	 $f1, v1
-	mul.s	 $f2, $f1, $f1		#add the two registers
-
+L14:	l.s	 $f2, v1
 	l.s	 $f3, v1
-	mul.s	 $f4, $f2, $f3		#add the two registers
+	mul.s	 $f4, $f3, $f3		#add the two registers
 
-	s.s	 $f4, v1
+	l.s	 $f5, v1
+	mul.s	 $f6, $f4, $f5		#add the two registers
+
+	s.s	 $f6, v1
 
 L15:	li	 $v0,4		#Load the system call to print a string
 	la	 $a0, msg7		#Load the String to be printed
@@ -109,12 +109,12 @@ L15:	li	 $v0,4		#Load the system call to print a string
 	syscall
 
 
-L16:	l.s	 $f0, v1
+L16:	l.s	 $f2, v1
 	la	 $a0, CONST5		 #Load an immediate value to register
-	l.s	 $f1, 0($a0)		 #Load the value at the address
-	div.s	 $f2, $f0, $f1		#add the two registers
+	l.s	 $f3, 0($a0)		 #Load the value at the address
+	div.s	 $f4, $f2, $f3		#add the two registers
 
-	s.s	 $f2, v2
+	s.s	 $f4, v2
 
 L17:	li	 $v0,4		#Load the system call to print a string
 	la	 $a0, msg8		#Load the String to be printed

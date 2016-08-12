@@ -66,13 +66,13 @@ public class Registers {
      * @return the register name
      */
     public static String getFloatingPointReg(){
-        for(int i = 0; i < floatingPoint.length; i++){
+        for(int i = 2; i < floatingPoint.length; i++){
             if(!floatingPoint[i]){
                 floatingPoint[i] = true;
                 return String.format("$f%d", i);
             }
         }
-        return "$f0";
+        return "$f2";
     }
 
     /**
@@ -80,7 +80,7 @@ public class Registers {
      * @return the register name
      */
     public static String getDoubleReg(){
-        for(int i = 0; i < floatingPoint.length; i++){
+        for(int i = 2; i < floatingPoint.length; i++){
             if( i%2 != 0) continue;
             if(!floatingPoint[i]){
                 floatingPoint[i] = true;
@@ -88,7 +88,7 @@ public class Registers {
                 return String.format("$f%d", i);
             }
         }
-        return "$f0";
+        return "$f2";
     }
 
     public static void clearAllFunctionCallRegs(){

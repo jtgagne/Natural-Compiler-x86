@@ -1,5 +1,7 @@
 int var1 is 5
 int var2 is 10
+float f1 is 12.33
+float f2 is 33.2
 boolean isGood is true
 
 if(var1 less than var2){
@@ -18,4 +20,22 @@ int var3 is var1
 
 if(var1 greater than or equal to var3){
     print("\nvar1 equals var3")
+}
+
+if(f1 less than or equal to f2){
+    print("\nf1 less than or equal to f2")
+    print("\nf1 = ", f1)
+    print("\nf2 = ", f2)
+}
+
+if(var2 greater than var3){
+    print("\n\nvar2 is greater than var3")
+    print("\nvar2 = ", var2)
+    print("\nvar3 = ", var3)
+}
+
+if(var3 equal to var1){
+    print("\n\nvar1 = var3")
+    print("\nvar3 = ", var3)
+    print("\nvar1 = ", var1)
 }

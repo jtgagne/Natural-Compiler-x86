@@ -1,4 +1,5 @@
 package inter;
+import code_generation.ASMGen;
 import code_generation.AssemblyFile;
 import code_generation.Registers;
 import symbols.*;
@@ -50,9 +51,14 @@ public class If extends Stmt {
             emit(expr.toAsmMain());
         }
 
+        String register = expr.getResultRegister(); //Get the register the result of this expression is stored in
+
+        emit(ASMGen.genBranchTo(register));         //emit the branch-to line based on the result in the register
+
         emit(stmt.toAsmMain());
         stmt.gen(label, a);
-        //stmt.gen(0, 0);
+
+        Registers.clearAllRegs();   //Clear all registers
 
         AssemblyFile.addVariables(this.toAsmData());
         AssemblyFile.addConstant(this.toAsmConstants());

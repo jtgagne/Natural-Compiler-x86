@@ -6,13 +6,9 @@
 
 main:
 
-L1:	la	 $a0, CONST1		 #Load an immediate value to register
-	l.d	 $f0, 0($a0)		 #Load the value at the address
-	s.d	 $f0, d1
+L1:null	s.d	 null, d1
 
-L3:	la	 $a0, CONST2		 #Load an immediate value to register
-	l.d	 $f0, 0($a0)		 #Load the value at the address
-	s.d	 $f0, d2
+L3:null	s.d	 null, d2
 
 L4:	li	 $v0,4		#Load the system call to print a string
 	la	 $a0, msg1		#Load the String to be printed
@@ -36,11 +32,11 @@ L6:	li	 $v0,4		#Load the system call to print a string
 	syscall
 
 
-L7:	l.d	 $f0, d1
-	l.d	 $f2, d2
-	add.d	 $f4, $f0, $f2		#add the two registers
+L7:	l.d	 $f2, d1
+	l.d	 $f4, d2
+	add.d	 $f6, $f2, $f4		#add the two registers
 
-	s.d	 $f4, sum
+	s.d	 $f6, sum
 
 L8:	li	 $v0,4		#Load the system call to print a string
 	la	 $a0, msg4		#Load the String to be printed
@@ -51,11 +47,11 @@ L8:	li	 $v0,4		#Load the system call to print a string
 	syscall
 
 
-L9:	l.d	 $f0, d2
-	l.d	 $f2, d1
-	sub.d	 $f4, $f0, $f2		#add the two registers
+L9:	l.d	 $f2, d2
+	l.d	 $f4, d1
+	sub.d	 $f6, $f2, $f4		#add the two registers
 
-	s.d	 $f4, difference
+	s.d	 $f6, difference
 
 L10:	li	 $v0,4		#Load the system call to print a string
 	la	 $a0, msg5		#Load the String to be printed
@@ -76,8 +72,6 @@ difference:	.double	0,0,0
 sum:	.double	0,0,0
 d2:	.double	0,0,0
 d1:	.double	0,0,0
-CONST1:	.double	12.400000
-CONST2:	.double	33.400002
 BOOL_TRUE:	.byte	1
 BOOL_FALSE:	.byte	0
 BOOL_TRUE_STR:	.asciiz	"true"

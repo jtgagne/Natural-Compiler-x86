@@ -1,7 +1,8 @@
 package semantics;
 
+import inter.Constant;
 import inter.Expr;
-import lexer.Token;
+import lexer.*;
 import symbols.Type;
 
 /**
@@ -14,6 +15,36 @@ import symbols.Type;
  */
 public class TypeCasting {
 
+    /**
+     * Cast the values of a constant to a real value
+     * @param id the identifier the constant is being assigned to
+     * @param constant a constant-node
+     * @return
+     */
+    public static Constant castConstantToReal(Expr id, Constant constant){
+        Type type = id.getType();
+        Real real;
+        int value;
+
+        Token token = constant.getToken();
+
+        //obtain the int value from
+        if(token.isNum()){
+            Num num = (Num) token;
+            value = num.value;
+        }else if(token.isChar()){
+            Char character = (Char) token;
+            value = character.value;
+        }else if(token.tag == Tag.TRUE){
+            value = 1;
+        }else { //Tag.FALSE
+            value = 0;
+        }
+
+        real = new Real((float) value);
+        constant = new Constant(real, type);
+        return constant;
+    }
     /**
      * Handle the various casting types
      */

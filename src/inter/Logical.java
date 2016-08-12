@@ -26,8 +26,9 @@ public class Logical extends Expr
 
         mType = check(expr1.getType(), expr2.getType());    //Set mType
 
-        if (mType == null )
+        if (mType == null ){
             error("type error");
+        }
     }
 
     @Override
@@ -37,7 +38,7 @@ public class Logical extends Expr
 
     // Verify both types are bool
     public Type check(Type p1, Type p2) {
-        if ( p1 == Type.Bool && p2 == Type.Bool )
+        if (p1 == Type.Bool && p2 == Type.Bool )
             return Type.Bool;
         else
             return null;

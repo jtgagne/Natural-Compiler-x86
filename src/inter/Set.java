@@ -3,6 +3,9 @@ import code_generation.ASMGen;
 import code_generation.AssemblyFile;
 import code_generation.Registers;
 import information.Printer;
+import lexer.Num;
+import lexer.Real;
+import lexer.Token;
 import semantics.TypeCasting;
 import symbols.*;
 
@@ -24,9 +27,11 @@ public class Set extends Stmt {
         mIdentifier = identifier;
         expr = x;
 
-        if(expr.isConstant() && mIdentifier.mType.isFloatingPoint()){
-            expr.mType = mIdentifier.mType;
-        } else{
+        //Cast the value of a token to real if the expression is constant
+        if(!expr.mToken.isReal() && expr.isConstant() && mIdentifier.mType.isFloatingPoint()){
+            expr = TypeCasting.castConstantToReal(mIdentifier, (Constant) expr);
+        }
+        else if(mIdentifier.mType != expr.mType){
             expr = TypeCasting.updateAssignmentTypes(mIdentifier, expr);
         }
 

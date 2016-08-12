@@ -57,7 +57,8 @@ public class PrintNode extends Stmt {
 
     @Override
     public void gen(int b, int a) {
-        super.gen(b, a);
+        //super.gen(b, a);
+        //emit(genLabel(a) + ":");
         AssemblyFile.addStrings(this.toAsmData());
         AssemblyFile.addToMain(this.toAsmMain());
     }

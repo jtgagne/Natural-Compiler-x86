@@ -1,0 +1,9 @@
+boolean b is false
+
+if(b){
+    print("Hello\n")
+} else {
+    print("World\n")
+}
+
+print("Hello")
