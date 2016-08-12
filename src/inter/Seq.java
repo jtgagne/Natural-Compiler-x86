@@ -22,8 +22,7 @@ public class Seq extends Stmt {
     }
 
     @Override
-    public void gen(int b, int a)
-    {
+    public void gen(int b, int a) {
         if ( stmt1 == Stmt.Null ){
             stmt2.gen(b, a);
             //stmt2.emit(this.toAsmMain());
@@ -34,6 +33,8 @@ public class Seq extends Stmt {
         }
         else {
             int label = newlabel();
+            //emit(genLabel(label));
+            //emit(stmt1.toAsmMain());
             stmt1.gen(b,label);
             emit(String.format("%s:", genLabel(label)));
             stmt2.gen(label,a);

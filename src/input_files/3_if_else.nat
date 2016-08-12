@@ -1,9 +1,10 @@
-boolean b is false
+boolean b is true
 
 if(b){
-    print("Hello\n")
-} else {
+    print("Hello ")
+}
+else {
     print("World\n")
 }
 
-print("Hello")
+print("World")

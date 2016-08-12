@@ -34,25 +34,31 @@ public class Else extends Stmt {
         return true;
     }
 
+
+
     @Override
     public void gen(int b, int a) {
         int label1 = newlabel();   // label1 for stmt1
         int label2 = newlabel();   // label2 for stmt2
-        expr.jumping(0, a);    // fall through to stmt1 on true
+        expr.jumping(0, label2);        // fall through to stmt1 on true
 
-        //setAfter(a);
+        setAfter(label2);
+
         emit(expr.toAsmMain());
 
         String register = expr.getResultRegister();
         emit(ASMGen.genBranchTo(register));
 
         emit(stmt1.toAsmMain());
-        stmt1.gen(label1, a);
+        stmt1.gen(b, label2);
+        emit(String.format("\tj\t %s\n\n", genLabel(a)));
 
-        emit(genLabel(a) + ":");
+        emit(genLabel(label2) + ":");
+
         emit(stmt2.toAsmMain());
         stmt2.gen(label2, a);
 
+        //emit(genLabel(a) + ":");
 
         Registers.clearAllRegs();   //Clear all registers
 
