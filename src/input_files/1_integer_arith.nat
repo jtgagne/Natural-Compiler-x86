@@ -1,7 +1,9 @@
-int var1 is 1
-int var2 is 2
+int var1 is 5
+int var2 is 4
 print("var1 is ", var1)
 print("\nvar2 is ", var2)
 int sum is var1 + var2
 print("\nThe sum of var1 + var2 is ")
 print(sum)
+int product is var1 * var2
+print("\nThe product of var1*var2 = ", product)

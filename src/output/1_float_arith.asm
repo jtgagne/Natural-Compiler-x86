@@ -138,7 +138,7 @@ sum:	.float	0,0,0
 f3:	.float	0,0,0
 f2:	.float	0,0,0
 f1:	.float	0,0,0
-CONST1:	.float	12.400000
+CONST1:	.float	12.000000
 CONST2:	.float	33.400002
 CONST3:	.float	10.000000
 CONST4:	.float	5.000000

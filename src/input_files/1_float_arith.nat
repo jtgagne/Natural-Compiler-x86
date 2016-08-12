@@ -1,4 +1,4 @@
-float f1 is 12.4
+float f1 is 12
 float f2 := 33.4
 float f3 is 10.0
 float sum := f1 + f2 + f3

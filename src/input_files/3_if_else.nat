@@ -1,4 +1,6 @@
 boolean b is true
+int num1 is 5
+int num2 is 6
 
 if(b){
     print("Hello ")
@@ -8,3 +10,9 @@ else {
 }
 
 print("World")
+
+if(num1 greater than num2){
+    print("This should not be printed")
+} else{
+    print("\nnum1 is less than num2")
+}
