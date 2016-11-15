@@ -1,6 +1,5 @@
 package inter;
 import code_generation.ASMGen;
-import code_generation.Registers;
 import lexer.*; import symbols.*;
 
 /**

@@ -1,6 +1,5 @@
 package lexer;
 
-import information.Printer;
 import symbols.Type;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -188,7 +187,7 @@ public class Lexer {
         }
 
         if(isPrintReady){
-            Printer.writeLexerLine(_line, lineCount);
+            //Printer.writeLexerLine(_line, lineCount);
             isPrintReady = false;
             lineCount++;
         }

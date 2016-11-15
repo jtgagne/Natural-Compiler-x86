@@ -46,18 +46,18 @@ public class ASMGen {
     }
 
     public static String genOrExpr(String register1, String register2){
-        mSavedRegister = Registers.getSavedTempReg();
+        //mSavedRegister = RegisterManager.getSavedTempReg();
         return String.format("\tor\t %s, %s, %s\n", mSavedRegister, register1, register2);
     }
 
     public static String genNotExpr(String register1){
-        mSavedRegister = Registers.getTempReg();
+        //mSavedRegister = RegisterManager.getTempReg();
         //StringBuilder sb = new StringBuilder();
         return String.format("\txor\t %s, %s, %s\n", mSavedRegister, register1, register1);
     }
 
     public static String genAndExpr(String register1, String register2){
-        mSavedRegister = Registers.getSavedTempReg();
+        //mSavedRegister = RegisterManager.getSavedTempReg();
         return String.format("\tand\t %s, %s, %s\n", mSavedRegister, register1, register2);
     }
 
@@ -111,7 +111,7 @@ public class ASMGen {
     private static String genIntegerComparison(String reg1, String reg2, Token op){
 
         StringBuilder sb = new StringBuilder();
-        mSavedRegister = Registers.getSavedTempReg();
+        //mSavedRegister = RegisterManager.getSavedTempReg();
 
         switch (op.tag){
             case Tag.LESS:
@@ -164,7 +164,7 @@ public class ASMGen {
 
         Stmt s = Stmt.Enclosing;
         String label = s.getLabelAfter();   //Get the enclosing label of the current statement
-        mSavedRegister = Registers.getTempReg();
+        //mSavedRegister = RegisterManager.getTempReg();
         StringBuilder sb = new StringBuilder();
 
         switch (op.tag){
@@ -225,21 +225,22 @@ public class ASMGen {
         return String.format("CONST%d", ++CONSTANT_COUNT);
     }
 
-    public static String genBooleanTrue(){
-        return "BOOL_TRUE:\t.byte\t1\n";
-    }
-
-    public static String genBooleanFalse(){
-        return "BOOL_FALSE:\t.byte\t0\n";
-    }
-
-    public static String genBooleanTrueStr(){
-        return "BOOL_TRUE_STR:\t.asciiz\t\"true\"\n";
-    }
-
-    public static String genBooleanFalseStr(){
-        return "BOOL_FALSE_STR:\t.asciiz\t\"false\"\n";
-    }
+//    public static String genBooleanTrue(){
+//        return "";
+//        //return "BOOL_TRUE:\t.byte\t1\n";
+//    }
+//
+//    public static String genBooleanFalse(){
+//        return "BOOL_FALSE:\t.byte\t0\n";
+//    }
+//
+//    public static String genBooleanTrueStr(){
+//        return "BOOL_TRUE_STR:\t.asciiz\t\"true\"\n";
+//    }
+//
+//    public static String genBooleanFalseStr(){
+//        return "BOOL_FALSE_STR:\t.asciiz\t\"false\"\n";
+//    }
 
     public static String getStoreType(Type type){
         switch (type.lexeme){
@@ -262,7 +263,7 @@ public class ASMGen {
     public static String getLoadType(Type type){
         switch (type.lexeme){
             case "int":
-                return "lw";
+                return "MOV";
             case "long":
                 return "lw";
             case "float":
@@ -298,7 +299,7 @@ public class ASMGen {
 
         switch (type.lexeme){
             case "int":
-                return String.format("%s:\t.word\t%s\n", name, initialValue);
+                return String.format("%s\tSWORD\t%s\n", name, initialValue);
             case "long":
                 return String.format("%s:\t.word\t%s\n", name, initialValue);
             case "float":
@@ -315,7 +316,7 @@ public class ASMGen {
 
 
     /**
-     * Load an identifier to a register
+     * AsmLoad an identifier to a register
      * @param identifier the identifier object
      * @param register the register to be loaded to
      * @return the assembly code
@@ -326,22 +327,22 @@ public class ASMGen {
         switch (type.lexeme){
             case "int":
                 return String.format(
-                        "\tlw\t %s, %s\n", register, identifier.getName()); //Load int into temp register
+                        "\tMOV\t %s, %s\n", register, identifier.getName()); //AsmLoad int into temp register
             case "long":
                 return String.format(
-                        "\tlw\t %s, %s\n", register, identifier.getName()); //Load int into temp register
+                        "\tlw\t %s, %s\n", register, identifier.getName()); //AsmLoad int into temp register
             case "float":
                 return String.format(
-                        "\tl.s\t %s, %s\n", register, identifier.getName()); //Load float into temp register
+                        "\tl.s\t %s, %s\n", register, identifier.getName()); //AsmLoad float into temp register
             case "double":
                 return String.format(
-                        "\tl.d\t %s, %s\n", register, identifier.getName()); //Load double into temp register
+                        "\tl.d\t %s, %s\n", register, identifier.getName()); //AsmLoad double into temp register
             case "char":
                 return String.format(
-                        "\tlb\t %s, %s\n", register, identifier.getName()); //Load char into temp register
+                        "\tlb\t %s, %s\n", register, identifier.getName()); //AsmLoad char into temp register
             case "boolean":
                 return String.format(
-                        "\tlb\t %s, %s\n", register, identifier.getName()); //Load boolean into temp register
+                        "\tlb\t %s, %s\n", register, identifier.getName()); //AsmLoad boolean into temp register
         }
         return null;
     }
@@ -358,19 +359,19 @@ public class ASMGen {
         switch (type.lexeme){
             case "int":
                 return String.format(
-                        "\tsw\t %s, %s\n\n", register, identifier.getName()); //Load int into temp register
+                        "\tMOV\t %s, %s\n\n", identifier.getName(), register); //AsmLoad int into temp register
             case "long":
                 return String.format(
-                        "\tsw\t %s, %s\n\n", register, identifier.getName()); //Load int into temp register
+                        "\tsw\t %s, %s\n\n", register, identifier.getName()); //AsmLoad int into temp register
             case "float":
                 return String.format(
-                        "\ts.s\t %s, %s\n\n", register, identifier.getName()); //Load float into temp register
+                        "\ts.s\t %s, %s\n\n", register, identifier.getName()); //AsmLoad float into temp register
             case "double":
                 return String.format(
-                        "\ts.d\t %s, %s\n\n", register, identifier.getName()); //Load double into temp register
+                        "\ts.d\t %s, %s\n\n", register, identifier.getName()); //AsmLoad double into temp register
             case "char":
                 return String.format(
-                        "\tsb\t %s, %s\n\n", register, identifier.getName()); //Load char into temp register
+                        "\tsb\t %s, %s\n\n", register, identifier.getName()); //AsmLoad char into temp register
             case "boolean":
                 return String.format(
                         "\tsb\t %s, %s\n\n", register, identifier.getName());
@@ -379,61 +380,4 @@ public class ASMGen {
         return null;
     }
 
-    /**
-     * Generate assembly code for the arithmetic / unary operation
-     * @param operation the operation token
-     * @param saveReg register to save the operation to
-     * @param reg1 first register to be used
-     * @param reg2 second register to be used
-     * @return assembly code for the operation
-     */
-    public static String genMath(Op operation, String saveReg, String reg1, String reg2){
-        Token token = operation.getToken();
-        Type type = operation.getType();
-
-        switch (token.tag){
-
-            //Generate assembly for addition
-            case '+':
-                if(type == Type.Float){
-                    return String.format("\tadd.s\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
-                }
-                else if(type == Type.Double){
-                    return String.format("\tadd.d\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
-                }
-                return String.format("\tadd\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
-
-            //Generate assembly for subtraction
-            case '-':
-                if(type == Type.Float){
-                    return String.format("\tsub.s\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
-                }
-                else if(type == Type.Double){
-                    return String.format("\tsub.d\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
-                }
-                return String.format("\tsub\t %s, %s, %s\t\t#subtract the two registers\n\n", saveReg, reg1, reg2);
-
-            //Generate assembly for addition
-            case '*':
-                if(type == Type.Float){
-                    return String.format("\tmul.s\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
-                }
-                else if(type == Type.Double){
-                    return String.format("\tmul.d\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
-                }
-                return String.format("\tmul\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
-
-            //Generate assembly for subtraction
-            case '/':
-                if(type == Type.Float){
-                    return String.format("\tdiv.s\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
-                }
-                else if(type == Type.Double){
-                    return String.format("\tdiv.d\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
-                }
-                return String.format("\tdiv\t %s, %s, %s\t\t#subtract the two registers\n\n", saveReg, reg1, reg2);
-        }
-
-        return null;
-    }
 }

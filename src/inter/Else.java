@@ -1,7 +1,6 @@
 package inter;
 import code_generation.ASMGen;
 import code_generation.AssemblyFile;
-import code_generation.Registers;
 import symbols.*;
 
 /**
@@ -60,7 +59,7 @@ public class Else extends Stmt {
 
         //emit(genLabel(a) + ":");
 
-        Registers.clearAllRegs();   //Clear all registers
+        //RegisterManager.clearAllRegs();   //Clear all registers
 
         AssemblyFile.addVariables(this.toAsmData());
         AssemblyFile.addConstant(this.toAsmConstants());

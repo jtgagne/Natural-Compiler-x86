@@ -3,7 +3,6 @@ import java.io.*;
 import java.util.ArrayList;
 
 import code_generation.AssemblyFile;
-import information.Printer;
 import lexer.*;
 import symbols.*;
 import inter.*;
@@ -52,7 +51,7 @@ public class Parser {
     private void move() throws IOException {
         look = lex.scan();
         if(look.tag != Tag.END){
-            Printer.writeToken(look);
+            //Printer.writeToken(look);
         }
     }
 
@@ -107,7 +106,7 @@ public class Parser {
         top = savedEnv;
         assert top != null;
         top.generateAsmData();                          //Add all variables in top to the data section
-        AssemblyFile.addDataToFront("\n\t.data\n\n");   //Add '.data' to the beginning of the data string builder
+        //AssemblyFile.addDataToFront("\n\t.data\n\n");   //Add '.data' to the beginning of the data string builder
     }
 
 

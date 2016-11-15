@@ -1,8 +1,8 @@
 package parser;
 
 import code_generation.AssemblyFile;
-import code_generation.Registers;
-import information.Printer;
+// import information.Printer;
+import code_generation.RegisterManager;
 import inter.Node;
 import lexer.Lexer;
 
@@ -27,23 +27,24 @@ public class Test {
 
         String inputPath = path + "/src/input_files";                              // Add the extension to the input_files files directory
         String outputAsmPath = path + "/src/output";
-        String outputPrintPath = path + "/src/intermediate_output";
+        //String outputPrintPath = path + "/src/intermediate_output";
         File folder = new File(inputPath);                                  // Reference the input_files directory
         File[] testFiles = folder.listFiles();                              // Create an array of all files in the input_files directory.
+        RegisterManager registerManager = new RegisterManager();
 
         assert testFiles!=null;
 
         for(File file: testFiles){
             String filePath = file.getPath();                         // Get the path of the first file to be evaluated
 
-            if(!filePath.contains(".nat")) continue;                     // Make sure it is a .nat file
+            if(!filePath.contains("1_boolean_arith.nat")) continue;                     // Make sure it is a .nat file
 
             String contents[] = filePath.split("/");                  // State the name of the file being evaluated
             String fileName = contents[contents.length-1];
 
             AssemblyFile assemblyFile = new AssemblyFile(fileName, outputAsmPath);   //New Assembly File with the name of the file being evaluated
 
-            Printer.setFile(fileName, outputPrintPath);          //Update the file to write to
+            //Printer.setFile(fileName, outputPrintPath);          //Update the file to write to
 
             Lexer.getInstance().openReader(filePath);                 // Open the first file
 
@@ -52,14 +53,14 @@ public class Test {
                 parser.runParser();
 
             } catch (Error e){
-                Printer.writeRuntimeError(fileName, e.toString());
+                //Printer.writeRuntimeError(fileName, e.toString());
             }
 
             Lexer.getInstance().closeReader();
             assemblyFile.generateAsmFile();
-            Registers.clearAllRegs();
+            // RegisterManager.clearAllRegs();
             Node.resetLabels();
-            Printer.close();
+            //Printer.close();
         }
 
     }

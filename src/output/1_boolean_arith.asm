@@ -1,114 +1,96 @@
+INCLUDE C:\masm32\include\masm32rt.inc
+INCLUDE C:\masm32\include\Irvine32.inc
+INCLUDELIB C:\masm32\lib\Irvine32.lib
+INCLUDE C:\masm32\include\debug.inc
+INCLUDELIB C:\masm32\lib\debug.lib
 
-	.text
 
 
-	.globl main
+.data
 
-main:
+sum	SWORD	?
+difference	SWORD	?
+num2	SWORD	?
+num	SWORD	?
+msg1	 BYTE '20 + 10 = ', 0 
+msg2	 BYTE '30 + 10 = ', 0 
+msg3	 BYTE '10 - 20 = ', 0 
+msg4	 BYTE 'hello world mother fucker', 0 
+msg5	 BYTE 'how is you doing today home slice?', 0 
+msg6	 BYTE 'num is: ', 0 
 
-L1:	lb	 $t0, BOOL_TRUE		#Load a boolean value
-	sb	 $t0, isWorking
+; Function prototypes
+WriteString PROTO
+WriteInt PROTO
+Crlf PROTO
 
-L3:	lb	 $t0, BOOL_TRUE		#Load a boolean value
-	sb	 $t0, amHappy
 
-L4:	li	 $v0,4		#Load the system call to print a string
-	la	 $a0, msg1		#Load the String to be printed
-	syscall
+.code
 
-	lb	 $t0, isWorking		#Load the value to be compared
-	beqz	 $t0, L7		#Goto L7 if greater than 0
+	main PROC
 
-L6:	li	 $v0, 4
-	la 	$a0, BOOL_TRUE_STR
-	syscall
-	j	 L8
+L1:
+	MOV	 ax, 20		;Load an immediate value into the register
+	MOV	 num, ax
 
-L7:	li	 $v0, 4
-	la 	 $a0, BOOL_FALSE_STR
-	syscall
-	j	 L8
+L3:
+	MOV	 ax, 10		;Load an immediate value into the register
+	MOV	 num2, ax
 
+L4:
+	MOV	 ax, num
+	MOV	 bx, num2
+	ADD	 ax, bx		 ; add the two registers
+	MOV	 sum, ax
+
+L5:
+	MOV edx, OFFSET msg1
+	CALL WriteString
+ 	MOVSX eax, sum
+	CALL WriteInt
+ 	CALL Crlf
+L6:
+	MOV	 ax, sum
+	MOV	 bx, 10		;Load an immediate value into the register
+	ADD	 ax, bx		 ; add the two registers
+	MOV	 sum, ax
+
+L7:
+	MOV edx, OFFSET msg2
+	CALL WriteString
+ 	MOVSX eax, sum
+	CALL WriteInt
+ 	CALL Crlf
 L8:
-L5:	li	 $v0,4		#Load the system call to print a string
-	la	 $a0, msg2		#Load the String to be printed
-	syscall
+	MOV	 ax, num2
+	MOV	 bx, num
+	SUB	 ax, bx		; subtract the two registers
+	MOV	 difference, ax
 
-	lb	 $t1, amHappy		#Load the value to be compared
-	beqz	 $t1, L11		#Goto L11 if greater than 0
-
-L10:	li	 $v0, 4
-	la 	$a0, BOOL_TRUE_STR
-	syscall
-	j	 L12
-
-L11:	li	 $v0, 4
-	la 	 $a0, BOOL_FALSE_STR
-	syscall
-	j	 L12
-
+L9:
+	MOV edx, OFFSET msg3
+	CALL WriteString
+ 	MOVSX eax, difference
+	CALL WriteInt
+ 	CALL Crlf
+L10:
+	MOV edx, OFFSET msg4
+	CALL WriteString
+	CALL Crlf
+L11:
+	MOV edx, OFFSET msg5
+	CALL WriteString
+	CALL Crlf
 L12:
-L9:	lb	 $t2, isWorking
-	lb	 $t3, amHappy
-	add	 $t4, $t2, $t3		#add the two registers
+	MOV edx, OFFSET msg6
+	CALL WriteString
+ 	MOVSX eax, num
+	CALL WriteInt
+ 	CALL Crlf
+L2:
 
-	sw	 $t4, sum
+	inkey
+	INVOKE ExitProcess, 0
+	main ENDP
+END main
 
-L13:	li	 $v0,4		#Load the system call to print a string
-	la	 $a0, msg3		#Load the String to be printed
-	syscall
-
-	li	 $v0, 1		#Load system call to print long
-	ld	 $a0, sum		#Load the long into a0
-	syscall
-
-
-L14:	lw	 $t0, sum
-	li	 $t1, 1		#Load an immediate value into the register
-	add	 $t2, $t0, $t1		#add the two registers
-
-	sw	 $t2, sum
-
-L15:	li	 $v0,4		#Load the system call to print a string
-	la	 $a0, msg4		#Load the String to be printed
-	syscall
-
-	li	 $v0, 1		#Load system call to print long
-	ld	 $a0, sum		#Load the long into a0
-	syscall
-
-
-L16:	lw	 $t0, sum
-	lb	 $t1, isWorking
-	mul	 $t2, $t0, $t1		#add the two registers
-
-	sw	 $t2, product
-
-L17:	li	 $v0,4		#Load the system call to print a string
-	la	 $a0, msg5		#Load the String to be printed
-	syscall
-
-	li	 $v0, 1		#Load system call to print long
-	ld	 $a0, product		#Load the long into a0
-	syscall
-
-
-L2:	li $v0, 10		#Load system call to exit
-	syscall
-
-
-	.data
-
-product:	.word	0,0,0
-sum:	.word	0,0,0
-amHappy:	.byte	0,0,0
-isWorking:	.byte	0,0,0
-BOOL_TRUE:	.byte	1
-BOOL_FALSE:	.byte	0
-BOOL_TRUE_STR:	.asciiz	"true"
-BOOL_FALSE_STR:	.asciiz	"false"
-msg1:	.asciiz "value of isWorking: "
-msg2:	.asciiz "\nvalue of amHappy: "
-msg3:	.asciiz "\nsum = isWorking + isSick = "
-msg4:	.asciiz "\nsum = sum + 1 = "
-msg5:	.asciiz "\nproduct = sum * isWorking = "

@@ -1,7 +1,5 @@
 package inter;
-import code_generation.Registers;
 import lexer.*;
-import symbols.*;
 import symbols.Type;
 
 /**
@@ -29,6 +27,7 @@ public class Temp extends Expr
     @Override
    public String toString() {
        //return "t" + number;
-       return Registers.getTempReg();
+       //return RegisterManager.getTempReg();
+        return "";
    }
 }

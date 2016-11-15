@@ -1,7 +1,6 @@
 package inter;
 import code_generation.ASMGen;
 import code_generation.AssemblyFile;
-import code_generation.Registers;
 import symbols.*;
 
 /**
@@ -58,7 +57,7 @@ public class If extends Stmt {
         emit(stmt.toAsmMain());
         stmt.gen(label, a);
 
-        Registers.clearAllRegs();   //Clear all registers
+        //RegisterManager.clearAllRegs();   //Clear all registers
 
         AssemblyFile.addVariables(this.toAsmData());
         AssemblyFile.addConstant(this.toAsmConstants());
@@ -90,10 +89,11 @@ public class If extends Stmt {
     }
 
     private String genBoolCompare(){
-        String register = Registers.getTempReg();   //Get a temp reg to compare the values
+        //String register = RegisterManager.getTempReg();   //Get a temp reg to compare the values
         String load = expr.load();
-        String s1 = String.format("\tlb\t %s, BOOL_TRUE\n", register);
-        String s2 = String.format("\tbne\t %s, %s, %s\n\n", register, expr.mRegister, stmt.getLabelAfter());
-        return  load + s1 + s2;
+        //String s1 = String.format("\tlb\t %s, BOOL_TRUE\n", register);
+        //String s2 = String.format("\tbne\t %s, %s, %s\n\n", register, expr.mRegister, stmt.getLabelAfter());
+        //return  load + s1 + s2;
+        return "";
     }
 }

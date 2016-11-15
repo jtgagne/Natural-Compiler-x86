@@ -10,23 +10,6 @@ import java.util.Hashtable;
 public class Type extends Word {
     public int width = 0;          // width is used for storage allocation
 
-    @Override
-    public boolean isType() {
-        return true;
-    }
-
-    @Override
-    public boolean isWord() {
-        return false;
-    }
-
-    public Type(String s, int tag, int w)
-    {
-        super(s, tag);
-        width = w;
-    }
-
-    //TODO: Maybe add tag values for each individual data type?
     // ********************************************************
     // Constants
     // **********************************************************
@@ -38,6 +21,39 @@ public class Type extends Word {
             Char    = new Type( "char",  Tag.CHAR, 1 ),
             Bool    = new Type( "boolean",  Tag.BOOL, 1 );
 
+    @Override
+    public boolean isType() {
+        return true;
+    }
+
+    @Override
+    public boolean isWord() {
+        return false;
+    }
+
+    public Type(String s, int tag, int w) {
+        super(s, tag);
+        width = w;
+    }
+
+    public String toAsmType(){
+        switch (this.tag){
+            case Tag.INT:
+                return "SWORD";
+            case Tag.LONG:
+                return "SDWORD";
+            case Tag.FLOAT:
+                return "REAL4";
+            case Tag.DOUBLE:
+                return "REAL8";
+            case Tag.CHAR:
+                return "BYTE";
+            case Tag.BOOL:
+                return "BYTE";
+            default:
+                return String.format("\nType error near: line %d\n", Lexer.lineCount);
+        }
+    }
 
     /**
      * Call to reserve the various data types.
@@ -66,9 +82,7 @@ public class Type extends Word {
     // **********************************************************
     // Numeric type precdence float >> int >> char
     // **********************************************************
-    public static Type max(Type p1, Type p2 )
-    {
-
+    public static Type max(Type p1, Type p2 ) {
         if ( p1 == Type.Double   || p2 == Type.Double   )
             return Type.Double;
 
@@ -107,5 +121,6 @@ public class Type extends Word {
     public boolean isFloatingPoint(){
         return this == Type.Float || this == Type.Double;
     }
+
 }
 

@@ -1,10 +1,15 @@
-boolean isWorking is true
-boolean amHappy is true
-print("value of isWorking: ", isWorking)
-print("\nvalue of amHappy: ", amHappy)
-int sum is isWorking + amHappy
-print("\nsum = isWorking + isSick = ", sum)
-sum is sum + 1
-print("\nsum = sum + 1 = ", sum)
-int product := sum * isWorking
-print("\nproduct = sum * isWorking = ", product)
+int num is 20
+int num2 is 10
+int difference
+int sum is num + num2
+print("20 + 10 = ", sum)
+
+sum is sum + 10
+print("30 + 10 = ", sum)
+
+difference is num2 - num
+print("10 - 20 = ", difference)
+
+print("hello world mother fucker")
+print("how is you doing today home slice?")
+print("num is: ", num)

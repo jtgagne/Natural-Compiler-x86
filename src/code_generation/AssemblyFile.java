@@ -5,6 +5,7 @@ import inter.Stmt;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.Hashtable;
 
 /**
  * A Class to handle the assembly file generation
@@ -13,11 +14,13 @@ import java.io.PrintWriter;
 public class AssemblyFile {
 
     private static StringBuilder mHeader;
-    private static StringBuilder mMain;
+    private static StringBuilder mPrototypes;
     private static StringBuilder mData;
+    private static StringBuilder mMain;
     private static StringBuilder mVariables;
     private static StringBuilder mStrings;
     private static StringBuilder mConstants;
+    private static Hashtable<String, String> mRequiredProtos;
     private static String mOutputDirectory;
     private static String mFileName;
     private static File mFile;
@@ -32,16 +35,43 @@ public class AssemblyFile {
         mFileName = split[0] + ".asm";
         mOutputDirectory = outputPath;
         mHeader = new StringBuilder();
-        mMain = new StringBuilder();
         mData = new StringBuilder();
+        mPrototypes = new StringBuilder();
+        mRequiredProtos = new Hashtable<>();
+        mMain = new StringBuilder();
         mVariables = new StringBuilder();
         mStrings = new StringBuilder();
         mConstants = new StringBuilder();
-        addToHeader("\n\t.text\n\n");
-        addToHeader("\n\t.globl main\n\n");
-        addToMain("main:\n\n");
+        initHeader();
+        initMain();
+        //addToHeader("\n\t.text\n\n");
+        //addToHeader("\n\t.globl main\n\n");
+        //addToMain("main:\n\n");
         setFile(mFileName);
     }
+
+    public static void addProto(String proto){
+        if(!mRequiredProtos.contains(proto)){
+            mRequiredProtos.put(proto, proto);
+            mPrototypes.append(proto);
+        }
+    }
+
+    private static void initHeader(){
+        addToHeader("INCLUDE C:\\masm32\\include\\masm32rt.inc\n");
+        addToHeader("INCLUDE C:\\masm32\\include\\Irvine32.inc\n");
+        addToHeader("INCLUDELIB C:\\masm32\\lib\\Irvine32.lib\n");
+        addToHeader("INCLUDE C:\\masm32\\include\\debug.inc\n");
+        addToHeader("INCLUDELIB C:\\masm32\\lib\\debug.lib\n");
+        addToHeader("\n\n\n.data\n\n");
+    }
+
+    private static void initMain(){
+        mMain.append("\n\n.code\n\n");
+        mMain.append("\tmain PROC\n\n");
+    }
+
+
 
     private void setFile( String fileName ){
         try{
@@ -105,25 +135,26 @@ public class AssemblyFile {
      */
     public void generateAsmFile(){
         String endLabel = Stmt.labelAfter;
-        mMain.append("\tli $v0, 10\t\t#Load system call to exit\n");
-        mMain.append("\tsyscall\n\n");
-        mConstants.append(ASMGen.genBooleanTrue());
-        mConstants.append(ASMGen.genBooleanFalse());
-        mConstants.append(ASMGen.genBooleanTrueStr());
-        mConstants.append(ASMGen.genBooleanFalseStr());
+        mMain.append("\n\n\tinkey\n");
+        mMain.append("\tINVOKE ExitProcess, 0\n");
+        mMain.append("\tmain ENDP\n");
+        mMain.append("END main\n\n");
         _writer.write(mHeader.toString());
-        _writer.write(mMain.toString());
         _writer.write(mData.toString());
         _writer.write(mVariables.toString());
         _writer.write(mConstants.toString());
         _writer.write(mStrings.toString());
+        _writer.write("\n; Function prototypes\n");
+        _writer.write(mPrototypes.toString());
+        _writer.write(mMain.toString());
         _writer.close();
         mHeader = null;
-        mMain = null;
         mData = null;
+        mPrototypes = null;
         mVariables = null;
         mConstants = null;
         mStrings = null;
+        mMain = null;
         Node.resetLabels();
         ASMGen.resetConstantCount();
         ASMGen.resetLabelCount();

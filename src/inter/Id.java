@@ -1,7 +1,7 @@
 package inter;
 import code_generation.ASMGen;
-import code_generation.Registers;
-import information.Printer;
+import code_generation.Register;
+import code_generation.RegisterManager;
 import lexer.*;
 import symbols.*;
 
@@ -61,7 +61,7 @@ public class Id extends Expr {
      */
     @Override
     public String toAsmData() {
-        return ASMGen.toData(this, "0,0,0"); //Gen the data declaration with default initial value
+        return ASMGen.toData(this, "?"); //Gen the data declaration with default initial value
     }
 
     @Override
@@ -70,18 +70,19 @@ public class Id extends Expr {
     }
 
     /**
-     * Load this identifier into memory
+     * AsmLoad this identifier into memory
      * @return assembly code
      */
     @Override
     public String load() {
         //Set the appropriate register value before generating assembly
         if(mType == Type.Float){
-            mRegister = Registers.getFloatingPointReg();
+            //mRegister = RegisterManager.getFloatingPointReg();
         } else if (mType == Type.Double){
-            mRegister = Registers.getDoubleReg();
+            //mRegister = RegisterManager.getDoubleReg();
         } else{
-            mRegister = Registers.getTempReg();    //Set the output register
+            Register register = RegisterManager.getGeneralPurpose16();
+            mRegister = register.toString();    //Set the output register
         }
         return ASMGen.loadVar(this, mRegister);
     }

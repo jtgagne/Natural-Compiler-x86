@@ -1,6 +1,6 @@
 package inter;
 import code_generation.ASMGen;
-import code_generation.Registers;
+import code_generation.RegisterManager;
 import lexer.*;
 import symbols.*;
 
@@ -113,34 +113,34 @@ public class Constant extends Expr {
 
        switch (mType.lexeme){
          case "float":
-               mRegister = Registers.getFloatingPointReg();
-               sb.append(String.format("\tla\t $a0, %s\t\t #Load an immediate value to register\n",identifier));
-               sb.append(String.format("\tl.s\t %s, 0($a0)\t\t #Load the value at the address\n", mRegister));
+               //mRegister = RegisterManager.getFloatingPointReg();
+               sb.append(String.format("\tla\t $a0, %s\t\t ; AsmLoad an immediate value to register\n",identifier));
+               sb.append(String.format("\tl.s\t %s, 0($a0)\t\t ; AsmLoad the value at the address\n", mRegister));
                return sb.toString();
          case "double":
-               mRegister = Registers.getDoubleReg();   //Take up two registers
-               sb.append(String.format("\tla\t $a0, %s\t\t #Load an immediate value to register\n",identifier));
-               sb.append(String.format("\tl.d\t %s, 0($a0)\t\t #Load the value at the address\n", mRegister));
+               //mRegister = RegisterManager.getDoubleReg();   //Take up two registers
+               sb.append(String.format("\tla\t $a0, %s\t\t #AsmLoad an immediate value to register\n",identifier));
+               sb.append(String.format("\tl.d\t %s, 0($a0)\t\t #AsmLoad the value at the address\n", mRegister));
                return sb.toString();
          case "char":
-               String tempReg = Registers.getTempReg();
-               mRegister = Registers.getTempReg();
+               //String tempReg = RegisterManager.getTempReg();
+               //mRegister = RegisterManager.getTempReg();
                sb = new StringBuilder();
-               sb.append(String.format("\tla\t %s, %s\t\t\n", tempReg, identifier));
-               sb.append(String.format("\tlb\t %s, 0(%s)\t\t#Load an immediate value to register\n", mRegister, tempReg));
+               //sb.append(String.format("\tla\t %s, %s\t\t\n", tempReg, identifier));
+               //sb.append(String.format("\tlb\t %s, 0(%s)\t\t#AsmLoad an immediate value to register\n", mRegister, tempReg));
                return sb.toString();
          case "int":
-               mRegister = Registers.getTempReg();
+               mRegister = RegisterManager.getGeneralPurpose16().toString();
                num = (Num) token;
-               return String.format("\tli\t %s, %d\t\t#Load an immediate value into the register\n", mRegister, num.value); //Load int into temp register
+               return String.format("\tMOV\t %s, %d\t\t;Load an immediate value into the register\n", mRegister, num.value); //AsmLoad int into temp register
          case "long":
-               mRegister = Registers.getTempReg();
+               //mRegister = RegisterManager.getTempReg();
                num = (Num) token;
-               return String.format("\tli\t %s, %s\t\t#Load an immediate value into the register\n", mRegister, num.value); //Load int into temp register
+               return String.format("\tli\t %s, %s\t\t#AsmLoad an immediate value into the register\n", mRegister, num.value); //AsmLoad int into temp register
          case "boolean":
-               mRegister = Registers.getTempReg();
+               //mRegister = RegisterManager.getTempReg();
                mToken.setRegister(mRegister);
-               return String.format("\tlb\t %s, %s\t\t#Load a boolean value\n", mRegister, identifier);
+               return String.format("\tlb\t %s, %s\t\t#AsmLoad a boolean value\n", mRegister, identifier);
       }
       return ERROR + " generating assembly.\n";
    }

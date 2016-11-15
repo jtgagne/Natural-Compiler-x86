@@ -1,6 +1,5 @@
 package lexer;
 
-import code_generation.Registers;
 import symbols.Type;
 
 /**

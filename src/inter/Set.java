@@ -1,11 +1,7 @@
 package inter;
 import code_generation.ASMGen;
 import code_generation.AssemblyFile;
-import code_generation.Registers;
-import information.Printer;
-import lexer.Num;
-import lexer.Real;
-import lexer.Token;
+import code_generation.RegisterManager;
 import semantics.TypeCasting;
 import symbols.*;
 
@@ -67,7 +63,7 @@ public class Set extends Stmt {
      */
     @Override
     public void gen(int b, int a) {
-        emit( this.toAsmMain() );
+        emit( "\n" + this.toAsmMain());
         AssemblyFile.addVariables(this.toAsmData());
         AssemblyFile.addConstant(this.toAsmConstants());
     }
@@ -78,8 +74,8 @@ public class Set extends Stmt {
      */
     @Override
     public String toAsmMain() {
-        String code = genAssignment();   //Generate assembly
-        Registers.clearAllRegs();        //Clear the used registers
+        String code = genAssignment();         //Generate assembly
+        RegisterManager.clearAllRegisters();        //Clear the used registers
         return code;
     }
 

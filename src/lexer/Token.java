@@ -11,6 +11,7 @@ import symbols.Type;
  * Compiler Design - Summer 2016
  */
 public class Token {
+    public enum TokenType {NONE, CHAR, NUM, PHRASE, PRINT, REAL, WORD}
     public final int tag;
     public final int tag2;
     private static int immediate = 0;

@@ -1,6 +1,7 @@
 package inter;
 import code_generation.ASMGen;
-import code_generation.Registers;
+import code_generation.AsmArith;
+import code_generation.RegisterManager;
 import lexer.*;
 import symbols.*;
 
@@ -63,22 +64,23 @@ public class Arith extends Op {
    public String toAsmMain() {
 
        StringBuilder sb = new StringBuilder();
-       sb.append(expr1.toAsmMain());    //Load the first expression
-       sb.append(expr2.toAsmMain());    //Load the second expression
+       sb.append(expr1.toAsmMain());    //AsmLoad the first expression
+       sb.append(expr2.toAsmMain());    //AsmLoad the second expression
 
        reg1 = expr1.getResultRegister();
        reg2 = expr2.getResultRegister();
+       mRegister = reg1;
 
        //The result register (member variable of Expr)
        if(expr1.mType == Type.Double || expr2.mType == Type.Double){
-           mRegister = Registers.getDoubleReg(); //Set the
+           //mRegister = RegisterManager.getDoubleReg(); //Set the
        } else if(expr1.mType == Type.Float){
-           mRegister = Registers.getFloatingPointReg();
+           //mRegister = RegisterManager.getFloatingPointReg();
        } else{
-           mRegister = Registers.getTempReg();
+           //mRegister = RegisterManager.getGeneralPurpose16().toString();
        }
 
-       sb.append(ASMGen.genMath(this, mRegister, reg1, reg2));  //Generate Assembly for a mathematical operation
+       sb.append(AsmArith.genMath(this, mRegister, reg1, reg2));  //Generate Assembly for a mathematical operation
 
        return sb.toString();
    }

@@ -2,7 +2,7 @@ package symbols;
 import java.util.*;
 
 import code_generation.AssemblyFile;
-import information.Printer;
+//import information.Printer;
 import lexer.*; import inter.*;
 
 /**
@@ -28,7 +28,7 @@ public class Env {
 	public Env(Env n) {
 		table = new Hashtable();
 		prev = n;
-		Printer.writeEnvInfo();
+		//Printer.writeEnvInfo();
 		mKeys = new ArrayList<>();
 		if(declaredVars == null){
 			declaredVars = new Hashtable();

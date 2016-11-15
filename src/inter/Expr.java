@@ -77,16 +77,16 @@ public class Expr extends Node {
 
     public void emitjumps(String test, int t, int f) {
         if( t != 0 && f != 0 ) {
-            emit("L" + t + ":");
+            emit("L" + t + ":\n");
             emit(test);
-            emit("L" + f + ":" + test);
+            emit("L" + f + ":\n" + test);
         }
         else if( t != 0 ){
-            emit("L" + t + ":" + test);
+            emit("L" + t + ":\n" + test);
         }
 
         else if( f != 0 ){
-            //emit("L" + f + ":");
+           // emit("L" + f + ":\n");
         }
     }
 
