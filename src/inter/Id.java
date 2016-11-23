@@ -1,7 +1,5 @@
 package inter;
-import code_generation.ASMGen;
-import code_generation.Register;
-import code_generation.RegisterManager;
+import code_generation.*;
 import lexer.*;
 import symbols.*;
 
@@ -16,6 +14,7 @@ public class Id extends Expr {
 
     public int mOffset;            //relative address
     private final Word mWord;
+    private final String mAsmId;
 
     //Member variables inherited from Expr:
     //Member variables for an expression
@@ -28,6 +27,7 @@ public class Id extends Expr {
         mOffset = offset;
         mWord = identifier;
         mType = type;
+        mAsmId = String.format("%s%s", this.genVarName(), mWord.lexeme);
     }
 
     public String toString() {
@@ -44,7 +44,8 @@ public class Id extends Expr {
      * @return name
      */
     public String getName(){
-        return mWord.lexeme;
+        //return mWord.lexeme;
+        return mAsmId;
     }
 
     public String getTypeStr() {
@@ -61,7 +62,7 @@ public class Id extends Expr {
      */
     @Override
     public String toAsmData() {
-        return ASMGen.toData(this, "?"); //Gen the data declaration with default initial value
+        return ASMGen.genDeclaration(this, "?"); //Gen the data declaration with default initial value
     }
 
     @Override
@@ -75,18 +76,35 @@ public class Id extends Expr {
      */
     @Override
     public String load() {
+        Register register;
+
         //Set the appropriate register value before generating assembly
-        if(mType == Type.Float){
-            //mRegister = RegisterManager.getFloatingPointReg();
-        } else if (mType == Type.Double){
-            //mRegister = RegisterManager.getDoubleReg();
+//        if(mType == Type.Float){
+//            register =
+//            //mRegister = RegisterManager.getFloatingPointReg();
+//        } else if (mType == Type.Double){
+//            //mRegister = RegisterManager.getDoubleReg();
+//        }
+
+        if(mType == Type.Long) {
+            register = RegisterManager.getGeneralPurpose32();   // Get 32 bit register
         } else{
-            Register register = RegisterManager.getGeneralPurpose16();
-            mRegister = register.toString();    //Set the output register
+            register = RegisterManager.getGeneralPurpose16();   // Get 16 bit register
         }
-        return ASMGen.loadVar(this, mRegister);
+        mRegister = register.toString();    //Set the output register
+        return AsmLoad.loadVariable(this, mRegister);
     }
 
+    public String loadForArithmetic(){
+        Register register;
+        if(mType == Type.Long) {
+            register = RegisterManager.getGeneralPurpose32();   // Get 32 bit register
+        } else{
+            register = RegisterManager.getGeneralPurpose16();   // Get 16 bit register
+        }
+        mRegister = register.toString();
+        return AsmLoad.loadVariableForArith(this, mRegister);
+    }
     @Override
     public String getResultRegister() {
         return super.getResultRegister();

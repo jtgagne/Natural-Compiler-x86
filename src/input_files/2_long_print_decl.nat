@@ -1,0 +1,12 @@
+long num1 is 100000
+long num2 is 200000
+long num3 is 300000
+long sum is num1 + num2 + num3
+long difference is num1 - num2
+
+print("why is this not running debug mode?")
+print("The first long variable: ", num1)
+print("The second long variable: ", num2)
+print("The third long variable: ", num3)
+print("The sum of the long variable: ", sum)
+print("num1 - num2 = ", difference)

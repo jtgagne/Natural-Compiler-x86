@@ -17,7 +17,8 @@ import symbols.Type;
 public class Node {
 
     private static int labels = 0;
-    private static int msg = 0;
+    private static int msg = 0;     // Used to number identifiers for string messages
+    private static int var = 0;     // Used to number general variables
 
     int lexline = 0;
 
@@ -39,6 +40,15 @@ public class Node {
      */
     public String genMessage(){
         return String.format("msg%d", ++msg);
+    }
+
+    /**
+     * This is being appended to the front of all variable declarations to ensure the
+     * assembly will not mistake a Natural variable with an x86 variable/constant
+     * @return the leading tag of a variable
+     */
+    public String genVarName(){
+        return String.format("var%d_", ++var);
     }
 
 

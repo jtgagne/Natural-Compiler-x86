@@ -1,0 +1,9 @@
+char c is 'c'
+char d is 'd'
+int sum is c + d
+int difference is c - d
+
+print("The value of c: ", c)
+print("The value of d: ", d)
+print("The sum of c + d = ", sum)
+print("The difference of c - d = ", difference)

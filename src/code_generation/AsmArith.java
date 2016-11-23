@@ -13,7 +13,6 @@ public class AsmArith {
     /**
      * Generate assembly code for the arithmetic / unary operation
      * @param operation the operation token
-     * @param saveReg register to save the operation to
      * @param reg1 first register to be used
      * @param reg2 second register to be used
      * @return assembly code for the operation
@@ -24,54 +23,61 @@ public class AsmArith {
 
         switch (token.tag){
 
-            //Generate assembly for addition
+            // Generate assembly for addition
             case '+':
-                return genAddition(type, saveReg, reg1, reg2);
+                return genAddition(type, reg1, reg2);
 
-            //Generate assembly for subtraction
+            // Generate assembly for subtraction
             case '-':
                 return genSubtraction(type, saveReg, reg1, reg2);
-
-            //Generate assembly for addition
-            case '*':
-                if(type == Type.Float){
-                    return String.format("\tmul.s\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
-                }
-                else if(type == Type.Double){
-                    return String.format("\tmul.d\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
-                }
-                return String.format("\tmul\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
-
-            //Generate assembly for subtraction
-            case '/':
-                if(type == Type.Float){
-                    return String.format("\tdiv.s\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
-                }
-                else if(type == Type.Double){
-                    return String.format("\tdiv.d\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
-                }
-                return String.format("\tdiv\t %s, %s, %s\t\t#subtract the two registers\n\n", saveReg, reg1, reg2);
+//
+//            //Generate assembly for addition
+//            case '*':
+//                if(type == Type.Float){
+//                    return String.format("\tmul.s\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
+//                }
+//                else if(type == Type.Double){
+//                    return String.format("\tmul.d\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
+//                }
+//                return String.format("\tmul\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
+//
+//            //Generate assembly for subtraction
+//            case '/':
+//                if(type == Type.Float){
+//                    return String.format("\tdiv.s\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
+//                }
+//                else if(type == Type.Double){
+//                    return String.format("\tdiv.d\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
+//                }
+//                return String.format("\tdiv\t %s, %s, %s\t\t#subtract the two registers\n\n", saveReg, reg1, reg2);
         }
         return null;
     }
 
-    private static String genAddition(Type type, String saveReg, String reg1, String reg2){
-        if(type == Type.Float){
-            return String.format("\tadd.s\t %s, %s, %s\t\t; add the two registers\n", saveReg, reg1, reg2);
-        }
-        else if(type == Type.Double){
-            return String.format("\tadd.d\t %s, %s, %s\t\t#add the two registers\n", saveReg, reg1, reg2);
-        }
+    /**
+     * Generate the x86 code to add values in 2 registers
+     * @param type the type of the variable
+     * @param reg1 the register containing the first value
+     * @param reg2 the register containing the second value
+     * @return the x86 code to be assembled
+     */
+    private static String genAddition(Type type, String reg1, String reg2){
+//        if(type == Type.Float){
+//            return String.format("\tadd.s\t %s, %s, %s\t\t; add the two registers\n", saveReg, reg1, reg2);
+//        }
+//        else if(type == Type.Double){
+//            return String.format("\tadd.d\t %s, %s, %s\t\t#add the two registers\n", saveReg, reg1, reg2);
+//        }
         return String.format("\tADD\t %s, %s\t\t ; add the two registers\n", reg1, reg2);
     }
 
     private static String genSubtraction(Type type, String saveReg, String reg1, String reg2){
-        if(type == Type.Float){
-            return String.format("\tsub.s\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
-        }
-        else if(type == Type.Double){
-            return String.format("\tsub.d\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
-        }
+//        if(type == Type.Float){
+//            return String.format("\tsub.s\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
+//        }
+//        else if(type == Type.Double){
+//            return String.format("\tsub.d\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
+//        }
         return String.format("\tSUB\t %s, %s\t\t; subtract the two registers\n", reg1, reg2);
     }
 }

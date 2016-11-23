@@ -10,6 +10,5 @@ print("30 + 10 = ", sum)
 difference is num2 - num
 print("10 - 20 = ", difference)
 
-print("hello world mother fucker")
-print("how is you doing today home slice?")
+print("hello world")
 print("num is: ", num)

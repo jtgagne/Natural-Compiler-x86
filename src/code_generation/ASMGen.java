@@ -285,7 +285,7 @@ public class ASMGen {
      * @param initialValue the initial value
      * @return data string declaration
      */
-    public static String toData(Id identifier, String initialValue){
+    public static String genDeclaration(Id identifier, String initialValue){
         Type type = identifier.getType();
         String name = identifier.getName();
         Token token = identifier.getToken();
@@ -301,53 +301,23 @@ public class ASMGen {
             case "int":
                 return String.format("%s\tSWORD\t%s\n", name, initialValue);
             case "long":
-                return String.format("%s:\t.word\t%s\n", name, initialValue);
+                return String.format("%s\tSDWORD\t%s\n", name, initialValue);
+            case "char":
+                return String.format("%s\tBYTE\t%s\n", name, initialValue);
+            case "boolean":
+                return String.format("%s\tBYTE\t%s\n", name, initialValue);
             case "float":
                 return String.format("%s:\t.float\t%s\n", name, initialValue);
             case "double":
                 return String.format("%s:\t.double\t%s\n", name, initialValue);
-            case "char":
-                return String.format("%s:\t.byte\t%s\n", name, initialValue);
-            case "boolean":
-                return String.format("%s:\t.byte\t%s\n", name, initialValue);
         }
         return null;
     }
 
 
-    /**
-     * AsmLoad an identifier to a register
-     * @param identifier the identifier object
-     * @param register the register to be loaded to
-     * @return the assembly code
-     */
-    public static String loadVar(Id identifier, String register){
-        Type type = identifier.getType();
-
-        switch (type.lexeme){
-            case "int":
-                return String.format(
-                        "\tMOV\t %s, %s\n", register, identifier.getName()); //AsmLoad int into temp register
-            case "long":
-                return String.format(
-                        "\tlw\t %s, %s\n", register, identifier.getName()); //AsmLoad int into temp register
-            case "float":
-                return String.format(
-                        "\tl.s\t %s, %s\n", register, identifier.getName()); //AsmLoad float into temp register
-            case "double":
-                return String.format(
-                        "\tl.d\t %s, %s\n", register, identifier.getName()); //AsmLoad double into temp register
-            case "char":
-                return String.format(
-                        "\tlb\t %s, %s\n", register, identifier.getName()); //AsmLoad char into temp register
-            case "boolean":
-                return String.format(
-                        "\tlb\t %s, %s\n", register, identifier.getName()); //AsmLoad boolean into temp register
-        }
-        return null;
-    }
 
     /**
+     * TODO: reduce like statements!!!!
      * Store a register value at the address of an identifier
      * @param identifier the identifier object
      * @param register the register to be loaded from
@@ -362,19 +332,21 @@ public class ASMGen {
                         "\tMOV\t %s, %s\n\n", identifier.getName(), register); //AsmLoad int into temp register
             case "long":
                 return String.format(
-                        "\tsw\t %s, %s\n\n", register, identifier.getName()); //AsmLoad int into temp register
+                        "\tMOV\t %s, %s\n\n", identifier.getName(), register); //AsmLoad int into temp register
+            case "char":
+                return String.format(
+                        "\tMOV\t %s, %s\n\n", identifier.getName(), register); //AsmLoad char into temp register
+            case "boolean":
+                return String.format(
+                        "\tMOV\t %s, %s\n\n", identifier.getName(), register);
+
             case "float":
                 return String.format(
                         "\ts.s\t %s, %s\n\n", register, identifier.getName()); //AsmLoad float into temp register
             case "double":
                 return String.format(
                         "\ts.d\t %s, %s\n\n", register, identifier.getName()); //AsmLoad double into temp register
-            case "char":
-                return String.format(
-                        "\tsb\t %s, %s\n\n", register, identifier.getName()); //AsmLoad char into temp register
-            case "boolean":
-                return String.format(
-                        "\tsb\t %s, %s\n\n", register, identifier.getName());
+
 
         }
         return null;

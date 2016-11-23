@@ -116,6 +116,38 @@ public class Register {
         table.put(ESP, false);
     }
 
+    /**
+     * Adds register name to register values
+     */
+    public static void reserveNames(Hashtable<String, Register> table){
+        table.put(EAX.toString(), EAX);
+        table.put(EBX.toString(), EBX);
+        table.put(ECX.toString(), ECX);
+        table.put(EDX.toString(), EDX);
+        table.put(EDI.toString(), EDI);
+        table.put(ESI.toString(), ESI);
+        table.put(EBP.toString(), EBP);
+        table.put(ESP.toString(), ESP);
+
+        table.put(AX.toString(), AX);
+        table.put(BX.toString(), BX);
+        table.put(CX.toString(), CX);
+        table.put(DX.toString(), DX);
+        table.put(SI.toString(), SI);
+        table.put(DI.toString(), DI);
+        table.put(BP.toString(), BP);
+        table.put(SP.toString(), SP);
+
+        table.put(AH.toString(), AH);
+        table.put(AL.toString(), AL);
+        table.put(BH.toString(), BH);
+        table.put(BL.toString(), BL);
+        table.put(CH.toString(), CH);
+        table.put(CL.toString(), CL);
+        table.put(DH.toString(), DH);
+        table.put(DL.toString(), DL);
+    }
+
     @Override
     public String toString() {
         return this.name;

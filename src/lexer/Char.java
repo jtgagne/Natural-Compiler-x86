@@ -29,9 +29,9 @@ public class Char extends Token{
     }
     @Override
     public String toAsmConstant() {
-        return String.format("%s:\t.byte\t\'%s\'\n", constantId, value);
+        //return String.format("%s\tBYTE\t\'%s\'\n", constantId, value);
+        return super.toAsmConstant();
     }
-
 
     @Override
     public String getConstantId() {

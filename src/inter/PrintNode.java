@@ -83,7 +83,7 @@ public class PrintNode extends Stmt {
 
     /**
      * Returns the assembly code that will call the print value.
-     * @return a string containing the ppropriate assembly code to be added to the main
+     * @return a string containing the appropriate assembly code to be added to the main
      */
     @Override
     public String toAsmMain(){

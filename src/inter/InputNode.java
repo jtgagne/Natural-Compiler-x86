@@ -1,5 +1,6 @@
 package inter;
 
+import code_generation.AsmInput;
 import code_generation.AssemblyFile;
 import lexer.Print;
 import lexer.Token;
@@ -60,7 +61,8 @@ public class InputNode extends Stmt {
      */
     @Override
     public String toAsmMain() {
-        return String.format("%s %s", mPrompt.toAsmMain(), genInputAsm());
+        Id id = (Id) mExpr;
+        return String.format("%s", AsmInput.getInputString(mPrompt, id));
     }
 
     @Override

@@ -1,0 +1,8 @@
+int input1
+int input2
+print("Enter two whole numbers to find the sum")
+input("Number 1: ", input1)
+input("Number 2: ", input2)
+
+int sum is input1 + input2
+print("The sum is: ", sum)

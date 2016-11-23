@@ -44,12 +44,13 @@ public class AssemblyFile {
         mConstants = new StringBuilder();
         initHeader();
         initMain();
-        //addToHeader("\n\t.text\n\n");
-        //addToHeader("\n\t.globl main\n\n");
-        //addToMain("main:\n\n");
         setFile(mFileName);
     }
 
+    /**
+     * Prote strings should be in the following format: ProtoName PROTO
+     * @param proto the prototype function to be called
+     */
     public static void addProto(String proto){
         if(!mRequiredProtos.contains(proto)){
             mRequiredProtos.put(proto, proto);
@@ -63,6 +64,7 @@ public class AssemblyFile {
         addToHeader("INCLUDELIB C:\\masm32\\lib\\Irvine32.lib\n");
         addToHeader("INCLUDE C:\\masm32\\include\\debug.inc\n");
         addToHeader("INCLUDELIB C:\\masm32\\lib\\debug.lib\n");
+        addToHeader("INCLUDE C:\\masm32\\naturalMacros\\naturalMacros.asm");
         addToHeader("\n\n\n.data\n\n");
     }
 
@@ -137,16 +139,19 @@ public class AssemblyFile {
         String endLabel = Stmt.labelAfter;
         mMain.append("\n\n\tinkey\n");
         mMain.append("\tINVOKE ExitProcess, 0\n");
-        mMain.append("\tmain ENDP\n");
-        mMain.append("END main\n\n");
+        mMain.append("\tmain ENDP\n");              // End the main procedure
+        //mMain.append("END main\n\n");
         _writer.write(mHeader.toString());
         _writer.write(mData.toString());
         _writer.write(mVariables.toString());
         _writer.write(mConstants.toString());
         _writer.write(mStrings.toString());
-        _writer.write("\n; Function prototypes\n");
+        _writer.write("\n\n;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n");
+        _writer.write(";; Function prototypes\n");
+        _writer.write(";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n");
         _writer.write(mPrototypes.toString());
         _writer.write(mMain.toString());
+        _writer.write("\n\nEND main");
         _writer.close();
         mHeader = null;
         mData = null;

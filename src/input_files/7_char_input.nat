@@ -1,0 +1,11 @@
+char a
+char b
+print("Enter two characters to find the sum.")
+input("First char ", a)
+input("Second char ", b)
+
+int sum is a + b
+print("The first char is: ", a)
+print("The second char is: ", b)
+print("The sum is: ", sum)
+

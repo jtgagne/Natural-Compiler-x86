@@ -43,7 +43,7 @@ public class AsmPrint {
      */
     public static String genNewLine(){
         AssemblyFile.addProto("Crlf PROTO\n");
-        return "\tCALL Crlf\n";
+        return "\tCALL Crlf\n\n";
     }
 
     public static String genPrintIdentifier(PrintNode printNode){
@@ -53,22 +53,72 @@ public class AsmPrint {
             // Ints are stored as a SWORD
             case "int":
                 return genIntPrint(id);
+            case "long":
+                return genIntPrint(id);
+            case "char":
+                return genPrintChar(id);
+            case "boolean":
+                return printBool(id);
             default:
                 return "";
         }
     }
 
+    /**
+     * Generate the code to call the mPrintBoolean macro function
+     * @param id the identifier of the boolean variable
+     * @return the string containing the assembly code
+     */
+    private static String printBool(Id id){
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("\t%s <%s>\n", Macros.PRINT_BOOL, id.getName()));
+        return sb.toString();
+    }
+
+    /**
+     * The char to be printed must be loaded into AL.
+     * @param id the identifier of the variable to be printed
+     * @return the x86 code.
+     */
+    private static String genPrintChar(Id id){
+        StringBuilder sb = new StringBuilder();
+        Register al = Register.AL;
+        String pop = "";
+
+        //Push to stack, set the value for pop
+        if(RegisterManager.isInUse(al)){
+            sb.append(String.format("\tPUSH %s\n", Register.EAX.toString()));   // must push all of eax
+            pop = String.format("\tPOP %s", Register.EAX.toString());           // pop the value back into eax.
+        }
+        sb.append(String.format("\tMOV %s, %s\n", al, id.getName()));
+        sb.append("\tCALL WriteChar\n");
+        sb.append(pop);
+        AssemblyFile.addProto("WriteChar PROTO\n");
+        return sb.toString();
+    }
+
+    /**
+     * Print a whole number. Will work for Natural types long and int.
+     * @param id the identifier of a variable
+     * @return the assembly code to print the number
+     */
     private static String genIntPrint(Id id){
         StringBuilder sb = new StringBuilder();
         Register eax = Register.EAX;
         String pop = "";
+
+        //Push to stack, set the value for pop
         if(RegisterManager.isInUse(eax)){
             sb.append(String.format("\tPUSH %s\n", eax));
             pop = String.format("\tPOP %s", eax);
         }
-        sb.append(String.format(
-            "\tMOVSX %s, %s\n", eax, id.getName()
-        ));
+
+        // Sign extend since ints are stored as an SWORD
+        if(id.getType() == Type.Int){
+            sb.append(String.format("\tMOVSX %s, %s\n", eax, id.getName()));
+        }else{
+            sb.append(String.format("\tMOV %s, %s\n", eax, id.getName()));
+        }
         sb.append("\tCALL WriteInt\n");
         sb.append(pop);
         AssemblyFile.addProto("WriteInt PROTO\n");

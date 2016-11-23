@@ -1,0 +1,15 @@
+boolean isTrue is true
+boolean isFalse is false
+boolean isWorking is true
+
+print("The value of isTrue: ", isTrue)
+print("The value of isFalse: ", isFalse)
+
+int boolSum is isTrue + isFalse + isWorking
+print("The sum of the boolean values is: ", boolSum)
+
+int addTwo is boolSum + 2
+print("boolSum + 2 = ", addTwo)
+
+int difference is isFalse - isTrue - isWorking
+print("false - true - true = ", difference)

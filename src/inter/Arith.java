@@ -1,6 +1,7 @@
 package inter;
 import code_generation.ASMGen;
 import code_generation.AsmArith;
+import code_generation.AsmLoad;
 import code_generation.RegisterManager;
 import lexer.*;
 import symbols.*;
@@ -62,13 +63,29 @@ public class Arith extends Op {
      */
    @Override
    public String toAsmMain() {
-
+       Id id1;
+       Id id2;
        StringBuilder sb = new StringBuilder();
-       sb.append(expr1.toAsmMain());    //AsmLoad the first expression
-       sb.append(expr2.toAsmMain());    //AsmLoad the second expression
 
-       reg1 = expr1.getResultRegister();
-       reg2 = expr2.getResultRegister();
+       // Boolean values must be loaded differently for arithmetic
+       if(expr1.isIdentifier()){
+           id1 = (Id) expr1;
+           sb.append(id1.loadForArithmetic());
+           reg1 = id1.getResultRegister();
+       }else{
+           sb.append(expr1.toAsmMain());    //AsmLoad the first expression
+           reg1 = expr1.getResultRegister();
+       }
+       if(expr2.isIdentifier()){
+           id2 = (Id) expr2;
+           sb.append(id2.loadForArithmetic());
+           reg2 = expr2.getResultRegister();
+       }else{
+           sb.append(expr2.toAsmMain());    //AsmLoad the second expression
+           reg2 = expr2.getResultRegister();
+       }
+
+       //TODO: this will be different for division
        mRegister = reg1;
 
        //The result register (member variable of Expr)
@@ -81,6 +98,7 @@ public class Arith extends Op {
        }
 
        sb.append(AsmArith.genMath(this, mRegister, reg1, reg2));  //Generate Assembly for a mathematical operation
+       RegisterManager.freeRegister(reg2);
 
        return sb.toString();
    }
@@ -109,6 +127,5 @@ public class Arith extends Op {
    public String getResultRegister() {
        return mRegister;
    }
-
 
 }

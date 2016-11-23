@@ -16,11 +16,15 @@ public class RegisterManager {
     public static Hashtable<Register, Boolean> _reg8;
     public static Hashtable<Register, Boolean> _reg16;
     public static Hashtable<Register, Boolean> _reg32;
+    public static Hashtable<String, Register> _regNames;
     public static ArrayList<Register> _active;
     public static java.util.Set<Register> reg8Keys;
     public static java.util.Set<Register> reg16Keys;
     public static java.util.Set<Register> reg32Keys;
+    public static Register[] reg8GP;
     public static Register[] reg16GP;
+    public static Register[] reg32GP;
+
 
     /**
      * Default constructor to instantiate the hash table containing all the registers
@@ -29,17 +33,32 @@ public class RegisterManager {
         _reg8 = new Hashtable<>();
         _reg16 = new Hashtable<>();
         _reg32 = new Hashtable<>();
+        _regNames = new Hashtable<>();
         _active = new ArrayList<>();
+
+        //TODO: i think CL is not general purpose.
+        reg8GP = new Register[] {Register.AH, Register.AL, Register.BL, Register.BH, Register.CH, Register.CL,
+                                    Register.DH, Register.DL};
         reg16GP = new Register[] {Register.AX, Register.BX, Register.CX, Register.DX};
+        reg32GP = new Register[] {Register.EAX, Register.EBX, Register.ECX, Register.EDX};
         Register.reserveReg8(_reg8);
         Register.reserveReg16(_reg16);
         Register.reserveReg32(_reg32);
+        Register.reserveNames(_regNames);
         reg8Keys = _reg8.keySet();
         reg16Keys = _reg16.keySet();
         reg32Keys = _reg32.keySet();
         _instance = this;
     }
 
+    public static Register getGeneralPurpose8(){
+        for(Register register: reg8GP){
+            if(!isInUse(register)){
+                return getRegister(register);
+            }
+        }
+        return getRegister(reg8GP[0]);
+    }
     /**
      * TODO: handle registers that need to be pushed
      * @return
@@ -53,6 +72,14 @@ public class RegisterManager {
         return getRegister(reg16GP[0]);
     }
 
+    public static Register getGeneralPurpose32(){
+        for(Register register: reg32GP){
+            if(!isInUse(register)){
+                return getRegister(register);
+            }
+        }
+        return getRegister(reg16GP[0]);
+    }
 
     /**
      * TODO: this might need to return a string
@@ -67,6 +94,10 @@ public class RegisterManager {
 
     public static void freeRegister(Register register){
         setUsage(register, false);
+    }
+
+    public static void freeRegister(String register){
+        freeRegister(_regNames.get(register));
     }
 
     public static void clearAllRegisters(){

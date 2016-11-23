@@ -1,9 +1,0 @@
-double d1 is 12.4
-double d2 := 33.4
-print("Sample program to test arithmetic with doubles:\n\n")
-print("d1 is ", d1)
-print("\nd2 is ", d2)
-double sum := d1 + d2
-print("\nd1 + d2 = ", sum)
-double difference := d2 - d1
-print("\nd1 - d2 = ", difference)
