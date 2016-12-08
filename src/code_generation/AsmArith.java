@@ -30,26 +30,7 @@ public class AsmArith {
             // Generate assembly for subtraction
             case '-':
                 return genSubtraction(type, saveReg, reg1, reg2);
-//
-//            //Generate assembly for addition
-//            case '*':
-//                if(type == Type.Float){
-//                    return String.format("\tmul.s\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
-//                }
-//                else if(type == Type.Double){
-//                    return String.format("\tmul.d\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
-//                }
-//                return String.format("\tmul\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
-//
-//            //Generate assembly for subtraction
-//            case '/':
-//                if(type == Type.Float){
-//                    return String.format("\tdiv.s\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
-//                }
-//                else if(type == Type.Double){
-//                    return String.format("\tdiv.d\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
-//                }
-//                return String.format("\tdiv\t %s, %s, %s\t\t#subtract the two registers\n\n", saveReg, reg1, reg2);
+
         }
         return null;
     }
@@ -62,22 +43,20 @@ public class AsmArith {
      * @return the x86 code to be assembled
      */
     private static String genAddition(Type type, String reg1, String reg2){
-//        if(type == Type.Float){
-//            return String.format("\tadd.s\t %s, %s, %s\t\t; add the two registers\n", saveReg, reg1, reg2);
-//        }
-//        else if(type == Type.Double){
-//            return String.format("\tadd.d\t %s, %s, %s\t\t#add the two registers\n", saveReg, reg1, reg2);
-//        }
+        if(type == Type.Float || type == Type.Double){
+            RegisterManager.freeFPURegister();  // Free the two registers used, the end value will be in ST0
+            RegisterManager.freeFPURegister();
+            return "\tFADD\t\t; Adds the values in ST(0) to ST(1), result in ST(0)\n";
+        }
         return String.format("\tADD\t %s, %s\t\t ; add the two registers\n", reg1, reg2);
     }
 
     private static String genSubtraction(Type type, String saveReg, String reg1, String reg2){
-//        if(type == Type.Float){
-//            return String.format("\tsub.s\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
-//        }
-//        else if(type == Type.Double){
-//            return String.format("\tsub.d\t %s, %s, %s\t\t#add the two registers\n\n", saveReg, reg1, reg2);
-//        }
+        // floating point arithmetic must be done on the FPU.
+        if(type == Type.Float || type == Type.Double){
+            return "\tFSUB\t\t; Calculate ST(1) - ST(0)\n";
+        }
         return String.format("\tSUB\t %s, %s\t\t; subtract the two registers\n", reg1, reg2);
     }
+
 }

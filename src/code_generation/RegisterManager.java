@@ -1,10 +1,9 @@
 package code_generation;
 
-import inter.Set;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Stack;
 
 /**
  * Editing for x86 generation
@@ -16,6 +15,8 @@ public class RegisterManager {
     public static Hashtable<Register, Boolean> _reg8;
     public static Hashtable<Register, Boolean> _reg16;
     public static Hashtable<Register, Boolean> _reg32;
+    private static Stack<Register> mFPUAvailabe;        // Stack of available registers
+    private static Stack<Register> mFPUInUse;           // Stack of in use registers
     public static Hashtable<String, Register> _regNames;
     public static ArrayList<Register> _active;
     public static java.util.Set<Register> reg8Keys;
@@ -48,17 +49,25 @@ public class RegisterManager {
         reg8Keys = _reg8.keySet();
         reg16Keys = _reg16.keySet();
         reg32Keys = _reg32.keySet();
+
+        initFPUStack(); // Initialize the FPU stack of registers
         _instance = this;
     }
 
+    /**
+     * Get the next available 8 bit register
+     * @return a register.
+     */
     public static Register getGeneralPurpose8(){
         for(Register register: reg8GP){
             if(!isInUse(register)){
+                _active.add(register);
                 return getRegister(register);
             }
         }
         return getRegister(reg8GP[0]);
     }
+
     /**
      * TODO: handle registers that need to be pushed
      * @return
@@ -66,6 +75,7 @@ public class RegisterManager {
     public static Register getGeneralPurpose16(){
         for(Register register: reg16GP){
             if(!isInUse(register)){
+                _active.add(register);
                 return getRegister(register);
             }
         }
@@ -96,13 +106,28 @@ public class RegisterManager {
         setUsage(register, false);
     }
 
+    public static void freeAllRegisters(){
+        for(Register register: reg32GP){
+            Register[] children = register.children;
+            setUsage(register, false);
+        }
+    }
+
     public static void freeRegister(String register){
-        freeRegister(_regNames.get(register));
+        try{
+            freeRegister(_regNames.get(register));
+        } catch (Exception e){
+            System.out.printf("Null pointer exception\n");
+        }
     }
 
     public static void clearAllRegisters(){
-        for(Register register: _active){
-            setUsage(register, false);
+        try{
+            for(Register register: _active){
+                setUsage(register, false);
+            }
+        }catch (Exception e){
+            System.out.printf("No registers in use");
         }
     }
 
@@ -121,9 +146,10 @@ public class RegisterManager {
         }
 
         for(int i = 0; i < register.children.length; i++){
-            if (register.children[i].getSize() == Register.Size.REG16){
+            Register reg = register.children[i];
+            if (reg.getSize() == Register.Size.REG16){
                 setUsage16(register.children[i], inUse);
-            } else if (register.children[i].getSize() == Register.Size.REG8){
+            } else if (reg.getSize() == Register.Size.REG8){
                 setUsage8(register.children[i], inUse);
             }
         }
@@ -131,14 +157,29 @@ public class RegisterManager {
 
     private static void setUsage8(Register register, boolean inUse){
         _reg8.replace(register, inUse);
+        if(inUse){
+            _active.add(register);
+        }else{
+            _active.remove(register);
+        }
     }
 
     private static void setUsage16(Register register, boolean inUse){
         _reg16.replace(register, inUse);
+        if(inUse){
+            _active.add(register);
+        }else{
+            _active.remove(register);
+        }
     }
 
     private static void setUsage32(Register register, boolean inUse){
         _reg32.replace(register, inUse);
+        if(inUse){
+            _active.add(register);
+        }else{
+            _active.remove(register);
+        }
     }
 
     public static boolean isInUse(Register register){
@@ -153,141 +194,47 @@ public class RegisterManager {
         }
     }
 
+    /***************************************************************************
+    ** Below here is all the code for managing the Floating point registers
+    ***************************************************************************/
 
-//    /**
-//     * @return the next available 32 bit register
-//     */
-//    public static String getReg32(){
-//        for(int i = 0; i < reg32.length; i++){
-//            if(!reg32[i]){
-//
-//            }
-//        }
-//        return String.format("");
-//    }
-//
-//    /**
-//     * Update the available registers if a 32 bit register is used.
-//     * @param register the register being used.
-//     */
-//    private static void setUsage32(String register){
-//        switch (register){
-//
-//        }
-//    }
-//
-//    public static String getFunctionCallReg(){
-//        for(int i = 0; i < functionCalls.length; i++){
-//            if(!functionCalls[i]){
-//                functionCalls[i] = true;
-//                return String.format("$v%d", i);
-//            }
-//        }
-//        return "$v0";
-//    }
-//
-//    public static String getFunctionArgsReg(){
-//
-//        for(int i = 0; i < functionArgs.length; i++){
-//            if(!functionArgs[i]){
-//                functionArgs[i] = true;
-//                return String.format("$a%d", i);
-//            }
-//        }
-//        return "$a0";
-//    }
-//
-//    public static String getTempReg(){
-//        for(int i = 0; i < temporary.length; i++){
-//            if(!temporary[i]){
-//                temporary[i] = true;
-//                return String.format("$t%d", i);
-//            }
-//        }
-//        return "$t0";
-//    }
-//
-//    public static String getSavedTempReg(){
-//
-//        for(int i = 0; i < savedTemporary.length; i++){
-//            if(!savedTemporary[i]){
-//                savedTemporary[i] = true;
-//                return String.format("$s%d", i);
-//            }
-//        }
-//        return "$s0";
-//    }
-//
-//    /**
-//     * Get the next available floating point register
-//     * @return the register name
-//     */
-//    public static String getFloatingPointReg(){
-//        for(int i = 2; i < floatingPoint.length; i++){
-//            if(!floatingPoint[i]){
-//                floatingPoint[i] = true;
-//                return String.format("$f%d", i);
-//            }
-//        }
-//        return "$f2";
-//    }
-//
-//    /**
-//     * Get the next available double register
-//     * @return the register name
-//     */
-//    public static String getDoubleReg(){
-//        for(int i = 2; i < floatingPoint.length; i++){
-//            if( i%2 != 0) continue;
-//            if(!floatingPoint[i]){
-//                floatingPoint[i] = true;
-//                floatingPoint[(i + 1)] = true;
-//                return String.format("$f%d", i);
-//            }
-//        }
-//        return "$f2";
-//    }
-//
-//    public static void clearAllFunctionCallRegs(){
-//        for(int i = 0; i< functionCalls.length; i++){
-//            functionCalls[i] = false;
-//        }
-//    }
-//
-//    public static void clearAllFunctionArgsRegs(){
-//        for(int i = 0; i< functionArgs.length; i++){
-//            functionArgs[i] = false;
-//        }
-//    }
-//
-//    public static void clearAllTempRegs(){
-//        for(int i = 0; i< temporary.length; i++){
-//            temporary[i] = false;
-//        }
-//    }
-//
-//    public static void clearAllSavedTempRegs(){
-//        for(int i = 0; i< savedTemporary.length; i++){
-//            savedTemporary[i] = false;
-//        }
-//    }
-//
-//    public static void clearFloatingPoint(){
-//        for(int i = 0; i< floatingPoint.length; i++){
-//            floatingPoint[i] = false;
-//        }
-//    }
-//
-//    public static void clearAllRegs(){
-//        clearAllFunctionArgsRegs();
-//        clearAllFunctionCallRegs();
-//        clearAllTempRegs();
-//        clearAllSavedTempRegs();
-//        clearFloatingPoint();
-//    }
-//
-//    public static void clearTempReg(int register){
-//        temporary[register] = false;
-//    }
+    /**
+     * Initialize the stack to track where values are to be stored when on the FPU stack
+     */
+    private static void initFPUStack(){
+        mFPUAvailabe = new Stack<>();
+        mFPUInUse = new Stack<>();
 
+        mFPUAvailabe.push(Register.ST7);
+        mFPUAvailabe.push(Register.ST6);
+        mFPUAvailabe.push(Register.ST5);
+        mFPUAvailabe.push(Register.ST4);
+        mFPUAvailabe.push(Register.ST3);
+        mFPUAvailabe.push(Register.ST2);
+        mFPUAvailabe.push(Register.ST1);
+        mFPUAvailabe.push(Register.ST0);        // ST0 will be the first one used.
+    }
+
+    /**
+     * Get the next available floating point register
+     * @return
+     */
+    public static Register getFPURegister(){
+        Register fpRegister = mFPUAvailabe.pop();   // Get the next available register
+        if(fpRegister == null){
+            fpRegister = Register.ST0;
+        }
+        mFPUInUse.push(fpRegister);         // Set this register to be in use
+        return fpRegister;
+    }
+
+    /**
+     * Free a register and add it to the available stack
+     */
+    public static void freeFPURegister(){
+        if(mFPUInUse.size() != 0){
+            Register register = mFPUInUse.pop();
+            mFPUAvailabe.push(register);
+        }
+    }
 }

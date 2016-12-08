@@ -42,7 +42,7 @@ public class Test {
         for(File file: testFiles){
             String filePath = file.getPath();                         // Get the path of the first file to be evaluated
 
-            if(!filePath.contains("7_char_input.nat")) continue;                     // Make sure it is a .nat file
+            if(!filePath.contains("14_less_than_int_long.nat")) continue;                     // Make sure it is a .nat file
 
             String contents[] = filePath.split("/");                  // State the name of the file being evaluated
             String fileName = contents[contents.length-1];

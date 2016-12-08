@@ -104,6 +104,7 @@ public class PrintNode extends Stmt {
     }
 
     /**
+     * TODO: it might be possible to delete this method
      * Generate the assembly assignment statement for printing a variable of a certain data type
      * @return the assembly code for the variable assignment.
      */
@@ -144,7 +145,7 @@ public class PrintNode extends Stmt {
                         "\tlb\t %s, %s\t\t#AsmLoad the value to be compared\n" +
                         "\tbeqz\t %s, %s\t\t#Goto %s if greater than 0\n\n"
                          , register, mIdentifier.getName(), register, label2, label2));
-                sb.append(ASMGen.genBooleanPrint(label1, label2, label3));
+                //sb.append(ASMGen.genBooleanPrint(label1, label2, label3));
                 return sb.toString();
         }
 

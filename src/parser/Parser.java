@@ -18,6 +18,7 @@ public class Parser {
 
     private Lexer lex;          //Lexer to read in tokens
     private Token look;         //Next token from the Lexer
+    private static Type _recent;
     Env top = null;             //Current or top symbol table
     int used = 0;               //Storage used for declarations
 
@@ -142,6 +143,7 @@ public class Parser {
 
             /** call type() */
             Type p = type();
+            _recent = p;
             Id id = null;
 
             Token tok = look;
@@ -586,7 +588,7 @@ public class Parser {
                 return n;
 
             case Tag.REAL:
-                n = new Constant(look, Type.Float);      // Return Constant node
+                n = new Constant(look, _recent);      // Return Constant node
                 move();
                 return n;
 

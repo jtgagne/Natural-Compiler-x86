@@ -31,7 +31,6 @@ public class Real extends Token {
     }
 
     private String genConstantString(){
-
         switch (mType.lexeme){
             case "double":
                 return String.format("%s:\t.double\t%f\n", this.constantId, value);
@@ -62,4 +61,8 @@ public class Real extends Token {
         this.constantId = constantId;
     }
 
+    @Override
+    public String valueToString() {
+        return Float.toString(value);
+    }
 }

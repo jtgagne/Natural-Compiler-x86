@@ -46,19 +46,20 @@ public class AsmLoad {
                 return String.format(
                         "\tMOV\t %s, %s\n", register, identifier.getName()); //AsmLoad boolean into temp register
 
+            // Float will have to be loaded into the FPU registers
             case "float":
                 return String.format(
-                        "\tl.s\t %s, %s\n", register, identifier.getName()); //AsmLoad float into temp register
+                        "\tFLD\t%s\n", identifier.getName()); //AsmLoad float into temp register
             case "double":
                 return String.format(
-                        "\tl.d\t %s, %s\n", register, identifier.getName()); //AsmLoad double into temp register
+                        "\tFLD\t %s\n", identifier.getName()); //AsmLoad double into temp register
         }
         return null;
     }
 
     public static String loadVariableForArith(Id identifier, String register){
         // All arithmetic registers are cast to 16 bit registers but boolean values need to be extended.
-        if(identifier.getType() == Type.Bool){
+        if(identifier.getType() == Type.Bool) {
             return String.format("\tMOVZX %s, %s\n", register, identifier.getName());
         }
         return loadVariable(identifier, register);

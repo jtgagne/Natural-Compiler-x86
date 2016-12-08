@@ -28,40 +28,65 @@ COMPLETE
     boolean addition
     boolean subtraction
 
+	float declaration
+	float print
+	float addition
+	float subtraction
+
+	double declaration
+    double print
+    double addition
+    double subtraction
+
+
     integer input
     long input
     char input
 
+    if statements: single boolean expressions
+    if statements: two boolean expressions using AND
+    if statements: using AND for complex statements
 
 
 TODO:
 
+Control Statements:
+    for some reason there are registers randomly reserved when using and.. need to figure that out!
+
+    if statements for logical comparison less than
+    if statements for logical comparison less than or equal to
+    if statements for logical comparison greater than
+    if statements for logical comparison greater than or equal to
+    if statements for logical comparison equal to
+    if statements for logical comparison not equal to
+    if statements for logical not
+
+    else if
+    else
+    break
+    continue
+
+Boolean Expressions:
+    AND
+    OR
+    NOT
+
+
+Arithmetic:
     boolean input
     float input
     double input
 
 	int multiplication
+    long multiplication
+    char multiplication
+    boolean multiplication
+    float multiplication
+    double multiplication
+
 	int division
-
-	long multiplication
 	long division
-
-	char multiplication
 	char division
-
-	boolean multiplication
 	boolean division
-
-	float declaration
-	float print
-	float addition
-	float subtraction
-	float multiplication
 	float division
-
-	double declaration
-	double print
-	double addition
-	double subtraction
-	double multiplication
 	double division

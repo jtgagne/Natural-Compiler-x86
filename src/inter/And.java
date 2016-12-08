@@ -1,5 +1,7 @@
 package inter;
 import code_generation.ASMGen;
+import code_generation.AsmBoolean;
+import code_generation.RegisterManager;
 import lexer.Token;
 import symbols.Type;
 
@@ -18,9 +20,11 @@ public class And extends Logical {
     //protected Token mToken;
     //protected Type mType;
     //protected String register;
+    private String mLabel;
 
     public And(Token tok, Expr x1, Expr x2) {
         super(tok, x1, x2);
+        System.out.printf("%s\t AND \t %s\n", expr1.toString(), expr2.toString());
     }
 
     @Override
@@ -43,22 +47,24 @@ public class And extends Logical {
 
     @Override
     public String toAsmData() {
-        StringBuilder sb = new StringBuilder();
-        String s1 = expr1.toAsmData();
-        String s2 = expr2.toAsmData();
-        if (s1 != null) sb.append(s1);
-        if (s2 != null) sb.append(s2);
-        return sb.toString();
+//        StringBuilder sb = new StringBuilder();
+//        String s1 = expr1.toAsmData();
+//        String s2 = expr2.toAsmData();
+//        if (s1 != null) sb.append(s1);
+//        if (s2 != null) sb.append(s2);
+//        return sb.toString();
+        return "";
     }
 
     @Override
     public String toAsmConstants() {
-        StringBuilder sb = new StringBuilder();
-        String s1 = expr1.toAsmConstants();
-        String s2 = expr2.toAsmConstants();
-        if (s1 != null) sb.append(s1);
-        if (s2 != null) sb.append(s2);
-        return sb.toString();
+//        StringBuilder sb = new StringBuilder();
+//        String s1 = expr1.toAsmConstants();
+//        String s2 = expr2.toAsmConstants();
+//        if (s1 != null) sb.append(s1);
+//        if (s2 != null) sb.append(s2);
+//        return sb.toString();
+        return "";
     }
 
 
@@ -70,6 +76,7 @@ public class And extends Logical {
         if( f == 0 ){
             emit(genLabel(label));
         }
+       // mLabel = Integer.toString(label);
     }
 
     /**
@@ -86,8 +93,9 @@ public class And extends Logical {
         sb.append(expr2.toAsmMain());
         register2 = expr2.getResultRegister();
 
-        sb.append(ASMGen.genAndExpr(register1, register2));
-        mRegister = ASMGen.getSavedRegister();
+        sb.append(AsmBoolean.genAndExpr(register1, register2));
+        mRegister = AsmBoolean.getResultRegister();
+        RegisterManager.freeAllRegisters();
 
         return sb.toString();
     }

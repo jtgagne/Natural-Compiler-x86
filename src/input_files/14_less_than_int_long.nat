@@ -1,0 +1,20 @@
+int num1 is 10
+int num2 is 5
+long l1 is 100
+long l2 is 500
+
+if (num1 less than num2) {
+    print("num1 is less than num2: 5 < 10")
+}
+
+if(num2 less than num1){
+    print("num2 is less than num1: 5 < 10")
+}
+
+if(l1 less than l2){
+    print("l1 is less than l2")
+}
+
+if(l2 less than l1){
+    print("There is an error, this should not print")
+}

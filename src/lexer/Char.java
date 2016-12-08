@@ -47,4 +47,9 @@ public class Char extends Token{
     public void setConstantId(String constantId){
         this.constantId = constantId;
     }
+
+    @Override
+    public String valueToString() {
+        return Character.toString(value);
+    }
 }

@@ -1,0 +1,12 @@
+double d1 is 20.0
+double d2 is 15.0
+double d3 is 10.0
+double sum is d1 + d2 + d3
+double difference is d2 - d1 - d3
+
+print("The value of d1 is: ", d1)
+print("The value of d2 is: ", d2)
+print("The value of d3 is: ", d3)
+
+print("The sum of the two values is: ", sum)
+print("d2 - d1 - d3 = ", difference)

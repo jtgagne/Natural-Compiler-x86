@@ -1,5 +1,6 @@
 package inter;
 import code_generation.ASMGen;
+import code_generation.AsmBoolean;
 import code_generation.AssemblyFile;
 import symbols.*;
 
@@ -46,7 +47,7 @@ public class Else extends Stmt {
         emit(expr.toAsmMain());
 
         String register = expr.getResultRegister();
-        emit(ASMGen.genBranchTo(register));
+        emit(AsmBoolean.genBranchTo(register));
 
         emit(stmt1.toAsmMain());
         stmt1.gen(b, label2);

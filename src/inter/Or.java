@@ -1,5 +1,6 @@
 package inter;
 import code_generation.ASMGen;
+import code_generation.AsmBoolean;
 import lexer.*;
 
 /**
@@ -17,6 +18,7 @@ public class Or extends Logical {
     //protected Token mToken;
     //protected Type mType;
     //protected String register;
+    private String mLabel;
 
     public Or(Token tok, Expr x1, Expr x2) {
         super(tok, x1, x2);
@@ -37,23 +39,36 @@ public class Or extends Logical {
     }
 
     @Override
+    public void jumping(int t, int f) {
+        int label = f != 0 ? f : newlabel();
+        expr1.jumping(0, label);
+        expr2.jumping(t,f);
+        if( f == 0 ){
+            emit(genLabel(label));
+        }
+        mLabel = Integer.toString(label);
+    }
+
+    @Override
     public String toAsmData() {
-        StringBuilder sb = new StringBuilder();
-        String s1 = expr1.toAsmData();
-        String s2 = expr2.toAsmData();
-        if (s1 != null) sb.append(s1);
-        if (s2 != null) sb.append(s2);
-        return sb.toString();
+//        StringBuilder sb = new StringBuilder();
+//        String s1 = expr1.toAsmData();
+//        String s2 = expr2.toAsmData();
+//        if (s1 != null) sb.append(s1);
+//        if (s2 != null) sb.append(s2);
+//        return sb.toString();
+        return "";
     }
 
     @Override
     public String toAsmConstants() {
-        StringBuilder sb = new StringBuilder();
-        String s1 = expr1.toAsmConstants();
-        String s2 = expr2.toAsmConstants();
-        if (s1 != null) sb.append(s1);
-        if (s2 != null) sb.append(s2);
-        return sb.toString();
+//        StringBuilder sb = new StringBuilder();
+//        String s1 = expr1.toAsmConstants();
+//        String s2 = expr2.toAsmConstants();
+//        if (s1 != null) sb.append(s1);
+//        if (s2 != null) sb.append(s2);
+//        return sb.toString();
+        return "";
     }
 
     /**
@@ -66,13 +81,12 @@ public class Or extends Logical {
 
         sb.append(expr1.toAsmMain());
         register1 = expr1.getResultRegister();
-
         sb.append(expr2.toAsmMain());
         register2 = expr2.getResultRegister();
 
-        sb.append(ASMGen.genOrExpr(register1, register2));
+        sb.append(AsmBoolean.genOrExpr(register1, register2));
 
-        mRegister = ASMGen.getSavedRegister();
+        mRegister = AsmBoolean.getResultRegister();
 
         return sb.toString();
     }

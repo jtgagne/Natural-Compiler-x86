@@ -1,0 +1,13 @@
+float f is 11.2
+float f2 is 11.2
+float f3 is 23.66
+int i is 10
+float f4 is 53.2
+
+float sum is f + f2 + f3
+float sum2 is f3 + f4
+float difference is sum - sum2
+
+print("Printing f: ", f)
+print("Printing the sum of f + f2 + f3: ", sum)
+print("Printing the difference", difference)

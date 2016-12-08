@@ -1,0 +1,19 @@
+boolean eatsWell is true
+boolean getsSleep is true
+boolean doesntDrink is true
+boolean doesntSmoke is true
+boolean isHealthy is false
+boolean isNotHealthy is true
+
+if(eatsWell and getsSleep and doesntDrink and doesntSmoke){
+    isHealthy is true
+    isNotHealthy is false
+}
+
+if(isHealthy){
+    print("You are healthy")
+}
+
+if(isNotHealthy){
+    print("You are not healthy!")
+}

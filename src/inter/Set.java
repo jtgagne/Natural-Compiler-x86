@@ -2,6 +2,7 @@ package inter;
 import code_generation.ASMGen;
 import code_generation.AssemblyFile;
 import code_generation.RegisterManager;
+import lexer.Real;
 import semantics.TypeCasting;
 import symbols.*;
 
@@ -65,7 +66,7 @@ public class Set extends Stmt {
     public void gen(int b, int a) {
         emit( "\n" + this.toAsmMain());
         AssemblyFile.addVariables(this.toAsmData());
-        AssemblyFile.addConstant(this.toAsmConstants());
+        //AssemblyFile.addConstant(this.toAsmConstants());
     }
 
     /**
@@ -91,6 +92,10 @@ public class Set extends Stmt {
      */
     @Override
     public String toAsmData() {
+        if(expr.isConstant() && (expr.getType() == Type.Float | expr.getType() == Type.Double)){
+            Constant c = (Constant) expr;
+            return String.format("%s", mIdentifier.genDeclaration(c.getToken()));
+        }
         return expr.toAsmData();
     }
 
@@ -101,14 +106,17 @@ public class Set extends Stmt {
      */
     private String genAssignment(){
         StringBuilder sb = new StringBuilder();
-
         sb.append(expr.toAsmMain());
+        String savedReg = expr.getResultRegister();         //Get the register of the saved operation
 
-        //Get the register of the saved operation
-        String savedReg = expr.getResultRegister();
+        if(expr.isConstant() && (mIdentifier.getType() != Type.Float && mIdentifier.getType() != Type.Double)){
+            sb.append(ASMGen.storeVar(mIdentifier, savedReg));
+        } else if (expr.isArith()){
+            sb.append(ASMGen.storeVar(mIdentifier, savedReg));
+        }
 
-        sb.append(ASMGen.storeVar(mIdentifier, savedReg));
-
+        //RegisterManager.clearAllRegisters();
+        RegisterManager.freeRegister(savedReg);
         return sb.toString();
     }
 

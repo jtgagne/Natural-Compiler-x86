@@ -1,5 +1,6 @@
 package inter;
 import code_generation.ASMGen;
+import code_generation.AsmConstants;
 import code_generation.RegisterManager;
 import lexer.*;
 import symbols.*;
@@ -44,12 +45,7 @@ public class Constant extends Expr {
 
    @Override
    public String toAsmConstants() {
-      mToken.setType(mType);
-      if(mToken.getConstantId() == null){
-         mToken.setConstantId(ASMGen.genConstantName());
-      }
-       String str = mToken.toAsmConstant();
-      return str;
+       return "";
    }
 
    public void setType(Type type) {
@@ -63,18 +59,16 @@ public class Constant extends Expr {
 
    @Override
    public void jumping(int t, int f) {
-       //emit(this.toAsmMain());
-      if ( this == True && t != 0 ){
-          emit("L" + t);
-      }
-      else if ( this == False && f != 0){
-          emit("L" + f);
-      }
+//      if ( this == True && t != 0 ){
+//          emit("L" + t);
+//      }
+//      else if ( this == False && f != 0){
+//          emit("L" + f);
+//      }
    }
 
    @Override
    public Expr gen() {
-       //emit(this.toAsmMain());
        return super.gen();
    }
 
@@ -87,9 +81,9 @@ public class Constant extends Expr {
    public String toAsmMain() {
       mToken.setType(mType);
       if(mToken.tag == Tag.TRUE){
-         mToken.setConstantId("1");
+         mToken.setConstantId(AsmConstants.BOOLEAN_TRUE);
       }else if(mToken.tag == Tag.FALSE){
-         mToken.setConstantId("0");
+         mToken.setConstantId(AsmConstants.BOOLEAN_FALSE);
       }
       mConstantId = mToken.getConstantId();
       return load(mConstantId);
@@ -109,6 +103,7 @@ public class Constant extends Expr {
         Token token = mToken;
         Num num;
         Char natChar;
+        Real real;
         StringBuilder sb = new StringBuilder();
 
         switch (mType.lexeme){
@@ -125,21 +120,16 @@ public class Constant extends Expr {
                 mRegister = RegisterManager.getGeneralPurpose8().toString();
                 sb.append(String.format("\tMOV\t %s, %s\t\t\n", mRegister, String.format("\'%c\'", natChar.value)));
                 return sb.toString();
+
             case "boolean":
                 mRegister = RegisterManager.getGeneralPurpose8().toString();
-                mToken.setRegister(mRegister);
                 return String.format("\tMOV\t %s, %s\t\t; Load a boolean value\n", mRegister, identifier);
 
             case "float":
-                //mRegister = RegisterManager.getFloatingPointReg();
-                sb.append(String.format("\tla\t $a0, %s\t\t ; AsmLoad an immediate value to register\n",identifier));
-                sb.append(String.format("\tl.s\t %s, 0($a0)\t\t ; AsmLoad the value at the address\n", mRegister));
-                return sb.toString();
+                return "";
+
             case "double":
-                //mRegister = RegisterManager.getDoubleReg();   //Take up two registers
-                sb.append(String.format("\tla\t $a0, %s\t\t #AsmLoad an immediate value to register\n",identifier));
-                sb.append(String.format("\tl.d\t %s, 0($a0)\t\t #AsmLoad the value at the address\n", mRegister));
-                return sb.toString();
+                return "";
       }
       return ERROR + " generating assembly.\n";
    }

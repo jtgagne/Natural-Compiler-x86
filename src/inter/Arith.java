@@ -1,7 +1,5 @@
 package inter;
-import code_generation.ASMGen;
 import code_generation.AsmArith;
-import code_generation.AsmLoad;
 import code_generation.RegisterManager;
 import lexer.*;
 import symbols.*;
@@ -25,6 +23,7 @@ public class Arith extends Op {
 
    public Expr expr1, expr2;
    private String reg1, reg2;   //Temporary registers
+    private String mTempRegister;
    private String ERROR = "ERROR ARITH: error generating asm";
 
    public Arith(Token tok, Expr x1, Expr x2)  {
@@ -63,45 +62,38 @@ public class Arith extends Op {
      */
    @Override
    public String toAsmMain() {
-       Id id1;
-       Id id2;
+
        StringBuilder sb = new StringBuilder();
+       sb.append(genLoadString(expr1));
+       reg1 = mTempRegister;
+       sb.append(genLoadString(expr2));
+       reg2 = mTempRegister;
 
-       // Boolean values must be loaded differently for arithmetic
-       if(expr1.isIdentifier()){
-           id1 = (Id) expr1;
-           sb.append(id1.loadForArithmetic());
-           reg1 = id1.getResultRegister();
-       }else{
-           sb.append(expr1.toAsmMain());    //AsmLoad the first expression
-           reg1 = expr1.getResultRegister();
-       }
-       if(expr2.isIdentifier()){
-           id2 = (Id) expr2;
-           sb.append(id2.loadForArithmetic());
-           reg2 = expr2.getResultRegister();
-       }else{
-           sb.append(expr2.toAsmMain());    //AsmLoad the second expression
-           reg2 = expr2.getResultRegister();
-       }
+       mRegister = reg1;    //TODO: this will be different for division
 
-       //TODO: this will be different for division
-       mRegister = reg1;
-
-       //The result register (member variable of Expr)
-       if(expr1.mType == Type.Double || expr2.mType == Type.Double){
-           //mRegister = RegisterManager.getDoubleReg(); //Set the
-       } else if(expr1.mType == Type.Float){
-           //mRegister = RegisterManager.getFloatingPointReg();
-       } else{
-           //mRegister = RegisterManager.getGeneralPurpose16().toString();
-       }
 
        sb.append(AsmArith.genMath(this, mRegister, reg1, reg2));  //Generate Assembly for a mathematical operation
        RegisterManager.freeRegister(reg2);
 
+       this.toInfix();
        return sb.toString();
    }
+
+    private String genLoadString(Expr expr){
+        Id id;
+        StringBuilder sb = new StringBuilder();
+
+        // Boolean values must be loaded differently for arithmetic
+        if(expr.isIdentifier()){
+            id = (Id) expr;
+            sb.append(id.loadForArithmetic());
+            mTempRegister = id.getResultRegister();
+        }else{
+            sb.append(expr.toAsmMain());    //AsmLoad the first expression
+            mTempRegister = expr.getResultRegister();
+        }
+        return sb.toString();
+    }
 
     @Override
     public String toAsmData() {
@@ -128,4 +120,7 @@ public class Arith extends Op {
        return mRegister;
    }
 
+    private void toInfix(){
+        System.out.printf("%s %s %s\n", expr1.toString(), expr2.toString(), mToken.toString());
+    }
 }

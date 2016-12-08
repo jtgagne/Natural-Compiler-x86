@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Print the string value corresponding to Natural boolean values
-;; Input of 1 --> True
+;; Input of 0FFh --> True
 ;; Otherwise --> False
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 mPrintBoolean MACRO value:REQ
@@ -20,7 +20,7 @@ LOCAL EndPrintFalse
 	PUSH edx
 
 	MOVZX eax, value
-	CMP eax, 1
+	CMP eax, 0FFh
 	JNE PrintFalse
 	MOV edx, OFFSET strTrue
 	CALL WriteString
@@ -33,5 +33,24 @@ PrintFalse:
 EndPrintFalse:
 	POP edx
 	POP eax
+
+ENDM
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Print a value of a floating point variable
+;; Input: a real variable  
+;; Output: value to console
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+mPrintFloat MACRO value:REQ
+
+LOCAL printValue
+.data
+	printValue REAL4 value
+
+.code
+	FLD printValue	; Load the variable into ST(0)
+	CALL WriteFloat
+	FSTP printValue	; Remove the value from FPU stack
 
 ENDM

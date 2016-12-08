@@ -10,7 +10,6 @@ import symbols.Type;
  */
 public class AsmPrint {
 
-
     /**
      * Method for generating asm to print a string
      * @return the string to be appended to the asm file.
@@ -47,7 +46,6 @@ public class AsmPrint {
     }
 
     public static String genPrintIdentifier(PrintNode printNode){
-        StringBuilder sb = new StringBuilder();
         Id id = printNode.getIdentifier();
         switch (id.getTypeStr()){
             // Ints are stored as a SWORD
@@ -59,9 +57,20 @@ public class AsmPrint {
                 return genPrintChar(id);
             case "boolean":
                 return printBool(id);
+            case "float":
+                return printFloat(id);
+            case "double":
+                return printFloat(id);
             default:
                 return "";
         }
+    }
+
+    private static String printFloat(Id id){
+        StringBuilder sb = new StringBuilder();
+        AssemblyFile.addProto("WriteFloat\tPROTO\n");
+        sb.append(String.format("\t%s <%s>\n", Macros.PRINT_FLOAT, id.getName()));
+        return sb.toString();
     }
 
     /**

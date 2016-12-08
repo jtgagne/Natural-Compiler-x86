@@ -161,7 +161,6 @@ public class AssemblyFile {
         mStrings = null;
         mMain = null;
         Node.resetLabels();
-        ASMGen.resetConstantCount();
         ASMGen.resetLabelCount();
     }
 }

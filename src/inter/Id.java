@@ -15,6 +15,7 @@ public class Id extends Expr {
     public int mOffset;            //relative address
     private final Word mWord;
     private final String mAsmId;
+    private boolean isInitialized = false;
 
     //Member variables inherited from Expr:
     //Member variables for an expression
@@ -65,6 +66,11 @@ public class Id extends Expr {
         return ASMGen.genDeclaration(this, "?"); //Gen the data declaration with default initial value
     }
 
+    public String genDeclaration(Token assignTo){
+        return ASMGen.genDeclaration(this, assignTo.valueToString());
+    }
+
+
     @Override
     public String toAsmMain() {
         return load();
@@ -78,19 +84,16 @@ public class Id extends Expr {
     public String load() {
         Register register;
 
-        //Set the appropriate register value before generating assembly
-//        if(mType == Type.Float){
-//            register =
-//            //mRegister = RegisterManager.getFloatingPointReg();
-//        } else if (mType == Type.Double){
-//            //mRegister = RegisterManager.getDoubleReg();
-//        }
-
         if(mType == Type.Long) {
             register = RegisterManager.getGeneralPurpose32();   // Get 32 bit register
-        } else{
+        }
+        else if(mType == Type.Bool){
+            register = RegisterManager.getGeneralPurpose8();
+        }
+        else{
             register = RegisterManager.getGeneralPurpose16();   // Get 16 bit register
         }
+
         mRegister = register.toString();    //Set the output register
         return AsmLoad.loadVariable(this, mRegister);
     }
@@ -99,12 +102,15 @@ public class Id extends Expr {
         Register register;
         if(mType == Type.Long) {
             register = RegisterManager.getGeneralPurpose32();   // Get 32 bit register
-        } else{
+        } else if(mType == Type.Float || mType == Type.Double){
+            register = RegisterManager.getFPURegister();        // Get a register from the FPU stack
+        } else {
             register = RegisterManager.getGeneralPurpose16();   // Get 16 bit register
         }
         mRegister = register.toString();
         return AsmLoad.loadVariableForArith(this, mRegister);
     }
+
     @Override
     public String getResultRegister() {
         return super.getResultRegister();

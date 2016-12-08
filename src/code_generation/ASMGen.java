@@ -32,60 +32,6 @@ public class ASMGen {
 
 
     /**
-     * Branch if expression is false
-     * @param register register containing a boolean 1 or 0
-     * @return the formatted String
-     */
-    public static String genBranchTo(String register){
-        Stmt s = Stmt.Enclosing;
-        String label = s.getLabelAfter();   //Get the enclosing label of the current statement
-        if (register.equals("0")){
-            return String.format("\tbc1f\t %s, %s\n\n", register, label);
-        }
-        return String.format("\tbeqz\t %s, %s\n\n", register, label);
-    }
-
-    public static String genOrExpr(String register1, String register2){
-        //mSavedRegister = RegisterManager.getSavedTempReg();
-        return String.format("\tor\t %s, %s, %s\n", mSavedRegister, register1, register2);
-    }
-
-    public static String genNotExpr(String register1){
-        //mSavedRegister = RegisterManager.getTempReg();
-        //StringBuilder sb = new StringBuilder();
-        return String.format("\txor\t %s, %s, %s\n", mSavedRegister, register1, register1);
-    }
-
-    public static String genAndExpr(String register1, String register2){
-        //mSavedRegister = RegisterManager.getSavedTempReg();
-        return String.format("\tand\t %s, %s, %s\n", mSavedRegister, register1, register2);
-    }
-
-    //TODO: make an assembly function for this instead
-    public static String genBooleanPrint(String label1, String label2, String label3){
-        StringBuilder sb = new StringBuilder();
-
-        String L1 = String.format(
-                "%s:\tli\t $v0, 4\n" +
-                "\tla \t$a0, BOOL_TRUE_STR\n" +
-                "\tsyscall\n" +
-                "\tj\t %s\n\n", label1, label3);
-
-        String L2 = String.format(
-                "%s:\tli\t $v0, 4\n" +
-                "\tla \t $a0, BOOL_FALSE_STR\n" +
-                "\tsyscall\n" +
-                "\tj\t %s\n\n", label2, label3);
-
-        String L3 = String.format("%s:", label3);
-
-        sb.append(L1);
-        sb.append(L2);
-        sb.append(L3);
-        return sb.toString();
-    }
-
-    /**
      * Return the appropriate comparison operation in assembly code
      * @param reg1 first register
      * @param reg2 second register
@@ -115,7 +61,6 @@ public class ASMGen {
 
         switch (op.tag){
             case Tag.LESS:
-                //sb.append(String.format("\t\t %s, %s, %s\n\n", reg1, reg2, label));  //Goto next label if reg2 > reg1)
                 sb.append(String.format("\tslt\t %s, %s, %s\n", mSavedRegister, reg1, reg2));  //Goto next label if reg2 > reg1)
                 return sb.toString();
 
@@ -217,67 +162,6 @@ public class ASMGen {
         return sb.toString();
     }
 
-    public static void resetConstantCount(){
-        CONSTANT_COUNT = 0;
-    }
-
-    public static String genConstantName(){
-        return String.format("CONST%d", ++CONSTANT_COUNT);
-    }
-
-//    public static String genBooleanTrue(){
-//        return "";
-//        //return "BOOL_TRUE:\t.byte\t1\n";
-//    }
-//
-//    public static String genBooleanFalse(){
-//        return "BOOL_FALSE:\t.byte\t0\n";
-//    }
-//
-//    public static String genBooleanTrueStr(){
-//        return "BOOL_TRUE_STR:\t.asciiz\t\"true\"\n";
-//    }
-//
-//    public static String genBooleanFalseStr(){
-//        return "BOOL_FALSE_STR:\t.asciiz\t\"false\"\n";
-//    }
-
-    public static String getStoreType(Type type){
-        switch (type.lexeme){
-            case "int":
-                return "sw";
-            case "long":
-                return "sw";
-            case "float":
-                return "s.s";
-            case "double":
-                return "s.d";
-            case "char":
-                return "sb";
-            case "boolean":
-                return "sb";
-        }
-        return null;
-    }
-
-    public static String getLoadType(Type type){
-        switch (type.lexeme){
-            case "int":
-                return "MOV";
-            case "long":
-                return "lw";
-            case "float":
-                return "l.d";
-            case "double":
-                return "l.d";
-            case "char":
-                return "lb";
-            case "boolean":
-                return "lb";
-        }
-        return null;
-    }
-
     /**
      * Generate the .data declaration for a variable. Some values such as float,
      * double, and char require an initial value stored in the data section
@@ -307,9 +191,9 @@ public class ASMGen {
             case "boolean":
                 return String.format("%s\tBYTE\t%s\n", name, initialValue);
             case "float":
-                return String.format("%s:\t.float\t%s\n", name, initialValue);
+                return String.format("%s\tREAL4\t%s\n", name, initialValue);
             case "double":
-                return String.format("%s:\t.double\t%s\n", name, initialValue);
+                return String.format("%s\tREAL8\t%s\n", name, initialValue);
         }
         return null;
     }
@@ -325,31 +209,37 @@ public class ASMGen {
      */
     public static String storeVar(Id identifier, String register){
         Type type = identifier.getType();
+        String result = "";
 
         switch (type.lexeme){
             case "int":
-                return String.format(
-                        "\tMOV\t %s, %s\n\n", identifier.getName(), register); //AsmLoad int into temp register
+                result = String.format("\tMOV\t %s, %s\n\n", identifier.getName(), register);
+                break;
             case "long":
-                return String.format(
-                        "\tMOV\t %s, %s\n\n", identifier.getName(), register); //AsmLoad int into temp register
-            case "char":
-                return String.format(
-                        "\tMOV\t %s, %s\n\n", identifier.getName(), register); //AsmLoad char into temp register
-            case "boolean":
-                return String.format(
+                result = String.format(
                         "\tMOV\t %s, %s\n\n", identifier.getName(), register);
+                break;
+
+            case "char":
+                result = String.format(
+                        "\tMOV\t %s, %s\n\n", identifier.getName(), register);
+                break;
+
+            case "boolean":
+                result = String.format("\tMOV\t %s, %s\n\n", identifier.getName(), register);
+                break;
 
             case "float":
-                return String.format(
-                        "\ts.s\t %s, %s\n\n", register, identifier.getName()); //AsmLoad float into temp register
+                result = String.format("\tFSTP\t %s\n\n", identifier.getName());
+                break;
+
             case "double":
-                return String.format(
-                        "\ts.d\t %s, %s\n\n", register, identifier.getName()); //AsmLoad double into temp register
-
-
+                result = String.format("\tFSTP\t %s\n\n", identifier.getName());
+                break;
         }
-        return null;
+
+        RegisterManager.freeRegister(register);
+        return result;
     }
 
 }

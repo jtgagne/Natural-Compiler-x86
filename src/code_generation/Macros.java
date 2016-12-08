@@ -21,6 +21,8 @@ public class Macros {
     public static void main(String args[]){
         setFile();  // Open the file reader and the set the output file
         _writer.write(printBoolean());
+        _writer.write("\n\n");
+        _writer.write(printFloat());
         _writer.close();
     }
 
@@ -45,7 +47,9 @@ public class Macros {
     public static final String
             PRINT = "mPrint",       // Print a string
             PRINTLN = "mPrintln",   // Print a string on a new line
-            PRINT_BOOL = "mPrintBoolean";
+            PRINT_BOOL = "mPrintBoolean",
+            PRINT_FLOAT = "mPrintFloat"
+    ;
 
     private static final String
         COMMENT = ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
@@ -64,8 +68,38 @@ public class Macros {
         return sb.toString();
     }
 
+
+    public static String printFloat(){
+        StringBuilder sb = new StringBuilder();
+        String printValue = "printValue";
+
+        //Append the header comment
+        sb.append(String.format("%s\n", COMMENT));
+        sb.append(";; Print a value of a floating point variable\n" +
+                ";; Input: a real variable  \n" +
+                ";; Output: value to console\n");
+        sb.append(String.format("%s\n", COMMENT));
+
+        //Macro declaration
+        sb.append(String.format("%s MACRO value:REQ\n\n", PRINT_FLOAT));
+        sb.append(String.format("LOCAL %s\n", printValue));
+
+        // Declare the local string variables to print either true or false.
+        sb.append(".data\n");
+        sb.append(String.format("\t%s REAL4 value\n\n", printValue));
+
+        // Begin the code section
+        sb.append(".code\n");
+        sb.append(String.format("\tFLD %s\t; Load the variable into ST(0)\n", printValue));
+        sb.append("\tCALL WriteFloat\n");
+        sb.append(String.format("\tFSTP %s\t; Remove the value from FPU stack\n\n", printValue));
+
+        sb.append("ENDM\n");
+
+        return sb.toString();
+    }
+
     /**
-     * Works as a proc, need to figure out how to properly implement as a macro through.
      * @return the string to print a boolean value
      */
     public static String printBoolean(){
@@ -80,7 +114,7 @@ public class Macros {
         //Append the header comment
         sb.append(String.format("%s\n", COMMENT));
         sb.append(";; Print the string value corresponding to Natural boolean values\n" +
-                ";; Input of 1 --> True\n" +
+                ";; Input of 0FFh --> True\n" +
                 ";; Otherwise --> False\n");
         sb.append(String.format("%s\n", COMMENT));
 
@@ -105,7 +139,7 @@ public class Macros {
         sb.append("\tPUSH edx\n\n");
 
         sb.append("\tMOVZX eax, value\n");      // Load the parameter value into eax with sign 0 sign extension
-        sb.append("\tCMP eax, 1\n");            // Check if eax is equal to 1
+        sb.append("\tCMP eax, 0FFh\n");            // Check if eax is equal to 1
         sb.append(String.format("\tJNE %s\n", LABEL_PRINT_FALSE));    // If not 1, print false.
         sb.append(String.format("\tMOV edx, OFFSET %s\n",strTrue));   // Load the string into EDX
         sb.append("\tCALL WriteString\n");                            // Print the String

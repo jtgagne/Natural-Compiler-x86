@@ -25,4 +25,9 @@ public class Num extends Token {
     public boolean isNum() {
         return true;
     }
+
+    @Override
+    public String valueToString() {
+        return Integer.toString(value);
+    }
 }

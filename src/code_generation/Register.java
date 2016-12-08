@@ -10,11 +10,10 @@ import java.util.Hashtable;
  */
 public class Register {
 
-    public enum Size{ REG32, REG16, REG8}
+    public enum Size{REG32, REG16, REG8, FLOATING}
     public final String name;
     public final Size size;
     public Register[] children;
-    // public ArrayList<Register> children;
 
     public Register(String name, Size size){
         this.name = name;
@@ -69,6 +68,20 @@ public class Register {
         ESI = new Register("esi", Size.REG32, SI),
         EBP = new Register("ebp", Size.REG32, BP),
         ESP = new Register("esp", Size.REG32, SP);
+
+    /**
+     * These are the floating point registers used by the FPU. there are 8 of them
+     */
+    public static final Register
+        ST0 = new Register("ST(0)", Size.FLOATING),
+        ST1 = new Register("ST(1)", Size.FLOATING),
+        ST2 = new Register("ST(2)", Size.FLOATING),
+        ST3 = new Register("ST(3)", Size.FLOATING),
+        ST4 = new Register("ST(4)", Size.FLOATING),
+        ST5 = new Register("ST(5)", Size.FLOATING),
+        ST6 = new Register("ST(6)", Size.FLOATING),
+        ST7 = new Register("ST(7)", Size.FLOATING);
+
 
     /**
      * Get the size value of a given register
@@ -146,6 +159,16 @@ public class Register {
         table.put(CL.toString(), CL);
         table.put(DH.toString(), DH);
         table.put(DL.toString(), DL);
+
+        table.put(ST0.toString(), ST0);
+        table.put(ST1.toString(), ST1);
+        table.put(ST2.toString(), ST2);
+        table.put(ST3.toString(), ST3);
+        table.put(ST4.toString(), ST4);
+        table.put(ST5.toString(), ST5);
+        table.put(ST6.toString(), ST6);
+        table.put(ST7.toString(), ST7);
+
     }
 
     @Override

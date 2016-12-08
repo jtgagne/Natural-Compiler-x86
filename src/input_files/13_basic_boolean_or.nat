@@ -1,0 +1,14 @@
+boolean orWorks
+boolean isFalse1 is false
+boolean isFalse2 is false
+boolean isTrue is true
+
+if((isFalse1 or isFalse2) or isTrue){
+    orWorks is true
+    print("Boolean or is working")
+    print("The value of orWorks: ", orWorks)
+}
+
+if((isTrue and true) and (not false)){
+    print("Boolean and with immediate values also works")
+}

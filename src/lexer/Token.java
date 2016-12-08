@@ -11,16 +11,13 @@ import symbols.Type;
  * Compiler Design - Summer 2016
  */
 public class Token {
-    public enum TokenType {NONE, CHAR, NUM, PHRASE, PRINT, REAL, WORD}
     public final int tag;
     public final int tag2;
     private static int immediate = 0;
 
     public Token(int t) {
         tag = t;
-
-        //Not required for this token
-        tag2 = Tag.NULL;
+        tag2 = Tag.NULL;         //Not required for this token
     }
 
     /**
@@ -91,4 +88,8 @@ public class Token {
     public boolean isNum(){ return false; }
     public boolean isReal() { return false; }
     public boolean isPrint(){ return false; }
+
+    public String valueToString(){
+        return null;
+    }
 }

@@ -3,7 +3,7 @@ INCLUDE C:\masm32\include\Irvine32.inc
 INCLUDELIB C:\masm32\lib\Irvine32.lib
 INCLUDE C:\masm32\include\debug.inc
 INCLUDELIB C:\masm32\lib\debug.lib
-
+INCLUDE C:\masm32\naturalMacros\naturalMacros.asm
 
 
 .data
@@ -18,7 +18,10 @@ msg3	 BYTE '10 - 20 = ', 0
 msg4	 BYTE 'hello world', 0 
 msg5	 BYTE 'num is: ', 0 
 
-; Function prototypes
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Function prototypes
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 WriteString PROTO
 WriteInt PROTO
 Crlf PROTO
@@ -29,11 +32,11 @@ Crlf PROTO
 	main PROC
 
 L1:
-	MOV	 ax, 20		;Load an immediate value into the register
+	MOV	 ax, 20		; Load an immediate value into the register
 	MOV	 var1_num, ax
 
 L3:
-	MOV	 ax, 10		;Load an immediate value into the register
+	MOV	 ax, 10		; Load an immediate value into the register
 	MOV	 var2_num2, ax
 
 L4:
@@ -48,9 +51,10 @@ L5:
  	MOVSX eax, var4_sum
 	CALL WriteInt
  	CALL Crlf
+
 L6:
 	MOV	 ax, var4_sum
-	MOV	 bx, 10		;Load an immediate value into the register
+	MOV	 bx, 10		; Load an immediate value into the register
 	ADD	 ax, bx		 ; add the two registers
 	MOV	 var4_sum, ax
 
@@ -60,6 +64,7 @@ L7:
  	MOVSX eax, var4_sum
 	CALL WriteInt
  	CALL Crlf
+
 L8:
 	MOV	 ax, var2_num2
 	MOV	 bx, var1_num
@@ -72,20 +77,24 @@ L9:
  	MOVSX eax, var3_difference
 	CALL WriteInt
  	CALL Crlf
+
 L10:
 	MOV edx, OFFSET msg4
 	CALL WriteString
 	CALL Crlf
+
 L11:
 	MOV edx, OFFSET msg5
 	CALL WriteString
  	MOVSX eax, var1_num
 	CALL WriteInt
  	CALL Crlf
+
 L2:
 
 	inkey
 	INVOKE ExitProcess, 0
 	main ENDP
-END main
 
+
+END main

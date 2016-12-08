@@ -144,11 +144,11 @@ public class Expr extends Node {
     }
 
     public boolean isArith(){
-        return true;
+        return false;
     }
 
     public boolean isUnary(){
-        return true;
+        return false;
     }
 
     public String getValue(){

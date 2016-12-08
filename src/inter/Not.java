@@ -1,5 +1,6 @@
 package inter;
 import code_generation.ASMGen;
+import code_generation.AsmBoolean;
 import lexer.*;
 
 /**
@@ -81,9 +82,8 @@ public class Not extends Logical {
         sb.append(expr1.toAsmMain());
         register1 = expr1.getResultRegister();
 
-        sb.append(ASMGen.genNotExpr(register1));
-
-        mRegister = ASMGen.getSavedRegister();
+        sb.append(AsmBoolean.genNotExpr(register1));
+        mRegister = AsmBoolean.getResultRegister();
 
         return sb.toString();
     }

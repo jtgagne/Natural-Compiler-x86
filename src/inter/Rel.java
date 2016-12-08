@@ -1,5 +1,6 @@
 package inter;
 import code_generation.ASMGen;
+import code_generation.AsmBoolean;
 import lexer.*; import symbols.*;
 
 /**
@@ -90,9 +91,10 @@ public class Rel extends Logical {
       sb.append(expr2.toAsmMain());
       register2 = expr2.getResultRegister();
 
-      sb.append(ASMGen.genRelationalComparison(register1, register2, this.mToken, mRelationalType));
+      sb.append(AsmBoolean.genCompare(register1,register2));
+      //sb.append(AsmBoolean.genRelationalJump(this.mToken, ));
 
-      mRegister = ASMGen.getSavedRegister();
+      mRegister = AsmBoolean.getResultRegister();
 
       return sb.toString();
    }

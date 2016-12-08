@@ -1,0 +1,10 @@
+boolean isHappy is true
+boolean isGrouchy is false
+
+if(isGrouchy){
+    print("What is the matter?")
+}
+
+if(isHappy){
+    print("Such happiness")
+}

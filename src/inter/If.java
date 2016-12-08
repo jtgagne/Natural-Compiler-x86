@@ -1,6 +1,8 @@
 package inter;
 import code_generation.ASMGen;
+import code_generation.AsmBoolean;
 import code_generation.AssemblyFile;
+import code_generation.RegisterManager;
 import symbols.*;
 
 /**
@@ -14,6 +16,7 @@ public class If extends Stmt {
 
     Expr expr;  //Boolean expression
     Stmt stmt;  //Block of code
+    private String mRegister;
     private int label;
 
     public If(Expr x, Stmt s) {
@@ -37,28 +40,32 @@ public class If extends Stmt {
 
     @Override
     public void gen(int b, int a) {
-
         label = newlabel();     // label for the code for stmt
-
         expr.jumping(0, a);     // fall through on true, goto a on false
-
         setAfter(a);
 
+        //For some reason, when jumping is called it 'double reserves a register'
+        mRegister = expr.getResultRegister();
+        RegisterManager.freeRegister(mRegister);
+
+        // if we are dealing with values that are singular, load them into memory
         if(expr.isConstant() || expr.isIdentifier()){
-            emit(genBoolCompare());
-        }else{
+            emit(loadIntoRegister());
+            emit(AsmBoolean.genBranchTo(mRegister));
+        } else if (expr.isRel()){
             emit(expr.toAsmMain());
+            mRegister = expr.getResultRegister();
+            emit(AsmBoolean.genRelationalJump(expr.getToken()));
         }
-
-        String register = expr.getResultRegister(); //Get the register the result of this expression is stored in
-
-        emit(ASMGen.genBranchTo(register));         //emit the branch-to line based on the result in the register
+        else{
+            emit(expr.toAsmMain());
+            mRegister = expr.getResultRegister();
+            emit(AsmBoolean.genBranchTo(mRegister));
+        }
 
         emit(stmt.toAsmMain());
         stmt.gen(label, a);
-
-        //RegisterManager.clearAllRegs();   //Clear all registers
-
+        RegisterManager.freeRegister(mRegister);
         AssemblyFile.addVariables(this.toAsmData());
         AssemblyFile.addConstant(this.toAsmConstants());
     }
@@ -80,20 +87,10 @@ public class If extends Stmt {
 
     @Override
     public String toAsmConstants() {
-        StringBuilder sb = new StringBuilder();
-        String s2 = expr.toAsmConstants();
-        String s1 = stmt.toAsmConstants();
-        if (s2 != null) sb.append(s2);
-        if (s1 != null) sb.append(s1);
-        return sb.toString();
+        return "";
     }
 
-    private String genBoolCompare(){
-        //String register = RegisterManager.getTempReg();   //Get a temp reg to compare the values
-        String load = expr.load();
-        //String s1 = String.format("\tlb\t %s, BOOL_TRUE\n", register);
-        //String s2 = String.format("\tbne\t %s, %s, %s\n\n", register, expr.mRegister, stmt.getLabelAfter());
-        //return  load + s1 + s2;
-        return "";
+    private String loadIntoRegister(){
+        return expr.load();
     }
 }
