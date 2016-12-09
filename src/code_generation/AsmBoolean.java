@@ -46,7 +46,7 @@ public class AsmBoolean {
         if(exprType == Type.Double || exprType == Type.Float){
             return genRelationalJumpFloats(relation);
         }
-        return genRelationalJumpWhole(relation);
+        return genRelationalJumpWhole();
     }
 
     private static String genRelationalJumpFloats(Token relation){
@@ -69,32 +69,10 @@ public class AsmBoolean {
         return "";
     }
 
-    private static String genRelationalJumpWhole(Token relation){
+    private static String genRelationalJumpWhole(){
         Stmt s = Stmt.Enclosing;
         String label = s.getLabelAfter();   //Get the enclosing label of the current statement
-        switch (relation.tag){
-            case Tag.LESS:
-                //return String.format("\tJNL\t %s\n", label);
-                //return String.format("\tJNE\t %s\n", label);
-                return genLastRelationalJump(label);
-            case Tag.GREATER:
-                //return String.format("\tJNG\t %s\n", label);
-                return genLastRelationalJump(label);
-
-            case Tag.GE:
-                //return String.format("\tJNGE\t %s\n", label);
-                return genLastRelationalJump(label);
-            case Tag.LE:
-                //return String.format("\tJNLE\t %s\n", label);
-                return genLastRelationalJump(label);
-            case Tag.EQ:
-                //return String.format("\tJNE\t %s\n", label);
-                return genLastRelationalJump(label);
-            case Tag.NE:
-                //return String.format("\tJE\t %s\n", label);
-                return genLastRelationalJump(label);
-        }
-        return "";
+        return genLastRelationalJump(label);
     }
 
     public static String genAndExpr(String register1, String register2) {

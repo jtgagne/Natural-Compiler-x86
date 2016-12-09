@@ -89,31 +89,10 @@ public class Rel extends Logical {
     * @return
     */
    public String genOperation(){
-      String register1, register2;
       StringBuilder sb = new StringBuilder();
-
-//      if(expr1.isIdentifier() && expr1.getType() == Type.Bool){
-//         Id id = (Id) expr1;
-//         sb.append(id.loadForArithmetic());
-//         register1 = id.getResultRegister();
-//      }else{
-//         sb.append(expr1.toAsmMain());
-//         register1 = expr1.getResultRegister();
-//      }
-//
-//      if(expr2.isIdentifier() && expr2.getType() == Type.Bool){
-//         Id id = (Id) expr2;
-//         sb.append(id.loadForArithmetic());
-//         register2 = id.getResultRegister();
-//      }else{
-//         sb.append(expr2.toAsmMain());
-//         register2 = expr2.getResultRegister();
-//      }
       Id id1 = (Id) expr1;
       Id id2 = (Id) expr2;
       sb.append(AsmBoolean.evaluateRelational(id1, id2, getMacroName()));
-
-      //sb.append(AsmBoolean.genCompare(register1, register2, expr1.getType()));
       mRegister = AsmBoolean.getResultRegister();
       return sb.toString();
    }
