@@ -1,0 +1,28 @@
+char a is 'a'
+char b is 'b'
+char c is 'c'
+char c2 is 'c'
+
+if(a less than c){
+    print("a < c")
+}
+
+if(c greater than b){
+    print("c > b")
+}
+
+if(c equal to c2){
+    print("c == c")
+}
+
+if(a not equal to c){
+    print("a is not equal to c")
+}
+
+if(a greater than or equal to b){
+    print("ERROR: this should not be printed!")
+}
+
+if(a less than or equal to c){
+    print("a <= c")
+}

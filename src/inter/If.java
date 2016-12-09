@@ -1,8 +1,5 @@
 package inter;
-import code_generation.ASMGen;
-import code_generation.AsmBoolean;
-import code_generation.AssemblyFile;
-import code_generation.RegisterManager;
+import code_generation.*;
 import symbols.*;
 
 /**
@@ -52,10 +49,13 @@ public class If extends Stmt {
         if(expr.isConstant() || expr.isIdentifier()){
             emit(loadIntoRegister());
             emit(AsmBoolean.genBranchTo(mRegister));
-        } else if (expr.isRel()){
+        }
+
+        else if (expr.isRel()){
             emit(expr.toAsmMain());
             mRegister = expr.getResultRegister();
-            emit(AsmBoolean.genRelationalJump(expr.getToken()));
+            emit(AsmBoolean.genCompare(mRegister, AsmConstants.BOOLEAN_TRUE, expr.getType()));
+            emit(AsmBoolean.genRelationalJump(expr.getToken(), expr.getChildType()));
         }
         else{
             emit(expr.toAsmMain());

@@ -73,6 +73,7 @@ public class AsmPrint {
         return sb.toString();
     }
 
+
     /**
      * Generate the code to call the mPrintBoolean macro function
      * @param id the identifier of the boolean variable
@@ -97,7 +98,7 @@ public class AsmPrint {
         //Push to stack, set the value for pop
         if(RegisterManager.isInUse(al)){
             sb.append(String.format("\tPUSH %s\n", Register.EAX.toString()));   // must push all of eax
-            pop = String.format("\tPOP %s", Register.EAX.toString());           // pop the value back into eax.
+            pop = String.format("\tPOP %s\n", Register.EAX.toString());           // pop the value back into eax.
         }
         sb.append(String.format("\tMOV %s, %s\n", al, id.getName()));
         sb.append("\tCALL WriteChar\n");
@@ -119,7 +120,7 @@ public class AsmPrint {
         //Push to stack, set the value for pop
         if(RegisterManager.isInUse(eax)){
             sb.append(String.format("\tPUSH %s\n", eax));
-            pop = String.format("\tPOP %s", eax);
+            pop = String.format("\tPOP %s\n", eax);
         }
 
         // Sign extend since ints are stored as an SWORD

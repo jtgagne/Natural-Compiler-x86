@@ -1,0 +1,80 @@
+int num1 is 10
+int num2 is 20
+int num3 is num2
+boolean isTrue is true
+
+print("num1: ", num1)
+print("num2: ", num2)
+print("num3: ", num3)
+print("Evaluating: num2 < num1")
+
+if((num2 less than num1) and isTrue){
+    print("FAILURE")
+} else {
+    print("SUCCESS: expression evaluated false")
+}
+
+print("Evaluating: num1 > num2")
+
+if(isTrue and (num1 greater than num2) and true){
+    print("FAILURE: expression evaluated to true")
+} else {
+    print("SUCCESS: expression evaluated false")
+}
+
+
+print("Evaluating: num2 >= num1")
+if((num2 greater than or equal to num1) and isTrue){
+    print("SUCCESS: expression evaluated to true")
+} else {
+    print("FAILURE: expression evaluated false")
+}
+
+print("Evaluating: num2 >= num3")
+if((num2 greater than or equal to num3) and isTrue){
+    print("SUCCESS: expression evaluated to true")
+} else {
+    print("FAILURE: expression evaluated false")
+}
+
+print("Evaluating: num3 <= num1")
+if(isTrue and (num3 less than or equal to num1)){
+    print("FAILURE: expression evaluated true")
+} else {
+    print("SUCCESS: expression evaluated to false")
+}
+
+print("Evaluating: num2 <= num3")
+if((num2 less than or equal to num3) and isTrue){
+    print("SUCCESS: expression evaluated to true")
+} else {
+    print("FAILURE: expression evaluated false")
+}
+
+print("Evaluating: num2 == num3")
+if((num2 equal to num3) and (not false)) {
+    print("SUCCESS: expression evaluated to true")
+} else {
+    print("FAILURE: expression evaluated false")
+}
+
+print("Evaluating: num2 == num1")
+if((num2 equal to num1) and (not false)) {
+    print("FAILURE: expression evaluated to true")
+} else {
+    print("SUCCESS: expression evaluated false")
+}
+
+print("Evaluating: num2 != num1")
+if((num2 not equal to num1) and (not false)) {
+    print("SUCCESS: expression evaluated to true")
+} else {
+    print("FAILURE: expression evaluated false")
+}
+
+print("Evaluating: num2 != num3")
+if((num2 not equal to num3) and (not false)) {
+    print("FAILURE: expression evaluated to true")
+} else {
+    print("SUCCESS: expression evaluated false")
+}

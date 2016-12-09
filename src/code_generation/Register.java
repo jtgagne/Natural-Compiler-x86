@@ -14,29 +14,42 @@ public class Register {
     public final String name;
     public final Size size;
     public Register[] children;
+    private Register lower;
 
     public Register(String name, Size size){
         this.name = name;
         this.size = size;
         children = new Register[] {};
+        lower = null;
     }
 
     public Register(String name, Size size, Register c1){
         this.name = name;
         this.size = size;
         children = new Register[] {c1};
+        lower = null;
     }
 
     public Register(String name, Size size, Register c1, Register c2){
         this.name = name;
         this.size = size;
         children = new Register[] {c1, c2};
+        lower = null;
     }
 
     public Register(String name, Size size, Register c1, Register c2, Register c3){
         this.name = name;
         this.size = size;
         children = new Register[] {c1, c2, c3};
+        lower = c3;
+    }
+
+    /**
+     * Get the lower eight bit register from a GPR
+     * @return
+     */
+    public Register getLower(){
+        return lower;
     }
 
     public static final Register

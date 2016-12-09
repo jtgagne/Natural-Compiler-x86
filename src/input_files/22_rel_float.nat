@@ -1,0 +1,43 @@
+float f1 is 10.3
+float f2 is 11.5
+float f3 is 11.5
+
+if(f1 less than f2){
+    print("f1 is less than f2")
+}
+
+if(f2 less than f3){
+    print("ERROR: f2 is not less than f3")
+}
+
+if(f2 greater than f3){
+    print("ERROR: f2 is not greater than f3")
+}
+
+if(f2 greater than f1){
+    print("f2 is greater than f1")
+}
+
+if(f2 greater than or equal to f3){
+    print("GE is working")
+}
+
+if(f1 greater than or equal to f3){
+    print("ERROR: f1 is not greater than or equal to f3")
+}
+
+if(f1 equal to f2){
+    print("ERROR: f1 is not equal to f2")
+}
+
+if(f2 equal to f3){
+    print("f2 is equal to f3")
+}
+
+if(f1 not equal to f3){
+    print("f1 is not equal to f3")
+}
+
+if(f2 not equal to f3){
+    print("ERROR: f2 is equal to f3")
+}

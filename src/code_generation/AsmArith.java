@@ -7,6 +7,10 @@ import symbols.Type;
 /**
  * Class for generating x86 assembly code to do arithmetic
  * Created by gagnej3 on 11/15/16.
+ * Justin Gagne
+ * Professor Zhaurov
+ * Wentworth Institute of Technology
+ * Assembly Language - Fall 2016
  */
 public class AsmArith {
 

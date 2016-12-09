@@ -17,6 +17,10 @@ public class Expr extends Node {
     protected Type mType;
     protected String mRegister;
 
+    public Type getChildType(){
+        return null;
+    }
+
     public Expr(Token tok, Type type) {
         mToken = tok;
         mType = type;

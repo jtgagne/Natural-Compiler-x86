@@ -2,6 +2,7 @@ package inter;
 import code_generation.ASMGen;
 import code_generation.AsmBoolean;
 import code_generation.AssemblyFile;
+import code_generation.RegisterManager;
 import symbols.*;
 
 /**
@@ -47,20 +48,23 @@ public class Else extends Stmt {
         emit(expr.toAsmMain());
 
         String register = expr.getResultRegister();
-        emit(AsmBoolean.genBranchTo(register));
+        if(expr.isRel()){
+            //emit(AsmBoolean.evaluateRelational());
+            emit(AsmBoolean.genRelationalJump(expr.getToken(), expr.getChildType()));
+        }else{
+            emit(AsmBoolean.genBranchTo(register));
+        }
 
         emit(stmt1.toAsmMain());
         stmt1.gen(b, label2);
-        emit(String.format("\tj\t %s\n\n", genLabel(a)));
+        emit(String.format("\tJMP\t %s\n\n", genLabel(a)));
 
         emit(genLabel(label2) + ":");
 
         emit(stmt2.toAsmMain());
         stmt2.gen(label2, a);
 
-        //emit(genLabel(a) + ":");
-
-        //RegisterManager.clearAllRegs();   //Clear all registers
+        RegisterManager.freeAllRegisters();
 
         AssemblyFile.addVariables(this.toAsmData());
         AssemblyFile.addConstant(this.toAsmConstants());

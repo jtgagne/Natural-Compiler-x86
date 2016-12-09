@@ -1,0 +1,16 @@
+int num1 is 10
+int num2 is 20
+long l1 is 1000
+long l2 is 75
+
+if(num1 greater than num2){
+    print("There is an error, this should not be printing")
+} else {
+    print("20 > 10")
+}
+
+if(l1 greater than l2){
+    print("1000 > 75")
+} else {
+    print("There is an error with greater than and long types")
+}

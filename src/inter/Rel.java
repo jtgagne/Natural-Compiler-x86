@@ -1,7 +1,9 @@
 package inter;
-import code_generation.ASMGen;
 import code_generation.AsmBoolean;
+import code_generation.Macros;
 import lexer.*; import symbols.*;
+
+import javax.crypto.Mac;
 
 /**
  * Stores data regarding a relational operation
@@ -22,6 +24,11 @@ public class Rel extends Logical {
 
    public Rel(Token tok, Expr x1, Expr x2) {
       super(tok, x1, x2);
+   }
+
+   @Override
+   public Type getChildType() {
+      return expr1.getType();
    }
 
    @Override
@@ -85,18 +92,54 @@ public class Rel extends Logical {
       String register1, register2;
       StringBuilder sb = new StringBuilder();
 
-      sb.append(expr1.toAsmMain());
-      register1 = expr1.getResultRegister();
+//      if(expr1.isIdentifier() && expr1.getType() == Type.Bool){
+//         Id id = (Id) expr1;
+//         sb.append(id.loadForArithmetic());
+//         register1 = id.getResultRegister();
+//      }else{
+//         sb.append(expr1.toAsmMain());
+//         register1 = expr1.getResultRegister();
+//      }
+//
+//      if(expr2.isIdentifier() && expr2.getType() == Type.Bool){
+//         Id id = (Id) expr2;
+//         sb.append(id.loadForArithmetic());
+//         register2 = id.getResultRegister();
+//      }else{
+//         sb.append(expr2.toAsmMain());
+//         register2 = expr2.getResultRegister();
+//      }
+      Id id1 = (Id) expr1;
+      Id id2 = (Id) expr2;
+      sb.append(AsmBoolean.evaluateRelational(id1, id2, getMacroName()));
 
-      sb.append(expr2.toAsmMain());
-      register2 = expr2.getResultRegister();
-
-      sb.append(AsmBoolean.genCompare(register1,register2));
-      //sb.append(AsmBoolean.genRelationalJump(this.mToken, ));
-
+      //sb.append(AsmBoolean.genCompare(register1, register2, expr1.getType()));
       mRegister = AsmBoolean.getResultRegister();
-
       return sb.toString();
+   }
+
+
+    /**
+     * Gets the name of the associated Macro to be called to convert a comparison down to a natural
+     * boolean value
+     * @return the name of the macro to be called.
+     */
+   private String getMacroName(){
+      switch (this.mToken.tag){
+          case Tag.LESS:
+              return Macros.REL_LESS_THAN;
+          case Tag.GREATER:
+              return Macros.REL_GREATER_THAN;
+          case Tag.GE:
+              return Macros.REL_GREATER_THAN_EQ;
+          case Tag.LE:
+              return Macros.REL_LESS_THAN_EQ;
+          case Tag.EQ:
+              return Macros.REL_EQUAL_TO;
+          case Tag.NE:
+              return Macros.REL_NOT_EQUAL_TO;
+      }
+      return "";
    }
 
 }

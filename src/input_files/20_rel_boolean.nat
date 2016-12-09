@@ -1,0 +1,27 @@
+boolean isTrue is true
+boolean isFalse is false
+
+if(isFalse less than isTrue){
+    print("isFalse is less than isTrue")
+}
+
+if(isFalse greater than isTrue){
+    print("ERROR: isFalse ! > isTrue")
+}
+
+if(isTrue greater than or equal to isFalse){
+    print("isTrue is greater than or equal to isFalse")
+}
+
+if(isFalse less than or equal to isTrue){
+    print("isFalse is less than or equal to isTrue")
+}
+
+if(isTrue equal to isFalse){
+    print("ERROR: true is not equal to false")
+}
+
+if(isTrue not equal to isFalse){
+    print("true is not equal to false")
+}
+

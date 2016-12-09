@@ -1,0 +1,41 @@
+double f1 is 10.3
+double f2 is 11.5
+double f3 is 11.5
+
+print("Testing logical comparisons with TYPE: double")
+
+if(f2 less than f3){
+    print("ERROR: f2 is not less than f3")
+} else {
+    print("SUCCESS: less than")
+}
+
+if(f2 greater than f3){
+    print("ERROR: f2 is not greater than f3")
+} else{
+    print("SUCCESS: greater than")
+}
+
+if(f1 greater than or equal to f3){
+    print("ERROR: f1 is not greater than or equal to f3")
+} else {
+    print("SUCCESS: greater than or equal to")
+}
+
+if(f1 less than or equal to f2){
+    print("SUCCESS: less than or equal to")
+} else {
+    print("ERROR: f1 should evaluate to be less than or equal to f2")
+}
+
+if(f1 equal to f2){
+    print("ERROR: f1 is not equal to f2")
+} else {
+    print("SUCCESS: equal to")
+}
+
+if(f2 not equal to f3){
+    print("ERROR: f2 is equal to f3")
+} else {
+    print("SUCCESS: not equal to")
+}

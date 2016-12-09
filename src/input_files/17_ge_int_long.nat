@@ -1,0 +1,13 @@
+int num1 is 6
+int num2 is 5
+
+long l1 is 100203
+long l2 is 10202
+
+if(num1 greater than or equal to num2){
+    print("6 >= 5")
+}
+
+if(l2 greater than or equal to l1){
+    print("This should not be printing!!!")
+}

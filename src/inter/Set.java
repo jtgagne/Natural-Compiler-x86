@@ -113,9 +113,10 @@ public class Set extends Stmt {
             sb.append(ASMGen.storeVar(mIdentifier, savedReg));
         } else if (expr.isArith()){
             sb.append(ASMGen.storeVar(mIdentifier, savedReg));
+        } else {
+            sb.append(ASMGen.storeVar(mIdentifier, expr.getResultRegister()));
         }
 
-        //RegisterManager.clearAllRegisters();
         RegisterManager.freeRegister(savedReg);
         return sb.toString();
     }

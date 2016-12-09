@@ -1,0 +1,23 @@
+int a is 5
+int b is 6
+int c is 5
+long l1 is 10000
+long l2 is 20200202
+long l3 is 10000
+
+
+if(a not equal to b){
+    print("a is not equal to b")
+}
+
+if(a equal to c){
+    print("a is equal to c")
+}
+
+if(l1 equal to l2){
+    print("This should not be printing!")
+}
+
+if(l1 equal to l3){
+    print("l1 = l3")
+}

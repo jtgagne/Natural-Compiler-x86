@@ -1,18 +1,38 @@
 package code_generation;
 
+import symbols.Type;
+
 import java.io.File;
 import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * This class will be used to generate all macros to be used by the natural compiler
+ * This class will be used to generate and update all macros to be used by the natural compiler
  * Created by gagnej3 on 11/18/16.
  */
 public class Macros {
 
     private static final String FILE_NAME = "naturalMacros.asm";
     private static PrintWriter _writer;
+    private static int macroLabel = 0;
+
+    private static String getNewLabel(){
+        return String.format("L%d", ++macroLabel);
+    }
+
+    public static final String
+        PRINT = "mPrint",       // Print a string
+        PRINTLN = "mPrintln",   // Print a string on a new line
+        PRINT_BOOL = "mPrintBoolean",
+        PRINT_FLOAT = "mPrintFloat",
+        REL_LESS_THAN = "mLessThanToBool",
+        REL_GREATER_THAN = "mGreaterThanToBool",
+        REL_GREATER_THAN_EQ = "mGreaterThanEqualToBool",
+        REL_LESS_THAN_EQ = "mLessThanEqualToBool",
+        REL_EQUAL_TO = "mEqualToBool",
+        REL_NOT_EQUAL_TO = "mNotEqualToBool"
+    ;
 
     /**
      * This main method will be run to regenerate the naturalMacros.asm file when needed
@@ -23,6 +43,19 @@ public class Macros {
         _writer.write(printBoolean());
         _writer.write("\n\n");
         _writer.write(printFloat());
+        _writer.write("\n\n");
+        _writer.write(relationalToBoolean(REL_LESS_THAN, "JNL"));
+        _writer.write("\n\n");
+        _writer.write(relationalToBoolean(REL_GREATER_THAN, "JNG"));
+        _writer.write("\n\n");
+        _writer.write(relationalToBoolean(REL_GREATER_THAN_EQ, "JNGE"));
+        _writer.write("\n\n");
+        _writer.write(relationalToBoolean(REL_LESS_THAN_EQ, "JNLE"));
+        _writer.write("\n\n");
+        _writer.write(relationalToBoolean(REL_EQUAL_TO, "JNE"));
+        _writer.write("\n\n");
+        _writer.write(relationalToBoolean(REL_NOT_EQUAL_TO, "JE"));
+        _writer.write("\n\n");
         _writer.close();
     }
 
@@ -44,13 +77,6 @@ public class Macros {
     }
 
 
-    public static final String
-            PRINT = "mPrint",       // Print a string
-            PRINTLN = "mPrintln",   // Print a string on a new line
-            PRINT_BOOL = "mPrintBoolean",
-            PRINT_FLOAT = "mPrintFloat"
-    ;
-
     private static final String
         COMMENT = ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
 
@@ -68,6 +94,39 @@ public class Macros {
         return sb.toString();
     }
 
+    /**
+     * Find the result of a boolean expression for less than. Return the value on the stack.
+     * @return the string of the assembly code
+     */
+    public static String relationalToBoolean(String macroName, String compareType){
+        String sb = "";
+        Register register1 = Register.EAX;
+        Register register2 = Register.EBX;
+        String label1 = getNewLabel();
+        String label2 = getNewLabel();
+
+        sb += COMMENT + "\n";
+        sb += ";; This macro makes a less than comparison and returns" +
+                "\n;; a boolean value to the stack\n";
+        sb += COMMENT + "\n";
+        sb += String.format("%s MACRO\n\n", macroName); //var1, var2\n\n", macroName);
+        sb += String.format("LOCAL %s\n", label1);
+        sb += String.format("LOCAL %s\n", label2);
+        sb += ".data\n\n";
+        sb += ".code\n";
+        sb += "\tPOP eax\n\tPOP ebx\n";
+        sb += String.format("\tCMP %s, %s\n", register1, register2) +
+                String.format("\t%s %s\n", compareType, label1) +
+                String.format("\tMOV al, %s\n", AsmConstants.BOOLEAN_TRUE) +
+                String.format("\tJMP %s\n", label2) +
+                String.format("%s:\n", label1) +
+                String.format("\tMOV al, %s\n", AsmConstants.BOOLEAN_FALSE) +
+                String.format("%s:\n", label2) +
+                "\tPUSH eax" +
+                "\nENDM";
+
+        return sb;
+    }
 
     public static String printFloat(){
         StringBuilder sb = new StringBuilder();
@@ -76,8 +135,8 @@ public class Macros {
         //Append the header comment
         sb.append(String.format("%s\n", COMMENT));
         sb.append(";; Print a value of a floating point variable\n" +
-                ";; Input: a real variable  \n" +
-                ";; Output: value to console\n");
+                  ";; Input: a real variable  \n" +
+                  ";; Output: value to console\n");
         sb.append(String.format("%s\n", COMMENT));
 
         //Macro declaration
@@ -150,9 +209,7 @@ public class Macros {
         sb.append(String.format("\n%s:\n", LABEL_END));
         sb.append("\tPOP edx\n");
         sb.append("\tPOP eax\n\n");
-
         sb.append("ENDM\n");
-
         return sb.toString();
     }
 

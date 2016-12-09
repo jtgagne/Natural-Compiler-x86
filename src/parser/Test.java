@@ -11,12 +11,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * Just a file to input_files the parser
  * Created on 6/14/16.
- * Justin Gagne and Zack Farrer
- * Professor Assiter
+ * Justin Gagne
+ * Professor Zhaurov
  * Wentworth Institute of Technology
- * Compiler Design - Summer 2016
+ * Assembly Language - Fall 2016
  */
 public class Test {
 
@@ -42,7 +41,7 @@ public class Test {
         for(File file: testFiles){
             String filePath = file.getPath();                         // Get the path of the first file to be evaluated
 
-            if(!filePath.contains("14_less_than_int_long.nat")) continue;                     // Make sure it is a .nat file
+            if(!filePath.contains("24_rel_compound.nat")) continue;                     // Make sure it is a .nat file
 
             String contents[] = filePath.split("/");                  // State the name of the file being evaluated
             String fileName = contents[contents.length-1];
@@ -60,7 +59,7 @@ public class Test {
 
             Lexer.getInstance().closeReader();
             assemblyFile.generateAsmFile();
-            // RegisterManager.clearAllRegs();
+            RegisterManager.freeAllRegisters();
             Node.resetLabels();
         }
     }

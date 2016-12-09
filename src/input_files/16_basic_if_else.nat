@@ -1,0 +1,17 @@
+boolean isWorking is false
+
+if(isWorking){
+    print("Error with if statements")
+}
+else{
+    print("if-else statement is working")
+}
+
+boolean isWorking2 is true
+
+if(isWorking2){
+    print("Falls through on true")
+}
+else{
+    print("ERROR. Not skipping else if evaluated to true!")
+}
